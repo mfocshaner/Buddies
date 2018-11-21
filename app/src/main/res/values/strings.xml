@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Buddies</string>
+    <string name="who_title">Who?</string>
+    <string name="what_title">What?</string>
+    <string name="when_title">When?</string>
+
 </resources>
