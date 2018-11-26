@@ -15,9 +15,14 @@ public class EventAttendanceProvider {
     private ArrayList<String> attending;
     private ArrayList<String> notAttending;
     private ArrayList<String> tentatives;
+    private ArrayList<String> nonResponsive;
 
     public EventAttendanceProvider(List<String> invitees) {
-        this.invitees = invitees;
+        this.invitees = invitees; // reference ?
+        this.nonResponsive = new ArrayList<String>(invitees);
+        this.attending = new ArrayList<String>();
+        this.notAttending = new ArrayList<String>();
+        this.tentatives = new ArrayList<String>();
     }
 
     public void markAttending(String userName) {
@@ -27,6 +32,8 @@ public class EventAttendanceProvider {
         tentatives.remove(userName);
         notAttending.remove(userName);
         attending.add(userName);
+
+        nonResponsive.remove(userName);
     }
 
     public void markNotAttending(String userName) {
@@ -60,7 +67,7 @@ public class EventAttendanceProvider {
         return notAttending;
     }
 
-    public int getnoTAttendingCount() {
+    public int getNotAttendingCount() {
         return notAttending.size();
     }
 
@@ -71,5 +78,14 @@ public class EventAttendanceProvider {
     public int getTentativesCount() {
         return tentatives.size();
     }
+
+    public List<String> getNonResponsive() {
+        return nonResponsive;
+    }
+
+    public int getNonResponsiveCount() {
+        return nonResponsive.size();
+    }
+
 
 }
