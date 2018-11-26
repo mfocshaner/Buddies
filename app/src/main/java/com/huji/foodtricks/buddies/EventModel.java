@@ -64,4 +64,22 @@ public class EventModel {
     public void setEventType(String eventType) {
         this.eventType = eventType;
     }
+
+    public int getAttendingCount(){
+        return attendanceProvider.getAttendingCount();
+    }
+
+    public int getNotAttendingCount(){
+        return attendanceProvider.getNotAttendingCount();
+    }
+    public int getTentativesCount(){
+        return attendanceProvider.getTentativesCount();
+    }
+
+    public int getNonResponsiveCount(){
+        return attendanceProvider.getNonResponsiveCount();
+    }
+
+
+
 }
