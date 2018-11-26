@@ -16,5 +16,8 @@ public class ViewSingleEvent extends AppCompatActivity {
                     .replace(R.id.container, ViewSingleEventFragment.newInstance())
                     .commitNow();
         }
+
+        Bundle prev_screen_bundle = getIntent().getExtras();
+        EventModel curr_event = (EventModel)prev_screen_bundle.getSerializable("value");
     }
 }

@@ -1,15 +1,9 @@
 package com.huji.foodtricks.buddies;
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.huji.foodtricks.buddies.EventCard;
-import com.huji.foodtricks.buddies.R;
 
 import java.util.ArrayList;
 
@@ -41,15 +35,14 @@ public class EventListAdaptor extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
         if(view==null)
         {
-            view= LayoutInflater.from(c).inflate(R.layout.event_cardview,viewGroup,false);
+//            view= LayoutInflater.from(c).inflate(R.layout.event_cardview,viewGroup,false);
         }
 
         final EventModel s= (EventModel) this.getItem(i);
 
-        ImageView img= (ImageView) view.findViewById(R.id.event_image);
-        TextView nameTxt= (TextView) view.findViewById(R.id.event_title);
+//        ImageView img= (ImageView) view.findViewById(R.id.event_image);
+//        TextView nameTxt= (TextView) view.findViewById(R.id.event_title);
 
-        nameTxt.setText(s.getTitle());
         //img.setImageResource(s.getImage());
 
         view.setOnClickListener(new View.OnClickListener() {
