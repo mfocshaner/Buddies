@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ViewSingleEvent" >
+
+    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:stretchColumns="1">
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="154dp"
+                android:layout_column="0"
+                android:padding="3dip"
+                android:text="@string/what_title" />
+
+            <TextView
+                android:id="@+id/what_text"
+                android:gravity="right"
+                android:padding="3dip"
+                android:text="Ctrl-O" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_column="0"
+                android:padding="3dip"
+                android:text="@string/who_title" />
+
+            <TextView
+                android:id="@+id/who_text"
+                android:gravity="right"
+                android:padding="3dip"
+                android:text="Ctrl-S" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_column="0"
+                android:padding="3dip"
+                android:text="@string/when_title" />
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapView"
+                android:layout_width="160dp"
+                android:layout_height="113dp" />
+
+        </TableRow>
+
+        <View
+            android:layout_height="2dip"
+            android:background="#FF909090" />
+
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_span="3"
+                android:padding="3dip"
+                android:text="Change RSVP"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+
+        </TableRow>
+
+        <TableRow>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/floatingActionButton"
+                android:layout_width="173dp"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:clickable="true"
+                app:srcCompat="@drawable/decline_icon" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/floatingActionButton2"
+                android:layout_width="146dp"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:clickable="true"
+                app:backgroundTint="@android:color/darker_gray"
+                app:srcCompat="@drawable/question_mark_icon" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/floatingActionButton3"
+                android:layout_width="146dp"
+                android:layout_height="wrap_content"
+                android:layout_column="3"
+                android:layout_gravity="bottom|end"
+                android:clickable="true"
+                app:backgroundTint="@android:color/holo_green_light"
+                app:srcCompat="@drawable/approve_icon"
+                tools:srcCompat="@android:drawable/checkbox_on_background" />
+        </TableRow>
+
+        <View
+            android:layout_height="2dip"
+            android:background="#FF909090" />
+
+    </TableLayout>
+
+
+</FrameLayout>

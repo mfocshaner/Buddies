@@ -77,7 +77,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
         //Case 3 : To populate the picker with both images and text
         List<CarouselPicker.PickerItem> mixItems = new ArrayList<>();
-//        mixItems.add(new CarouselPicker.DrawableItem(R.drawable.pizza_icon_small));
+        //mixItems.add(new CarouselPicker.DrawableItem(R.drawable.pizza_icon_small));
         mixItems.add(new CarouselPicker.TextItem("hi", 20));
         mixItems.add(new CarouselPicker.DrawableItem(R.mipmap.ic_launcher));
         mixItems.add(new CarouselPicker.TextItem("Amit", 20));
@@ -104,7 +104,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
         //Case 3 : To populate the picker with both images and text
         List<CarouselPicker.PickerItem> mixItems = new ArrayList<>();
-//        mixItems.add(new CarouselPicker.DrawableItem(R.drawable.pizza_icon_small));
+        //mixItems.add(new CarouselPicker.DrawableItem(R.drawable.pizza_icon_small));
         mixItems.add(new CarouselPicker.TextItem("dinner", 20));
         mixItems.add(new CarouselPicker.DrawableItem(R.mipmap.ic_launcher));
         mixItems.add(new CarouselPicker.TextItem("movie", 20));
