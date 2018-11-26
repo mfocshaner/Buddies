@@ -111,6 +111,21 @@
             android:layout_height="2dip"
             android:background="#FF909090" />
 
+        <TableRow>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_span="1"
+                android:padding="3dip"
+                android:text="Change RSVP"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+
+        </TableRow>
     </TableLayout>
 
 

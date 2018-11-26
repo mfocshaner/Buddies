@@ -72,6 +72,7 @@ public class EventModel {
     public int getNotAttendingCount(){
         return attendanceProvider.getNotAttendingCount();
     }
+
     public int getTentativesCount(){
         return attendanceProvider.getTentativesCount();
     }

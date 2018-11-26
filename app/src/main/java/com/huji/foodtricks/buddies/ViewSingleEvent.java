@@ -1,7 +1,7 @@
 package com.huji.foodtricks.buddies;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 import com.huji.foodtricks.buddies.ui.viewsingleevent.ViewSingleEventFragment;
 
@@ -16,8 +16,22 @@ public class ViewSingleEvent extends AppCompatActivity {
                     .replace(R.id.container, ViewSingleEventFragment.newInstance())
                     .commitNow();
         }
+//
+//        Bundle prev_screen_bundle = getIntent().getExtras();
+//        EventModel curr_event = (EventModel)prev_screen_bundle.getSerializable("curr_event");
+//        TextView who_tv = (TextView)findViewById(R.id.who_text);
+//        who_tv.setText(curr_event.getEventType());
+////        TextView when_tv = (TextView)findViewById(R.id.when_text);
+////        who_tv.setText(curr_event.getEventType());
+//        TextView what_tv = (TextView)findViewById(R.id.what_text);
+//        what_tv.setText(curr_event.getEventType());
 
-        Bundle prev_screen_bundle = getIntent().getExtras();
-        EventModel curr_event = (EventModel)prev_screen_bundle.getSerializable("value");
+        // change_title to event description
+        // init map and
+        // change map aim to location
+
+
+
+
     }
 }
