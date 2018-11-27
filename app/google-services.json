@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "733859879220",
+    "firebase_url": "https://buddies-a508d.firebaseio.com",
+    "project_id": "buddies-a508d",
+    "storage_bucket": "buddies-a508d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:733859879220:android:97cbd1158e574817",
+        "android_client_info": {
+          "package_name": "com.huji.foodtricks.buddies"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "733859879220-9qouel030jofaaj967m0juv170cl6bvu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.huji.foodtricks.buddies",
+            "certificate_hash": "618c2880b3de024aef5f9058f12c7a17f22ae323"
+          }
+        },
+        {
+          "client_id": "733859879220-lpn7nk1er12uc05q9i0athehlins675q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUN36E7bPfOYU5c0JJMjti33KNisFDjbQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "733859879220-lpn7nk1er12uc05q9i0athehlins675q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
