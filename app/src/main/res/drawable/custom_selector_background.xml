@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+use this to set colors of text background when selected or not selected.
+-->
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_selected="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="4dp"/>
+            <solid android:color="#ffb1b1"/>
+            <size android:width="40dp" android:height="50dp"/>
+        </shape>
+    </item>
+
+
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="4dp"/>
+            <solid android:color="@android:color/transparent"/> <!-- todo: change to gray -->
+        </shape>
+    </item>
+</selector>

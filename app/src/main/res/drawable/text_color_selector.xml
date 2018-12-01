@@ -1,0 +1,13 @@
+<!--
+use this to set colors of text when selected or not selected.
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item android:state_pressed="true"
+        android:color="@android:color/black" />
+    <item android:state_selected="false"
+        android:color="@android:color/black" />
+    <item android:color="@android:color/black" />
+
+</selector>
