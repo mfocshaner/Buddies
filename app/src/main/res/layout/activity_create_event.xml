@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipToPadding="true"
+    android:paddingHorizontal="7sp"
     tools:context=".CreateEventActivity">
 
     <TextView
@@ -13,10 +15,10 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="@string/who_title"
-        android:textSize="20sp"
-        android:textAllCaps="true"
         android:fontFamily="sans-serif"
+        android:text="@string/who_title"
+        android:textAllCaps="true"
+        android:textSize="20sp"
         android:textStyle="bold"
 
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,74 +26,139 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <in.goodiebag.carouselpicker.CarouselPicker
-        android:id="@+id/who_carousel"
-        android:layout_width="match_parent"
+    <HorizontalScrollView
+        android:id="@+id/WhoHorizontalScrollView"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:background="#CCC"
-        app:items_visible="five"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/who_textView" />
+        app:layout_constraintTop_toBottomOf="@+id/who_textView">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.goodiebag.horizontalpicker.HorizontalPicker
+                android:id="@+id/whoHPicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:backgroundSelector="@drawable/custom_selector_background"
+                app:itemHeight="50dp"
+                app:itemMargin="10dp"
+                app:itemWidth="50dp"
+                app:layout_constraintTop_toBottomOf="@+id/who_textView"
+                app:textColorSelector="@color/colorForSelection"
+
+                app:textSize="18sp" />
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
 
     <TextView
-        android:id="@+id/what_textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/what_title"
-        android:textSize="20sp"
-        android:textAllCaps="true"
-        android:fontFamily="sans-serif"
-        android:textStyle="bold"
+    android:id="@+id/what_textView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="18dp"
+    android:layout_marginEnd="8dp"
+    android:text="@string/what_title"
+    android:textSize="20sp"
+    android:textAllCaps="true"
+    android:fontFamily="sans-serif"
+    android:textStyle="bold"
 
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.024"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/who_carousel" />
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.024"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/WhoHorizontalScrollView" />
 
-    <in.goodiebag.carouselpicker.CarouselPicker
-        android:id="@+id/what_carousel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:background="#CCC"
-        app:items_visible="five"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/what_textView" />
 
     <TextView
-        android:id="@+id/when_textView"
+    android:id="@+id/when_textView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="18dp"
+    android:layout_marginEnd="8dp"
+    android:text="@string/when_title"
+    android:textSize="20sp"
+    android:textAllCaps="true"
+    android:fontFamily="sans-serif"
+    android:textStyle="bold"
+
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.024"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/editText" />
+
+    <HorizontalScrollView
+        android:id="@+id/WhenHorizontalScrollView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/when_textView">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.goodiebag.horizontalpicker.HorizontalPicker
+                android:id="@+id/whenHPicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:backgroundSelector="@drawable/custom_selector_background"
+                app:itemHeight="58dp"
+                app:itemMargin="15dp"
+                app:itemWidth="120dp"
+                app:layout_constraintTop_toBottomOf="@+id/who_textView"
+                app:textColorSelector="@drawable/text_color_selector"
+
+                app:textSize="22sp" />
+
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="@string/when_title"
-        android:textSize="20sp"
-        android:textAllCaps="true"
-        android:fontFamily="sans-serif"
-        android:textStyle="bold"
-
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:onClick="fabClicked"
+        app:backgroundTint="@android:color/darker_gray"
+        app:backgroundTintMode="multiply"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.024"
+        app:layout_constraintHorizontal_bias="0.047"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/what_carousel" />
+        app:srcCompat="@android:drawable/star_big_on" />
 
-    <in.goodiebag.carouselpicker.CarouselPicker
-        android:id="@+id/when_carousel"
+
+
+    <EditText
+        android:id="@+id/editText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:background="#CCC"
-        app:items_visible="three"
+        android:layout_height="40dp"
+        app:layout_constraintTop_toBottomOf="@+id/what_textView"
+
+        android:layout_marginBottom="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/when_textView" />
+        android:ems="17"
+        android:singleLine="true"
+        android:lineHeight="18dp"
+
+        android:inputType="textCapWords"
+        android:imeOptions="actionDone"
+        android:hint="enter event title" />
+
 
 
 </android.support.constraint.ConstraintLayout>
