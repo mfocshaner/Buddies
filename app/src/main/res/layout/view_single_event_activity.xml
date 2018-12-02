@@ -5,24 +5,25 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     tools:context=".ViewSingleEvent" >
 
     <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:stretchColumns="1">
+        android:layout_height="wrap_content"
+        android:stretchColumns="3">
 
         <TableRow>
 
             <TextView
-                android:layout_width="154dp"
+                android:layout_width="70dp"
                 android:layout_column="0"
                 android:padding="3dip"
                 android:text="@string/what_title" />
 
             <TextView
                 android:id="@+id/what_text"
-                android:gravity="right"
+                android:gravity="end"
                 android:padding="3dip"
                 android:text="Ctrl-O" />
         </TableRow>
@@ -36,7 +37,8 @@
 
             <TextView
                 android:id="@+id/who_text"
-                android:gravity="right"
+                android:layout_column="1"
+                android:gravity="end"
                 android:padding="3dip"
                 android:text="Ctrl-S" />
         </TableRow>
@@ -48,70 +50,81 @@
                 android:padding="3dip"
                 android:text="@string/when_title" />
 
-            <com.google.android.gms.maps.MapView
-                android:id="@+id/mapView"
-                android:layout_width="160dp"
-                android:layout_height="113dp" />
-
+            <TextView
+                android:id="@+id/when_textView"
+                android:gravity="end"
+                android:padding="3dip"
+                android:text="Ctrl-S"
+                android:textAlignment="textEnd" />
         </TableRow>
-
-        <View
-            android:layout_height="2dip"
-            android:background="#FF909090" />
-
 
         <TableRow>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_span="3"
+                android:layout_column="0"
                 android:padding="3dip"
-                android:text="Change RSVP"
-                android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:text="@string/where_title" />
 
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
         </TableRow>
 
         <TableRow>
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/floatingActionButton"
-                android:layout_width="173dp"
+            <Button
+                android:id="@+id/who_is_coming_btn"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_column="0"
-                android:clickable="true"
-                app:srcCompat="@drawable/decline_icon" />
+                android:backgroundTint="@android:color/holo_green_dark"
+                android:onClick="onButtonShowPopupWindowClick"
+                android:text="Who's coming?"
+                android:textSize="10sp"
+                android:layout_span="1">
+            </Button>
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/floatingActionButton2"
-                android:layout_width="146dp"
+            <Button
+                android:id="@+id/who_is_tantative"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_column="2"
-                android:clickable="true"
-                app:backgroundTint="@android:color/darker_gray"
-                app:srcCompat="@drawable/question_mark_icon" />
+                android:layout_span="1"
+                android:backgroundTint="@android:color/holo_orange_light"
+                android:onClick="onButtonShowPopupWindowClick"
+                android:text="tantative?"
+                android:textSize="10dp">
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/floatingActionButton3"
-                android:layout_width="146dp"
+            </Button>
+
+            <Button
+                android:id="@+id/who_isnt_coming_btn"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_column="3"
-                android:layout_gravity="bottom|end"
-                android:clickable="true"
-                app:backgroundTint="@android:color/holo_green_light"
-                app:srcCompat="@drawable/approve_icon"
-                tools:srcCompat="@android:drawable/checkbox_on_background" />
+                android:backgroundTint="@android:color/holo_red_dark"
+                android:onClick="onButtonShowPopupWindowClick"
+                android:text="Who isn't?"
+                android:textSize="10sp">
+            </Button>
+
         </TableRow>
 
-        <View
-            android:layout_height="2dip"
-            android:background="#FF909090" />
-
     </TableLayout>
+
+    <io.github.yavski.fabspeeddial.FabSpeedDial
+        android:id="@+id/fabSpeedDial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        app:fabDrawable="@drawable/change_rsvp"
+        app:fabGravity="bottom_end"
+        app:fabMenu="@menu/speedial_menu"
+        app:miniFabBackgroundTint="@android:color/white"
+        app:miniFabDrawableTint="?attr/colorPrimaryDark"
+        app:miniFabTitleTextColor="?attr/colorPrimaryDark"
+        tools:fabBackgroundTint="@color/blue_grey_800" />
+
+
 
 
 </FrameLayout>
