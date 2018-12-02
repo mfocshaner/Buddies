@@ -91,9 +91,8 @@ public class SignInActivity extends AppCompatActivity implements
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
-                // [START_EXCLUDE]
+
                 updateUI(null);
-                // [END_EXCLUDE]
             }
         }
     }
@@ -162,7 +161,8 @@ public class SignInActivity extends AppCompatActivity implements
     private void updateUI(FirebaseUser user) {
         hideProgressDialog();
         if (user != null) {
-
+            Intent signedInIntent = new Intent(this, CreateEventActivity.class);
+            startActivity(signedInIntent);
         }
     }
 
