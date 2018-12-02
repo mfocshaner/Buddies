@@ -26,7 +26,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".CreateEventActivity" />
-        <activity android:name=".ViewSingleEvent"></activity>
+        <activity android:name=".ViewSingleEvent">
+        </activity>
     </application>
 
 </manifest>

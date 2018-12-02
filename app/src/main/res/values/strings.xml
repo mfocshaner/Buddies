@@ -67,5 +67,9 @@
     <string name="firebase_status_fmt">Firebase User: %s</string>
     <string name="app_description">Hanging out with friends was never easier</string>
     <string name="friends_hanging">Friends Hanging</string>
+    <string name="where_title">where?</string>
+    <string name="tantative_msg">Tantative</string>
+    <string name="decline_msg">decline</string>
+    <string name="approve_msg">approve</string>
 
 </resources>
