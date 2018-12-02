@@ -1,14 +1,25 @@
 package com.huji.foodtricks.buddies;
 
-import android.support.v4.view.ViewPager;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
+
+import com.goodiebag.horizontalpicker.HorizontalPicker;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
-
-import in.goodiebag.carouselpicker.CarouselPicker;
 
 public class CreateEventActivity extends AppCompatActivity {
 
@@ -16,142 +27,194 @@ public class CreateEventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
+        disableFAB();
 
-        CarouselPicker whoCarouselPicker = setupWhoCarousel();
-        setupCarouselListeners(whoCarouselPicker);
-
-        CarouselPicker whatCarouselPicker = setupWhatCarousel();
-        setupCarouselListeners(whatCarouselPicker);
-
-        CarouselPicker carouselPicker = setupWhenCarousel();
-        setupCarouselListeners(carouselPicker);
-
-
+        setupWhoHorizontalPicker();
+        setupWhatTextInput();
+        setupWhenPicker();
     }
 
     /// parameters to be passed to new event
     private Date _time;
-    private String _eventType; // not well defined
+    private String _eventTitle; // not well defined
     private List<String> _invitees; // will maybe change if invitees become "People" objects,
 
     public void chooseGroup(String groupName) {
         // set invitees to be the group
+        ArrayList<String> group = new ArrayList<>();
+        group.add("amit");
+        group.add("michael");
+        group.add("buddy");
+        group.add("ido");
+        _invitees = group;
     }
 
-    public void chooseTime(Date time){
+    private void disableFAB(){
+        FloatingActionButton fab = findViewById(R.id.floatingActionButton);
+        fab.setEnabled(false);
+        fab.setAlpha(0.4f);
+        fab.setImageAlpha(127);
+    }
+
+    private void enableFAB(){
+        FloatingActionButton fab = findViewById(R.id.floatingActionButton);
+        fab.setEnabled(true);
+        fab.setBackgroundTintList(this.getBaseContext().getResources()
+                .getColorStateList(R.color.colorEnabledFAB));
+        fab.setAlpha(1f);
+        fab.setImageAlpha(255);
+    }
+
+    private void shouldEnableFAB(){
+        if ((_time != null) && (_eventTitle != null && !_eventTitle.equals(""))
+                && (_invitees != null)) {
+            enableFAB();
+        }
+    }
+
+    public void chooseTime(Date time) {
         _time = time;
     }
 
-    public void chooseEventType(String eventType) {
-        _eventType = eventType;
+    public void chooseTitle(String eventTitle) {
+        _eventTitle = eventTitle;
     }
 
-    private String makeTitle(){
-        String title = _eventType.concat("At ").concat(_time.toString());
-        return title;
-    }
 
     /**
      * Called when "create event" button is clicked
      * should be enabled only if all parameters are chosen (disable button before that)
+     *
      * @return EventModel with all chosen parameters
      */
-    private EventModel createEvent(){
-        String title = makeTitle();
-        EventModel newEvent = new EventModel(title, _time, _eventType, _invitees);
+    private EventModel createEvent() {
+        EventModel newEvent = new EventModel(_eventTitle, _time, _eventTitle, _invitees);
         return newEvent;
     }
+    
+    private void setupWhoHorizontalPicker() {
+        final HorizontalPicker hPicker = (HorizontalPicker) findViewById(R.id.whoHPicker);
 
-    private CarouselPicker setupWhoCarousel() {
-        CarouselPicker carouselPicker = (CarouselPicker) findViewById(R.id.who_carousel);
+        hPicker.setItems(EventParametersProvider.getWhoItems());
 
-        // Case 1 : To populate the picker with images
-//        List<CarouselPicker.PickerItem> imageItems = new ArrayList<>();
-//        imageItems.add(new CarouselPicker.DrawableItem(R.mipmap.ic_launcher));
-//        imageItems.add(new CarouselPicker.DrawableItem(R.mipmap.ic_launcher));
-//        imageItems.add(new CarouselPicker.DrawableItem(R.mipmap.ic_launcher));
-//        //Create an adapter
-//        CarouselPicker.CarouselViewAdapter imageAdapter = new CarouselPicker.CarouselViewAdapter(this, imageItems, 0);
-//        //Set the adapter
-//        carouselPicker.setAdapter(imageAdapter);
-
-        //Case 3 : To populate the picker with both images and text
-        List<CarouselPicker.PickerItem> mixItems = new ArrayList<>();
-        //mixItems.add(new CarouselPicker.DrawableItem(R.drawable.pizza_icon_small));
-        mixItems.add(new CarouselPicker.TextItem("hi", 20));
-        mixItems.add(new CarouselPicker.DrawableItem(R.mipmap.ic_launcher));
-        mixItems.add(new CarouselPicker.TextItem("Amit", 20));
-        mixItems.add(new CarouselPicker.DrawableItem(R.mipmap.ic_launcher));
-        mixItems.add(new CarouselPicker.TextItem("<3", 20));
-        CarouselPicker.CarouselViewAdapter mixAdapter = new CarouselPicker.CarouselViewAdapter(this, mixItems, 0);
-        carouselPicker.setAdapter(mixAdapter);
-
-        return carouselPicker;
-    }
-
-    private CarouselPicker setupWhatCarousel() {
-        CarouselPicker carouselPicker = (CarouselPicker) findViewById(R.id.what_carousel);
-
-        // Case 1 : To populate the picker with images
-//        List<CarouselPicker.PickerItem> imageItems = new ArrayList<>();
-//        imageItems.add(new CarouselPicker.DrawableItem(R.mipmap.ic_launcher));
-//        imageItems.add(new CarouselPicker.DrawableItem(R.mipmap.ic_launcher));
-//        imageItems.add(new CarouselPicker.DrawableItem(R.mipmap.ic_launcher));
-//        //Create an adapter
-//        CarouselPicker.CarouselViewAdapter imageAdapter = new CarouselPicker.CarouselViewAdapter(this, imageItems, 0);
-//        //Set the adapter
-//        carouselPicker.setAdapter(imageAdapter);
-
-        //Case 3 : To populate the picker with both images and text
-        List<CarouselPicker.PickerItem> mixItems = new ArrayList<>();
-        //mixItems.add(new CarouselPicker.DrawableItem(R.drawable.pizza_icon_small));
-        mixItems.add(new CarouselPicker.TextItem("dinner", 20));
-        mixItems.add(new CarouselPicker.DrawableItem(R.mipmap.ic_launcher));
-        mixItems.add(new CarouselPicker.TextItem("movie", 20));
-        mixItems.add(new CarouselPicker.DrawableItem(R.mipmap.ic_launcher));
-        mixItems.add(new CarouselPicker.TextItem("shnatz", 20));
-        CarouselPicker.CarouselViewAdapter mixAdapter = new CarouselPicker.CarouselViewAdapter(this, mixItems, 0);
-        carouselPicker.setAdapter(mixAdapter);
-
-        return carouselPicker;
-    }
-
-    private CarouselPicker setupWhenCarousel() {
-        CarouselPicker carouselPicker = (CarouselPicker) findViewById(R.id.when_carousel);
-
-        //Case 2 : To populate the picker with text
-        List<CarouselPicker.PickerItem> textItems = new ArrayList<>();
-        //20 here represents the textSize in dp, change it to the value you want.
-        textItems.add(new CarouselPicker.TextItem("Now", 20));
-        textItems.add(new CarouselPicker.TextItem("Tomorrow", 20));
-        textItems.add(new CarouselPicker.TextItem("This Week", 20));
-        textItems.add(new CarouselPicker.TextItem("Custom", 20));
-        CarouselPicker.CarouselViewAdapter textAdapter = new CarouselPicker.CarouselViewAdapter(this, textItems, 0);
-        carouselPicker.setAdapter(textAdapter);
-
-
-        return carouselPicker;
-    }
-
-
-
-    private void setupCarouselListeners(CarouselPicker carouselPicker) {
-        carouselPicker.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        HorizontalPicker.OnSelectionChangeListener listener = new HorizontalPicker.OnSelectionChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            public void onItemSelect(HorizontalPicker picker, int index) {
+                HorizontalPicker.PickerItem selected = picker.getSelectedItem();
+                Toast.makeText(CreateEventActivity.this, selected.hasDrawable() ?
+                        "Item at " + (picker.getSelectedIndex() + 1) + " is selected" :
+                        selected.getText() + " is selected", Toast.LENGTH_SHORT).show();
 
+                chooseGroup("the cool guys");
+                shouldEnableFAB();
             }
+        };
 
+        hPicker.setChangeListener(listener);
+    }
+
+    private void setupWhatTextInput() {
+        EditText editText = (EditText) findViewById(R.id.editText);
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void onPageSelected(int position) {
-                System.out.println("picked: ");
-                System.out.println(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    String userText = v.getText().toString();
+                    Toast.makeText(CreateEventActivity.this, userText, Toast.LENGTH_SHORT).show();
+                    chooseTitle(userText);
+                    shouldEnableFAB();
+                    v.clearFocus();
+                }
+                return false;
             }
         });
     }
+
+    private void setupWhenPicker() {
+        HorizontalPicker hPicker = (HorizontalPicker) findViewById(R.id.whenHPicker);
+
+        hPicker.setItems(EventParametersProvider.getWhenItems());
+
+        HorizontalPicker.OnSelectionChangeListener listener =
+                new HorizontalPicker.OnSelectionChangeListener() {
+            @Override
+            public void onItemSelect(HorizontalPicker picker, int index) {
+                if (index < 0) {
+                    return;
+                }
+//                HorizontalPicker.PickerItem selected = picker.getSelectedItem();
+//                Toast.makeText(CreateEventActivity.this, selected.hasDrawable() ?
+//                        "Chosen time at " + (picker.getSelectedIndex() + 1) :
+//                        selected.getText() + " is selected", Toast.LENGTH_SHORT).show();
+                if (index == 0 || index == 1) { // tonight/tomorrow
+                    Calendar today = Calendar.getInstance();
+                    today.set(Calendar.HOUR_OF_DAY, 20);
+                    today.set(Calendar.MINUTE, 0);
+                    today.set(Calendar.SECOND, 0);
+
+                    if (index == 1) { // tomorrow
+                        today.add(Calendar.DAY_OF_MONTH, 1);
+                    }
+                    chooseTime(today.getTime());
+                } else {
+                    showDateTimePicker();
+                }
+                shouldEnableFAB();
+            }
+        };
+
+        hPicker.setChangeListener(listener);
+    }
+
+    private void showDateTimePicker() {
+        final View dialogView = View.inflate(this, R.layout.date_time_picker, null);
+        final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+
+        dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                DatePicker datePicker = (DatePicker) dialogView.findViewById(R.id.date_picker);
+                TimePicker timePicker = (TimePicker) dialogView.findViewById(R.id.time_picker);
+
+                Calendar calendar = new GregorianCalendar(datePicker.getYear(),
+                        datePicker.getMonth(),
+                        datePicker.getDayOfMonth(),
+                        timePicker.getHour(),
+                        timePicker.getMinute());
+
+                chooseTime(calendar.getTime());
+
+                changeTitleOfCustomDate(calendar.getTime());
+
+                alertDialog.dismiss();
+            }});
+        alertDialog.setView(dialogView);
+        alertDialog.show();
+    }
+
+    private void changeTitleOfCustomDate(Date chosenDateTime) {
+        HorizontalPicker whenHPicker = (HorizontalPicker) findViewById(R.id.whenHPicker);
+        List<HorizontalPicker.PickerItem> oldItems = whenHPicker.getItems();
+        oldItems.remove(2);
+
+        oldItems.add(new HorizontalPicker.TextItem(chosenDateTime.toString()));
+
+        HorizontalPicker.OnSelectionChangeListener listener = whenHPicker.getChangeListener();
+        whenHPicker.setChangeListener(null); // disable so the onSelect function isn't called
+        whenHPicker.setItems(oldItems, 2);
+        whenHPicker.setChangeListener(listener);
+
+    }
+
+    public void fabClicked(View view){
+        EventModel newEvent = createEvent();
+        // send this to server ?
+        // show user?
+        // return to previous activity (main screen) or launch details page?
+        System.out.println("yayyyy");
+    }
+
+
+
 }

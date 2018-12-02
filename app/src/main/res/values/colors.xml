@@ -8,4 +8,6 @@
     <color name="blue_grey_700">#455A64</color>
     <color name="blue_grey_800">#37474f</color>
     <color name="blue_grey_900">#263238</color>
+    <color name="colorForSelection">#0a1AB4</color>
+    <color name="colorEnabledFAB">#008100</color>
 </resources>
