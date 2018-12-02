@@ -62,6 +62,9 @@ public class SignInActivity extends AppCompatActivity implements
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
+        // Currently signs out automatically until sign out button is implemented
+        signOut();
+
         // Set the dimensions of the sign-in button.
         SignInButton signInButton = findViewById(R.id.signInButton);
         signInButton.setSize(SignInButton.SIZE_WIDE);
