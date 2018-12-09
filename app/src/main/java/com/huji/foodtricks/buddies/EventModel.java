@@ -58,6 +58,10 @@ public class EventModel {
         return time;
     }
 
+    public String getOrganizerID() {
+        return organizerID;
+    }
+
     public void setOrganizerID(String newID) {
         this.organizerID = newID;
     }
