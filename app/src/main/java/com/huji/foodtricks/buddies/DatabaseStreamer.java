@@ -179,6 +179,10 @@ public class DatabaseStreamer {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 EventModel eventModel = dataSnapshot.getValue(EventModel.class);
+                if (eventModel == null) {
+                    completion.onError(DatabaseError.fromStatus("No eventModel for given Id"));
+                    return;
+                }
                 completion.onResponse(eventModel);
             }
 
@@ -196,6 +200,10 @@ public class DatabaseStreamer {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 UserModel userModel = dataSnapshot.getValue(UserModel.class);
+                if (userModel == null) {
+                    completion.onError(DatabaseError.fromStatus("No userModel for given Id"));
+                    return;
+                }
                 completion.onResponse(userModel);
             }
 
