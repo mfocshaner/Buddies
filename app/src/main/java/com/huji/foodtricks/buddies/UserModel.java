@@ -28,7 +28,7 @@ public class UserModel {
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.EventIDs = new ArrayList<>();
+        this.EventIDs = new ArrayList<>(1);
     }
 
     public String getUserFirebaseId() {
@@ -72,6 +72,9 @@ public class UserModel {
     }
 
     public void addEventId(String eventId) {
+        if (EventIDs == null) {
+            EventIDs = new ArrayList<>(1);
+        }
         EventIDs.add(eventId);
     }
 
