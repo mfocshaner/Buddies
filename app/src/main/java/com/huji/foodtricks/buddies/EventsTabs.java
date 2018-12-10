@@ -1,5 +1,8 @@
 package com.huji.foodtricks.buddies;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -48,8 +51,8 @@ public class EventsTabs extends AppCompatActivity implements TabLayout.OnTabSele
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent signedInIntent = new Intent(view.getContext(), CreateEventActivity.class);
+                startActivity(signedInIntent);
             }
         });
 

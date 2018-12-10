@@ -1,11 +1,17 @@
 package com.huji.foodtricks.buddies;
+
 import android.content.Context;
+import android.content.Intent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class EventListAdaptor extends BaseAdapter {
     Context c;
@@ -33,22 +39,27 @@ public class EventListAdaptor extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        if(view==null)
-        {
-//            view= LayoutInflater.from(c).inflate(R.layout.event_cardview,viewGroup,false);
+        if (view == null) {
+            view = LayoutInflater.from(c).inflate(R.layout.event_card, viewGroup, false);
         }
 
-        final EventModel s= (EventModel) this.getItem(i);
+        final EventModel s = (EventModel) this.getItem(i);
 
-//        ImageView img= (ImageView) view.findViewById(R.id.event_image);
-//        TextView nameTxt= (TextView) view.findViewById(R.id.event_title);
 
-        //img.setImageResource(s.getImage());
+        TextView eventName = (TextView) view.findViewById(R.id.nameTxt);
+        TextView eventDate = (TextView) view.findViewById(R.id.date);
+
+        final String name = s.getTitle();
+        String time = s.getTime().toString();
+        eventName.setText(name);
+        eventDate.setText(time);
+
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Toast.makeText(c, s.getTitle(), Toast.LENGTH_SHORT).show();
+            public void onClick(View view) {
+                Intent signedInIntent = new Intent(view.getContext(), ViewSingleEvent.class);
+                c.startActivity(signedInIntent);
             }
         });
 
