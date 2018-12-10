@@ -30,7 +30,7 @@ public class PastEvents extends Fragment {
     private ArrayList<EventModel> getPastEvents() {
         ArrayList<EventModel> future_events = new ArrayList<>();
 
-        EventModel event = new EventModel("past", new Date(2018, 12, 1), "past", new ArrayList<String>());
+        EventModel event = new EventModel("past", new Date(2018, 10, 10, 13, 0), new ArrayList<String>(), "Amit");
 
         future_events.add(event);
         return future_events;
