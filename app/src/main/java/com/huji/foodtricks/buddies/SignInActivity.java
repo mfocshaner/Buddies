@@ -45,6 +45,8 @@ public class SignInActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
+        Intent signedInIntent = new Intent(this, EventsTabs.class);
+        startActivity(signedInIntent);
 
         // Button listeners
         findViewById(R.id.signInButton).setOnClickListener(this);

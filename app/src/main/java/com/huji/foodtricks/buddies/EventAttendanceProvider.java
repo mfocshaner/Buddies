@@ -2,11 +2,14 @@ package com.huji.foodtricks.buddies;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
+
 
 /**
  * Provides attendance tracking for event.
  */
-public class EventAttendanceProvider {
+@SuppressWarnings("serial") //With this annotation we are going to hide compiler warnings
+public class EventAttendanceProvider implements Serializable {
 
     private List<String> invitees; // will maybe change if invitees become "People" objects.
 
