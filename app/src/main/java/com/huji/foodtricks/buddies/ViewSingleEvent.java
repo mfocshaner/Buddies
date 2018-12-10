@@ -1,5 +1,6 @@
 package com.huji.foodtricks.buddies;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.internal.NavigationMenu;
 import android.support.v7.app.AppCompatActivity;
@@ -25,14 +26,16 @@ import io.github.yavski.fabspeeddial.FabSpeedDial;
 public class ViewSingleEvent extends AppCompatActivity {
 
     static EventModel curr_event;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         ArrayList<String> invitees = new ArrayList<>(Arrays.asList("Me"));
-        curr_event = new EventModel("Gek with your mom", new Date(), invitees, "stam");
+        Intent eventCard = getIntent();
+        curr_event = (EventModel) eventCard.getSerializableExtra("event");
 
 
-        super.onCreate(savedInstanceState);
+                super.onCreate(savedInstanceState);
         setContentView(R.layout.view_single_event_activity);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -40,7 +43,7 @@ public class ViewSingleEvent extends AppCompatActivity {
                     .commitNow();
         }
         getSupportActionBar().setTitle(curr_event.getTitle());
-        FabSpeedDial fabSpeedDial = (FabSpeedDial)findViewById(R.id.fabSpeedDial);
+        FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.fabSpeedDial);
         fabSpeedDial.setMenuListener(new FabSpeedDial.MenuListener() {
             @Override
             public boolean onPrepareMenu(NavigationMenu navigationMenu) {
@@ -49,7 +52,7 @@ public class ViewSingleEvent extends AppCompatActivity {
 
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
-                Toast.makeText(ViewSingleEvent.this, "Changed RSVP to " +menuItem.getTitle(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(ViewSingleEvent.this, "Changed RSVP to " + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
                 return true;
             }
 
