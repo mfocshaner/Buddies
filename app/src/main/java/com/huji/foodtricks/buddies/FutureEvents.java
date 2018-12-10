@@ -35,7 +35,7 @@ public class FutureEvents extends Fragment {
     private ArrayList<EventModel> getFutureEvents() {
         ArrayList<EventModel> future_events = new ArrayList<>();
 
-        EventModel event = new EventModel("future", new Date(2018, 12, 1), "future", new ArrayList<String>());
+        EventModel event = new EventModel("future", new Date(2018, 12, 25, 20, 0), new ArrayList<String>(), "Amit");
 
         future_events.add(event);
         return future_events;

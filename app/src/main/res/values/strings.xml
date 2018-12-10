@@ -71,5 +71,8 @@
     <string name="tantative_msg">Tantative</string>
     <string name="decline_msg">decline</string>
     <string name="approve_msg">approve</string>
+    <string name="tab_text_1">tab_text_1</string>
+    <string name="tab_text_2">tab_text_2</string>
+    <string name="tab_text_3">tab_text_3</string>
 
 </resources>

@@ -33,7 +33,7 @@ public class PendingEvents extends Fragment {
     private ArrayList<EventModel> getPendingEvents() {
         ArrayList<EventModel> future_events = new ArrayList<>();
 
-        EventModel event = new EventModel("pending", new Date(2018, 12, 1), "pending", new ArrayList<String>());
+        EventModel event = new EventModel("pending", new Date(2018, 12, 12, 12, 30), new ArrayList<String>(), "Amit");
 
         future_events.add(event);
         return future_events;
