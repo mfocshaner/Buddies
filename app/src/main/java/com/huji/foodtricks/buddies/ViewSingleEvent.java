@@ -29,7 +29,7 @@ public class ViewSingleEvent extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         ArrayList<String> invitees = new ArrayList<>(Arrays.asList("Me"));
-        curr_event = new EventModel("Gek with your mom", new Date(), "gekking", invitees);
+        curr_event = new EventModel("Gek with your mom", new Date(), invitees, "stam");
 
 
         super.onCreate(savedInstanceState);
@@ -87,7 +87,7 @@ public class ViewSingleEvent extends AppCompatActivity {
         // create the popup window
         PopupWindow pw = new PopupWindow(popupView);
         TextView tv = pw.getContentView().findViewById(R.id.approvers_list);
-        tv.setText(String.valueOf(curr_event.getNonResponsiveCount()));
+        tv.setText(String.valueOf(curr_event.nonResponsiveCount()));
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
         boolean focusable = true; // lets taps outside the popup also dismiss it

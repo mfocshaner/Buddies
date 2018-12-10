@@ -14,6 +14,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.goodiebag.horizontalpicker.HorizontalPicker;
+import com.google.firebase.database.DatabaseError;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -88,7 +89,7 @@ public class CreateEventActivity extends AppCompatActivity {
      * @return EventModel with all chosen parameters
      */
     private EventModel createEvent() {
-        EventModel newEvent = new EventModel(_eventTitle, _time, _eventTitle, _invitees);
+        EventModel newEvent = new EventModel(_eventTitle, _time, _invitees, "me!");
         return newEvent;
     }
     
@@ -208,10 +209,22 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     public void fabClicked(View view){
-        EventModel newEvent = createEvent();
-        // send this to server ?
-        // show user?
-        // return to previous activity (main screen) or launch details page?
+        final EventModel newEvent = createEvent();
+        DatabaseStreamer dbs = new DatabaseStreamer();
+        String key = dbs.writeNewEventModel(newEvent);
+        dbs.addEventIdToUserIdList(newEvent.getInviteesIDs(), key, new AddEventToUsersCompletion() {
+            @Override
+            public void onResponse() {
+                // send users a notification that they've been added to event?
+                // who knows, right?
+            }
+
+            @Override
+            public void onError(DatabaseError error) {
+                // error?
+            }
+        });
+
         System.out.println("yayyyy");
     }
 

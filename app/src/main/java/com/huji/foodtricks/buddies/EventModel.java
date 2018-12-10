@@ -1,5 +1,6 @@
 package com.huji.foodtricks.buddies;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -13,24 +14,24 @@ public class EventModel {
     private state eventStatus;
     private String title;
     private Date time;
+    private String organizerID;
 
-    private String eventType; // not well defined
-    private List<String> invitees; // will maybe change if invitees become "People" objects,
-    /// or if we create a "PeopleGroup" object.
+    private List<String> inviteesIDs;
 
-    /////// Note: we probably want to have a notification sent to all invitees when any detail of
-    // the event changes; this may be needed here, or in a higher "event controller".
-    // should be discussed.
+    private EventAttendanceProvider attendanceProvider;
 
-    public EventAttendanceProvider attendanceProvider;
+    public EventModel(){
+        attendanceProvider = new EventAttendanceProvider(new ArrayList<String>());
+    }
 
-    public EventModel(String title, Date time, String eventType, List<String> invitees) {
+    public EventModel(String title, Date time, List<String> inviteesIDs, String organizerID) {
         this.title = title;
         this.time = time;
-        this.eventType = eventType;
         eventStatus = state.PENDING;
+        this.inviteesIDs = inviteesIDs;
+        this.organizerID = organizerID;
 
-        attendanceProvider = new EventAttendanceProvider(invitees);
+        attendanceProvider = new EventAttendanceProvider(inviteesIDs);
     }
 
     public void setTime(Date newTime) {
@@ -57,29 +58,35 @@ public class EventModel {
         return time;
     }
 
-    public String getEventType() {
-        return eventType;
+    public String getOrganizerID() {
+        return organizerID;
     }
 
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
+    public void setOrganizerID(String newID) {
+        this.organizerID = newID;
     }
 
-    public int getAttendingCount(){
+    public List<String> getInviteesIDs() {
+        return new ArrayList<>(inviteesIDs);
+    }
+    public int attendingCount(){
         return attendanceProvider.getAttendingCount();
     }
 
-    public int getNotAttendingCount(){
+    public int notAttendingCount(){
         return attendanceProvider.getNotAttendingCount();
     }
-    public int getTentativesCount(){
+    public int tentativesCount(){
         return attendanceProvider.getTentativesCount();
     }
 
-    public int getNonResponsiveCount(){
+    public int nonResponsiveCount(){
         return attendanceProvider.getNonResponsiveCount();
     }
 
+    public boolean isUserOrganizer(String userID) {
+        return this.organizerID.equals(userID);
+    }
 
 
 }
