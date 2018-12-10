@@ -59,6 +59,7 @@ public class EventListAdaptor extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 Intent signedInIntent = new Intent(view.getContext(), ViewSingleEvent.class);
+                signedInIntent.putExtra("event",s);
                 c.startActivity(signedInIntent);
             }
         });

@@ -3,13 +3,16 @@ package com.huji.foodtricks.buddies;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.io.Serializable;
+
 
 /**
  * Model of an event, holding its details.
  */
-public class EventModel {
+@SuppressWarnings("serial") //With this annotation we are going to hide compiler warnings
+public class EventModel implements Serializable {
 
-    enum state { PAST, UPCOMING, PENDING }
+    enum state {PAST, UPCOMING, PENDING}
 
     private state eventStatus;
     private String title;
@@ -20,7 +23,7 @@ public class EventModel {
 
     private EventAttendanceProvider attendanceProvider;
 
-    public EventModel(){
+    public EventModel() {
         attendanceProvider = new EventAttendanceProvider(new ArrayList<String>());
     }
 
@@ -69,18 +72,20 @@ public class EventModel {
     public List<String> getInviteesIDs() {
         return new ArrayList<>(inviteesIDs);
     }
-    public int attendingCount(){
+
+    public int attendingCount() {
         return attendanceProvider.getAttendingCount();
     }
 
-    public int notAttendingCount(){
+    public int notAttendingCount() {
         return attendanceProvider.getNotAttendingCount();
     }
-    public int tentativesCount(){
+
+    public int tentativesCount() {
         return attendanceProvider.getTentativesCount();
     }
 
-    public int nonResponsiveCount(){
+    public int nonResponsiveCount() {
         return attendanceProvider.getNonResponsiveCount();
     }
 
