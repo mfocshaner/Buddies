@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.goodiebag.horizontalpicker.HorizontalPicker;
 import com.google.firebase.database.DatabaseError;
+import com.huji.foodtricks.buddies.Models.EventModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,8 +38,8 @@ public class CreateEventActivity extends AppCompatActivity {
 
     /// parameters to be passed to new event
     private Date _time;
-    private String _eventTitle; // not well defined
-    private List<String> _invitees; // will maybe change if invitees become "People" objects,
+    private String _eventTitle;
+    private List<String> _invitees;
 
     public void chooseGroup(String groupName) {
         // set invitees to be the group
@@ -143,10 +144,6 @@ public class CreateEventActivity extends AppCompatActivity {
                 if (index < 0) {
                     return;
                 }
-//                HorizontalPicker.PickerItem selected = picker.getSelectedItem();
-//                Toast.makeText(CreateEventActivity.this, selected.hasDrawable() ?
-//                        "Chosen time at " + (picker.getSelectedIndex() + 1) :
-//                        selected.getText() + " is selected", Toast.LENGTH_SHORT).show();
                 if (index == 0 || index == 1) { // tonight/tomorrow
                     Calendar today = Calendar.getInstance();
                     today.set(Calendar.HOUR_OF_DAY, 20);
@@ -208,7 +205,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
     }
 
-    public void fabClicked(View view){
+    public void updateDatabaseWithNewEvent(View view){
         final EventModel newEvent = createEvent();
         DatabaseStreamer dbs = new DatabaseStreamer();
         String key = dbs.writeNewEventModel(newEvent);
@@ -224,10 +221,10 @@ public class CreateEventActivity extends AppCompatActivity {
                 // error?
             }
         });
-
-        System.out.println("yayyyy");
     }
 
-
+    // here will come: Move to ViewSingleEventActivity with the newEvent.
+    // note: after moving to new activity, if user clicks 'back', does he return to this activity
+    // or to the EventsTabsActivity?
 
 }

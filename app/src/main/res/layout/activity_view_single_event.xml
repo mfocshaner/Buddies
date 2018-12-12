@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    tools:context=".ViewSingleEvent" >
+    tools:context=".ViewSingleEventActivity" >
 
     <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -86,13 +86,13 @@
             </Button>
 
             <Button
-                android:id="@+id/who_is_tantative"
+                android:id="@+id/who_is_tentative"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_span="1"
                 android:backgroundTint="@android:color/holo_orange_light"
                 android:onClick="onButtonShowPopupWindowClick"
-                android:text="tantative?"
+                android:text="tentative?"
                 android:textSize="10dp">
 
             </Button>

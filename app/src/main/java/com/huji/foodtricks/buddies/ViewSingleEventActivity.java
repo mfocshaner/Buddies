@@ -1,9 +1,8 @@
 package com.huji.foodtricks.buddies;
 
-import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.internal.NavigationMenu;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -52,7 +51,7 @@ public class ViewSingleEvent extends AppCompatActivity {
 
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
-                Toast.makeText(ViewSingleEvent.this, "Changed RSVP to " +menuItem.getTitle(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(ViewSingleEventActivity.this, "Changed RSVP to " + menuItem.getTitle(),Toast.LENGTH_SHORT).show();
                 return true;
             }
 
@@ -68,7 +67,6 @@ public class ViewSingleEvent extends AppCompatActivity {
         updateAllFields(curr_event);
     }
 
-    @SuppressLint("RestrictedApi")
     private void updateAllFields(EventModel curr_event) {
         TextView who_tv = (TextView) findViewById(R.id.who_text);
         who_tv.setText(curr_event.getTitle());

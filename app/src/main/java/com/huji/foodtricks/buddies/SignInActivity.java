@@ -1,18 +1,14 @@
 package com.huji.foodtricks.buddies;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -45,7 +41,7 @@ public class SignInActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
-        Intent signedInIntent = new Intent(this, EventsTabs.class);
+        Intent signedInIntent = new Intent(this, EventsTabsActivity.class);
         startActivity(signedInIntent);
 
         // Button listeners
@@ -166,7 +162,7 @@ public class SignInActivity extends AppCompatActivity implements
     private void updateUI(FirebaseUser user) {
         hideProgressDialog();
         if (user != null) {
-            Intent signedInIntent = new Intent(this, CreateEventActivity.class);
+            Intent signedInIntent = new Intent(this, EventsTabsActivity.class);
             startActivity(signedInIntent);
         }
     }

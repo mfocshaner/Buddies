@@ -1,4 +1,4 @@
-package com.huji.foodtricks.buddies;
+package com.huji.foodtricks.buddies.Models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
