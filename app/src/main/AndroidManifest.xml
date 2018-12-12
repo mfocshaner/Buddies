@@ -25,8 +25,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".EventsTabs" android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
-        <activity android:name=".ViewSingleEvent">
+        <activity android:name=".EventsTabsActivity" android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
+        <activity android:name=".ViewSingleEventActivity">
         </activity>
         <activity android:name=".CreateEventActivity">
         </activity>

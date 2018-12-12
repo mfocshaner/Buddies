@@ -9,10 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.huji.foodtricks.buddies.Models.EventModel;
+
 import java.util.ArrayList;
 import java.util.Date;
 
-public class PendingEvents extends Fragment {
+public class FutureEventsTabFragment extends Fragment {
 
     View view;
 
@@ -20,27 +22,30 @@ public class PendingEvents extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.pending_events, container, false);
+        View rootView = inflater.inflate(R.layout.future_events, container, false);
 
-        ListView lv = (ListView) rootView.findViewById(R.id.list_view_pending);
-        EventListAdaptor adapter = new EventListAdaptor(this.getActivity(), getPendingEvents());
+        ListView lv = (ListView) rootView.findViewById(R.id.list_view_future);
+        EventListAdaptor adapter = new EventListAdaptor(this.getActivity(), getFutureEvents());
         lv.setAdapter(adapter);
 
         return rootView;
     }
 
-
-    private ArrayList<EventModel> getPendingEvents() {
+    private ArrayList<EventModel> getFutureEvents() {
         ArrayList<EventModel> future_events = new ArrayList<>();
 
-        EventModel event = new EventModel("pending", new Date(2018, 12, 12, 12, 30), new ArrayList<String>(), "Amit");
+        EventModel event1 = new EventModel("brunch at Zunni's", new Date(2018, 11, 25, 10, 0), new ArrayList<String>(), "Amit");
 
-        future_events.add(event);
+        future_events.add(event1);
+
+        EventModel event2 = new EventModel("kissing Data", new Date(2019, 1, 1, 0, 0), new ArrayList<String>(), "Amit");
+
+        future_events.add(event2);
         return future_events;
     }
 
     @Override
     public String toString() {
-        return "Pending";
+        return "Future";
     }
 }

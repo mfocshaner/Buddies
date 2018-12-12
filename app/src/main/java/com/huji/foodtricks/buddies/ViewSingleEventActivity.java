@@ -15,15 +15,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.MapView;
+import com.huji.foodtricks.buddies.Models.EventModel;
 import com.huji.foodtricks.buddies.ui.viewsingleevent.ViewSingleEventFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 
-public class ViewSingleEvent extends AppCompatActivity {
+public class ViewSingleEventActivity extends AppCompatActivity {
 
     static EventModel curr_event;
 
@@ -36,7 +36,7 @@ public class ViewSingleEvent extends AppCompatActivity {
 
 
                 super.onCreate(savedInstanceState);
-        setContentView(R.layout.view_single_event_activity);
+        setContentView(R.layout.activity_view_single_event);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, ViewSingleEventFragment.newInstance())
@@ -52,7 +52,7 @@ public class ViewSingleEvent extends AppCompatActivity {
 
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
-                Toast.makeText(ViewSingleEvent.this, "Changed RSVP to " + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ViewSingleEventActivity.this, "Changed RSVP to " + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
                 return true;
             }
 

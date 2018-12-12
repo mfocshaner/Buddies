@@ -9,10 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.huji.foodtricks.buddies.Models.EventModel;
+
 import java.util.ArrayList;
 import java.util.Date;
 
-public class PastEvents extends Fragment {
+public class PastEventsTabFragment extends Fragment {
 
     View view;
 
