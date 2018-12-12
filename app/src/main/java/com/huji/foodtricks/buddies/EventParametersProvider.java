@@ -3,7 +3,6 @@ package com.huji.foodtricks.buddies;
 import com.goodiebag.horizontalpicker.HorizontalPicker;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Provides parameters for creating new event.

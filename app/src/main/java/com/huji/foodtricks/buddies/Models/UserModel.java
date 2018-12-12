@@ -1,4 +1,4 @@
-package com.huji.foodtricks.buddies;
+package com.huji.foodtricks.buddies.Models;
 
 import java.util.ArrayList;
 import java.util.List;

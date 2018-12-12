@@ -6,7 +6,7 @@
         android:id = "@+id/action_tantative"
         android:icon="@drawable/question_mark_icon"
         android:iconTint="@color/blue_grey_800"
-        android:title="@string/tantative_msg"
+        android:title="@string/tentative_msg"
         />
     <item
         android:id = "@+id/action_decline"

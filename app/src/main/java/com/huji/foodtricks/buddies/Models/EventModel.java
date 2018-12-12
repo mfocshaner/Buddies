@@ -1,4 +1,6 @@
-package com.huji.foodtricks.buddies;
+package com.huji.foodtricks.buddies.Models;
+
+import com.huji.foodtricks.buddies.EventAttendanceProvider;
 
 import java.util.ArrayList;
 import java.util.Date;

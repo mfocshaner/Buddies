@@ -8,6 +8,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.huji.foodtricks.buddies.Models.EventModel;
+import com.huji.foodtricks.buddies.Models.UserModel;
 
 import java.util.Date;
 import java.util.ArrayList;
@@ -98,7 +100,7 @@ public class DatabaseStreamer {
     }
 
 
-    void fetchUserModelForFirebaseId(String userFirebaseId, final UserFetchingCompletion completion) {
+    public void fetchUserModelForFirebaseId(String userFirebaseId, final UserFetchingCompletion completion) {
         mDatabase.child("users").orderByChild("userFirebaseId").equalTo(userFirebaseId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -119,7 +121,7 @@ public class DatabaseStreamer {
     /// completion for each user. i.e., when user is update - send him a notification.
     /// alternatively, we may want to add listeners to user updates to send this notification.
     /// need to discuss this!
-    void addEventIdToUserIdList(final List<String> userIdList, String eventId,
+    public void addEventIdToUserIdList(final List<String> userIdList, String eventId,
                                 final AddEventToUsersCompletion completion){
         final AtomicInteger usersUpdatedCount = new AtomicInteger(0);
         final int usersCount = userIdList.size();
@@ -142,7 +144,7 @@ public class DatabaseStreamer {
         }
     }
 
-    void addEventIdToUserById(final String userModelId, final String eventId,
+    public void addEventIdToUserById(final String userModelId, final String eventId,
                               final UserUpdateCompletion completion){
         fetchUserModelById(userModelId,
                 new UserFetchingCompletion() {
@@ -172,7 +174,7 @@ public class DatabaseStreamer {
 
     // todo: If stuff works, should add function here to remove an event from the user.
 
-    void fetchEventModelById(String eventId, final EventFetchingCompletion completion) {
+    public void fetchEventModelById(String eventId, final EventFetchingCompletion completion) {
         DatabaseReference ref = mDatabase.child("events").child(eventId);
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -193,7 +195,7 @@ public class DatabaseStreamer {
             });
     }
 
-    void fetchUserModelById(String userModelId, final UserFetchingCompletion completion) {
+    public void fetchUserModelById(String userModelId, final UserFetchingCompletion completion) {
         DatabaseReference ref = mDatabase.child("users").child(userModelId);
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {

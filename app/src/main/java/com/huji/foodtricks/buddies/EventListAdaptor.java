@@ -6,12 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.huji.foodtricks.buddies.Models.EventModel;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class EventListAdaptor extends BaseAdapter {
     Context c;
@@ -58,7 +57,7 @@ public class EventListAdaptor extends BaseAdapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent signedInIntent = new Intent(view.getContext(), ViewSingleEvent.class);
+                Intent signedInIntent = new Intent(view.getContext(), ViewSingleEventActivity.class);
                 signedInIntent.putExtra("event",s);
                 c.startActivity(signedInIntent);
             }
