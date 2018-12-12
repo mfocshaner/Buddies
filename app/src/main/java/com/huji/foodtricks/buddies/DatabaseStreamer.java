@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 interface EventFetchingCompletion {
@@ -73,7 +74,7 @@ public class DatabaseStreamer {
         return newEventRef.getKey();
     }
 
-    public String writeNewUsermodel(UserModel userModel) {
+    public String writeNewUserModel(UserModel userModel) {
         DatabaseReference newUserModelRef = mDatabase.child("users").push();
         newUserModelRef.setValue(userModel);
         return newUserModelRef.getKey();
