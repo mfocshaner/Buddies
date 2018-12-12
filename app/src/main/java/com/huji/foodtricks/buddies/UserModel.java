@@ -1,12 +1,13 @@
 package com.huji.foodtricks.buddies;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Model of a user, holding its details.
  */
-public class UserModel {
+public class UserModel implements Serializable {
 
     private String userFirebaseId; /// IMPORTANT NOTE: not the ID of the model, but the
     // the id of the registers user. Any better name would be welcome!

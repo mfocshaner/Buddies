@@ -1,5 +1,6 @@
 package com.huji.foodtricks.buddies;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.List;
 /**
  * Model of an event, holding its details.
  */
-public class EventModel {
+public class EventModel implements Serializable {
 
     enum state {PAST, UPCOMING, PENDING, DISCARDED;}
 
