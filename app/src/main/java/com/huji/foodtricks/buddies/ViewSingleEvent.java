@@ -1,7 +1,9 @@
 package com.huji.foodtricks.buddies;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.design.internal.NavigationMenu;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -25,12 +27,13 @@ import io.github.yavski.fabspeeddial.FabSpeedDial;
 public class ViewSingleEvent extends AppCompatActivity {
 
     static EventModel curr_event;
+    static UserModel curr_user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         ArrayList<String> invitees = new ArrayList<>(Arrays.asList("Me"));
         curr_event = new EventModel("Gek with your mom", new Date(), invitees, "stam");
-
+        curr_user = new UserModel("YOYO", "idodush", "ido", "savion");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_single_event_activity);
@@ -65,6 +68,7 @@ public class ViewSingleEvent extends AppCompatActivity {
         updateAllFields(curr_event);
     }
 
+    @SuppressLint("RestrictedApi")
     private void updateAllFields(EventModel curr_event) {
         TextView who_tv = (TextView) findViewById(R.id.who_text);
         who_tv.setText(curr_event.getTitle());
@@ -74,7 +78,13 @@ public class ViewSingleEvent extends AppCompatActivity {
         TextView what_tv = (TextView) findViewById(R.id.what_text);
         what_tv.setText(curr_event.getTitle());
         MapView location_mv = (MapView) findViewById(R.id.mapView);
-
+        if (curr_event.getOrganizerID() != curr_user.getUserFirebaseId())
+        {
+            FloatingActionButton send_fab = (FloatingActionButton) findViewById(R.id.send_event_fab);
+            send_fab.setVisibility(View.GONE);
+            FloatingActionButton discard_fab = (FloatingActionButton) findViewById(R.id.discard_event_fab);
+            discard_fab.setVisibility(View.GONE);
+        }
 
     }
 
@@ -105,5 +115,14 @@ public class ViewSingleEvent extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    public void send_event_click(View view) {
+        curr_event.setEventStatus(EventModel.state.UPCOMING);
+    }
+
+    public void discard_event_click(View view) {
+        curr_event.setEventStatus(EventModel.state.DISCARDED);
+
     }
 }
