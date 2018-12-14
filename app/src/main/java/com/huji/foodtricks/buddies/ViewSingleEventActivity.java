@@ -15,34 +15,35 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.MapView;
+import com.huji.foodtricks.buddies.Models.EventModel;
 import com.huji.foodtricks.buddies.ui.viewsingleevent.ViewSingleEventFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 
-public class ViewSingleEvent extends AppCompatActivity {
+public class ViewSingleEventActivity extends AppCompatActivity {
 
     static EventModel curr_event;
-    static UserModel curr_user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         ArrayList<String> invitees = new ArrayList<>(Arrays.asList("Me"));
-        curr_event = new EventModel("Gek with your mom", new Date(), invitees, "stam");
-        curr_user = new UserModel("YOYO", "idodush", "ido", "savion");
+        Intent eventCard = getIntent();
+        curr_event = (EventModel) eventCard.getSerializableExtra("event");
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.view_single_event_activity);
+
+                super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_view_single_event);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, ViewSingleEventFragment.newInstance())
                     .commitNow();
         }
         getSupportActionBar().setTitle(curr_event.getTitle());
-        FabSpeedDial fabSpeedDial = (FabSpeedDial)findViewById(R.id.fabSpeedDial);
+        FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.fabSpeedDial);
         fabSpeedDial.setMenuListener(new FabSpeedDial.MenuListener() {
             @Override
             public boolean onPrepareMenu(NavigationMenu navigationMenu) {
@@ -51,7 +52,7 @@ public class ViewSingleEvent extends AppCompatActivity {
 
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
-                Toast.makeText(ViewSingleEventActivity.this, "Changed RSVP to " + menuItem.getTitle(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(ViewSingleEventActivity.this, "Changed RSVP to " + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
                 return true;
             }
 
@@ -76,13 +77,7 @@ public class ViewSingleEvent extends AppCompatActivity {
         TextView what_tv = (TextView) findViewById(R.id.what_text);
         what_tv.setText(curr_event.getTitle());
         MapView location_mv = (MapView) findViewById(R.id.mapView);
-        if (curr_event.getOrganizerID() != curr_user.getUserFirebaseId())
-        {
-            FloatingActionButton send_fab = (FloatingActionButton) findViewById(R.id.send_event_fab);
-            send_fab.setVisibility(View.GONE);
-            FloatingActionButton discard_fab = (FloatingActionButton) findViewById(R.id.discard_event_fab);
-            discard_fab.setVisibility(View.GONE);
-        }
+
 
     }
 
@@ -113,14 +108,5 @@ public class ViewSingleEvent extends AppCompatActivity {
                 return true;
             }
         });
-    }
-
-    public void send_event_click(View view) {
-        curr_event.setEventStatus(EventModel.state.UPCOMING);
-    }
-
-    public void discard_event_click(View view) {
-        curr_event.setEventStatus(EventModel.state.DISCARDED);
-
     }
 }
