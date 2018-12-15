@@ -117,4 +117,7 @@ public class ViewSingleEventActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void discard_event_click(View view) {
+    }
 }

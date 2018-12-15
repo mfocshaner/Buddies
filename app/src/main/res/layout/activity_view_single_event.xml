@@ -138,7 +138,8 @@
         android:layout_gravity="start|bottom"
         android:onClick="send_event_click"
         android:src="@drawable/approve_event_icon"
-        android:layout_margin="16dp" />
+        android:layout_margin="16dp"
+        tools:ignore="OnClick" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/discard_event_fab"
