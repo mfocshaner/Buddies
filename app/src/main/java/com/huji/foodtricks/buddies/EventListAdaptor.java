@@ -13,11 +13,11 @@ import com.huji.foodtricks.buddies.Models.EventModel;
 import java.util.ArrayList;
 
 public class EventListAdaptor extends BaseAdapter {
-    Context c;
+    Context context;
     ArrayList<EventModel> events;
 
-    public EventListAdaptor(Context c, ArrayList<EventModel> spacecrafts) {
-        this.c = c;
+    public EventListAdaptor(Context context, ArrayList<EventModel> spacecrafts) {
+        this.context = context;
         this.events = spacecrafts;
     }
 
@@ -39,17 +39,17 @@ public class EventListAdaptor extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         if (view == null) {
-            view = LayoutInflater.from(c).inflate(R.layout.event_card, viewGroup, false);
+            view = LayoutInflater.from(context).inflate(R.layout.event_card, viewGroup, false);
         }
 
-        final EventModel s = (EventModel) this.getItem(i);
+        final EventModel event = (EventModel) this.getItem(i);
 
 
         TextView eventName = (TextView) view.findViewById(R.id.nameTxt);
         TextView eventDate = (TextView) view.findViewById(R.id.date);
 
-        final String name = s.getTitle();
-        String time = s.getTime().toString();
+        final String name = event.getTitle();
+        String time = event.getTime().toString();
         eventName.setText(name);
         eventDate.setText(time);
 
@@ -57,9 +57,9 @@ public class EventListAdaptor extends BaseAdapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent signedInIntent = new Intent(view.getContext(), ViewSingleEventActivity.class);
-                signedInIntent.putExtra("event",s);
-                c.startActivity(signedInIntent);
+                Intent viewEventIntent = new Intent(view.getContext(), ViewSingleEventActivity.class);
+                viewEventIntent.putExtra("event", event);
+                context.startActivity(viewEventIntent);
             }
         });
 
