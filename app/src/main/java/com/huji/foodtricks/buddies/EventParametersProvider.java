@@ -1,22 +1,25 @@
 package com.huji.foodtricks.buddies;
 
 import com.goodiebag.horizontalpicker.HorizontalPicker;
+import com.huji.foodtricks.buddies.Models.GroupModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Provides parameters for creating new event.
  */
 public class EventParametersProvider {
 
-    static ArrayList<HorizontalPicker.PickerItem> getWhoItems(){
-        ArrayList<HorizontalPicker.PickerItem> imageItems = new ArrayList<>();
-        imageItems.add(new HorizontalPicker.DrawableItem(R.drawable.chili));
-        imageItems.add(new HorizontalPicker.DrawableItem(R.drawable.chicken));
-        imageItems.add(new HorizontalPicker.DrawableItem(R.drawable.carrot));
-        imageItems.add(new HorizontalPicker.TextItem("Custom"));
+    static ArrayList<HorizontalPicker.PickerItem> getWhoItems(List<String> groupNames){
+        ArrayList<HorizontalPicker.PickerItem> items = new ArrayList<>();
+        for (String groupName :
+                groupNames) {
+            items.add(new HorizontalPicker.TextItem(groupName));
+        }
+        items.add(new HorizontalPicker.TextItem("Custom"));
 
-        return imageItems;
+        return items;
     }
 
 
