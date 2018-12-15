@@ -16,33 +16,27 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.MapView;
 import com.huji.foodtricks.buddies.Models.EventModel;
-import com.huji.foodtricks.buddies.ui.viewsingleevent.ViewSingleEventFragment;
+import com.huji.foodtricks.buddies.Models.UserModel;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Objects;
 
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 
 public class ViewSingleEventActivity extends AppCompatActivity {
 
     static EventModel curr_event;
+    static UserModel curr_user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        ArrayList<String> invitees = new ArrayList<>(Arrays.asList("Me"));
         Intent eventCard = getIntent();
         curr_event = (EventModel) eventCard.getSerializableExtra("event");
 
-
-                super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_single_event);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, ViewSingleEventFragment.newInstance())
-                    .commitNow();
-        }
-        getSupportActionBar().setTitle(curr_event.getTitle());
+
+        Objects.requireNonNull(getSupportActionBar()).setTitle(curr_event.getTitle());
         FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.fabSpeedDial);
         fabSpeedDial.setMenuListener(new FabSpeedDial.MenuListener() {
             @Override
@@ -52,7 +46,15 @@ public class ViewSingleEventActivity extends AppCompatActivity {
 
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
-                Toast.makeText(ViewSingleEventActivity.this, "Changed RSVP to " + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ViewSingleEventActivity.this, getString(R.string.change_rsvp_msg_prefix) + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+                EventAttendanceProvider attendanceProvider = curr_event.getAttendanceProvider();
+                if (menuItem.getTitle() == getString(R.string.approve_msg)) {
+                    attendanceProvider.markAttending(curr_user.getUserFirebaseId());
+                } else if (menuItem.getTitle() == getString(R.string.tentative_msg)) {
+                    attendanceProvider.markTentative(curr_user.getUserFirebaseId());
+                } else if (menuItem.getTitle() == getString(R.string.decline_msg)) {
+                    attendanceProvider.markNotAttending(curr_user.getUserFirebaseId());
+                }
                 return true;
             }
 
@@ -61,10 +63,6 @@ public class ViewSingleEventActivity extends AppCompatActivity {
 
             }
         });
-
-        Bundle prev_screen_bundle = getIntent().getExtras();
-//        EventModel curr_event = (EventModel)prev_screen_bundle.getSerializable("value");
-//        EventModel curr_event = curr_event;
         updateAllFields(curr_event);
     }
 
@@ -72,7 +70,6 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         TextView who_tv = (TextView) findViewById(R.id.who_text);
         who_tv.setText(curr_event.getTitle());
         TextView when_tv = (TextView) findViewById(R.id.when_textView);
-//        when_tv.setText(String.valueOf(curr_event.getTime()));
         when_tv.setText("Tomorrow night");
         TextView what_tv = (TextView) findViewById(R.id.what_text);
         what_tv.setText(curr_event.getTitle());
@@ -83,14 +80,25 @@ public class ViewSingleEventActivity extends AppCompatActivity {
 
     public void onButtonShowPopupWindowClick(View view) {
 
-        // inflate the layout of the popup window
         LayoutInflater inflater = (LayoutInflater)
                 getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.approvers_popup, null);
+        View popupView = inflater.inflate(R.layout.popup_user_list_, null);
         // create the popup window
         PopupWindow pw = new PopupWindow(popupView);
-        TextView tv = pw.getContentView().findViewById(R.id.approvers_list);
-        tv.setText(String.valueOf(curr_event.nonResponsiveCount()));
+        TextView tv = pw.getContentView().findViewById(R.id.users_list);
+        switch (view.getId())
+        {
+            case R.id.who_is_coming_btn:
+                tv.setText(String.join("\n",curr_event.getAttendanceProvider().getAttending()));
+                break;
+            case R.id.who_is_tentative:
+                tv.setText(String.join("\n",curr_event.getAttendanceProvider().getTentatives()));
+                break;
+            case R.id.who_isnt_coming_btn:
+                tv.setText(String.join("\n",curr_event.getAttendanceProvider().getNotAttending()));
+                break;
+
+        }
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
         boolean focusable = true; // lets taps outside the popup also dismiss it
@@ -108,5 +116,8 @@ public class ViewSingleEventActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    public void discard_event_click(View view) {
     }
 }

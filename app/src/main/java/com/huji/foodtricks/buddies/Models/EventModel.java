@@ -95,5 +95,9 @@ public class EventModel implements Serializable {
         return this.organizerID.equals(userID);
     }
 
+    public EventAttendanceProvider getAttendanceProvider() {
+        return attendanceProvider;
+    }
+
 
 }
