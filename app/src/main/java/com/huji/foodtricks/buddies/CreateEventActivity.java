@@ -1,5 +1,6 @@
 package com.huji.foodtricks.buddies;
 
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,8 @@ import android.widget.Toast;
 import com.goodiebag.horizontalpicker.HorizontalPicker;
 import com.google.firebase.database.DatabaseError;
 import com.huji.foodtricks.buddies.Models.EventModel;
+import com.huji.foodtricks.buddies.Models.GroupModel;
+import com.huji.foodtricks.buddies.Models.UserModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,30 +28,52 @@ import java.util.List;
 
 public class CreateEventActivity extends AppCompatActivity {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_event);
-        disableFAB();
-
-        setupWhoHorizontalPicker();
-        setupWhatTextInput();
-        setupWhenPicker();
-    }
+    private UserModel _currentUserModel;
+    private DatabaseStreamer _dbs = new DatabaseStreamer();
 
     /// parameters to be passed to new event
     private Date _time;
     private String _eventTitle;
     private List<String> _invitees;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_create_event);
+        disableFAB();
+
+        Intent newEventIntent = getIntent();
+        _currentUserModel = (UserModel) newEventIntent
+                .getSerializableExtra(EventsTabsActivity.EXTRA_CURRENT_USER);
+
+        setupDummyGroups(); // not needed after we get actual user data
+
+        setupWhoHorizontalPicker();
+        setupWhatTextInput();
+        setupWhenPicker();
+    }
+
+    private void setupDummyGroups() {
+        List<String> firstGroup = new ArrayList<>();
+        firstGroup.add("Amit the cool");
+        firstGroup.add("Ido the sweet");
+        firstGroup.add("Matan the busy");
+        firstGroup.add("Michael the humble");
+        _currentUserModel.addGroup("cool guys", firstGroup);
+        List<String> secondGroup = new ArrayList<>();
+        secondGroup.add("Amit Silber");
+        secondGroup.add("Ido Savion");
+        secondGroup.add("Matan Harsat");
+        secondGroup.add("Michael the Awesome");
+        _currentUserModel.addGroup("friendly guys", secondGroup);
+//        _dbs.writeNewUserModel(_currentUserModel);
+    }
+
+
+
     public void chooseGroup(String groupName) {
-        // set invitees to be the group
-        ArrayList<String> group = new ArrayList<>();
-        group.add("amit");
-        group.add("michael");
-        group.add("buddy");
-        group.add("ido");
-        _invitees = group;
+        GroupModel chosenGroup = _currentUserModel.getGroupForName(groupName);
+        _invitees = new ArrayList<>(chosenGroup.getUserIds());
     }
 
     private void disableFAB(){
@@ -82,32 +107,33 @@ public class CreateEventActivity extends AppCompatActivity {
         _eventTitle = eventTitle;
     }
 
-
-    /**
-     * Called when "create event" button is clicked
-     * should be enabled only if all parameters are chosen (disable button before that)
-     *
-     * @return EventModel with all chosen parameters
-     */
-    private EventModel createEvent() {
-        EventModel newEvent = new EventModel(_eventTitle, _time, _invitees, "me!");
+    private EventModel createEventFromChoices() {
+        EventModel newEvent = new EventModel(_eventTitle, _time, _invitees,
+                _currentUserModel.getUserAuthenticationId());
         return newEvent;
     }
     
     private void setupWhoHorizontalPicker() {
         final HorizontalPicker hPicker = (HorizontalPicker) findViewById(R.id.whoHPicker);
 
-        hPicker.setItems(EventParametersProvider.getWhoItems());
+        List<String> userGroupNames = new ArrayList<>(_currentUserModel.groupMap().keySet());
+        hPicker.setItems(EventParametersProvider.getWhoItems(userGroupNames));
 
         HorizontalPicker.OnSelectionChangeListener listener = new HorizontalPicker.OnSelectionChangeListener() {
             @Override
             public void onItemSelect(HorizontalPicker picker, int index) {
                 HorizontalPicker.PickerItem selected = picker.getSelectedItem();
+                String selectedGroupName = selected.getText();
+                String toastMessage = selectedGroupName + " is selected";
                 Toast.makeText(CreateEventActivity.this, selected.hasDrawable() ?
                         "Item at " + (picker.getSelectedIndex() + 1) + " is selected" :
-                        selected.getText() + " is selected", Toast.LENGTH_SHORT).show();
+                        toastMessage, Toast.LENGTH_SHORT).show();
 
-                chooseGroup("the cool guys");
+                if (selectedGroupName.equals("Custom")) {
+                    // custom group - create new group somehow!
+                } else {
+                    chooseGroup(selectedGroupName);
+                }
                 shouldEnableFAB();
             }
         };
@@ -205,11 +231,16 @@ public class CreateEventActivity extends AppCompatActivity {
 
     }
 
-    public void updateDatabaseWithNewEvent(View view){
-        final EventModel newEvent = createEvent();
-        DatabaseStreamer dbs = new DatabaseStreamer();
-        String key = dbs.writeNewEventModel(newEvent);
-        dbs.addEventIdToUserIdList(newEvent.getInviteesIDs(), key, new AddEventToUsersCompletion() {
+    public void createNewEventFabClicked(View view) {
+        final EventModel createdEvent = createEventFromChoices();
+        updateDatabaseWithNewEvent(createdEvent);
+        moveToSingleEventView(view, createdEvent);
+    }
+
+    public void updateDatabaseWithNewEvent(final EventModel createdEvent) {
+        String key = _dbs.writeNewEventModel(createdEvent);
+        _dbs.addEventIdToUserIdList(createdEvent.getInviteesIDs(), key,
+                new AddEventToUsersCompletion() {
             @Override
             public void onResponse() {
                 // send users a notification that they've been added to event?
@@ -223,8 +254,12 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
-    // here will come: Move to ViewSingleEventActivity with the newEvent.
+    public void moveToSingleEventView(View view, EventModel createdEvent) {
+        Intent viewEventIntent = new Intent(view.getContext(), ViewSingleEventActivity.class);
+        viewEventIntent.putExtra("event", createdEvent);
+        startActivity(viewEventIntent);
+    }
+
     // note: after moving to new activity, if user clicks 'back', does he return to this activity
     // or to the EventsTabsActivity?
-
 }
