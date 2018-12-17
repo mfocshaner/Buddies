@@ -11,11 +11,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.huji.foodtricks.buddies.Models.EventModel;
 import com.huji.foodtricks.buddies.Models.UserModel;
 
-import java.util.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 interface EventFetchingCompletion {
@@ -47,6 +46,16 @@ interface UserUpdateCompletion {
     public void onResponse();
     public void onError(DatabaseError error);
 }
+
+/**
+ * Interface for passing methods to execute after updating a UserModel.
+ */
+interface EventUpdateCompletion {
+    public void onResponse();
+    public void onError(DatabaseError error);
+}
+
+
 
 /**
  * Interface for passing methods to execute after updating all UserModels who are invitees of Event.
@@ -123,7 +132,7 @@ public class DatabaseStreamer {
     /// alternatively, we may want to add listeners to user updates to send this notification.
     /// need to discuss this!
     public void addEventIdToUserIdList(final List<String> userIdList, String eventId,
-                                final AddEventToUsersCompletion completion){
+                                       final AddEventToUsersCompletion completion){
         final AtomicInteger usersUpdatedCount = new AtomicInteger(0);
         final int usersCount = userIdList.size();
         for (String userId :
@@ -146,7 +155,7 @@ public class DatabaseStreamer {
     }
 
     public void addEventIdToUserById(final String userModelId, final String eventId,
-                              final UserUpdateCompletion completion){
+                                     final UserUpdateCompletion completion){
         fetchUserModelById(userModelId,
                 new UserFetchingCompletion() {
                     @Override
@@ -161,17 +170,33 @@ public class DatabaseStreamer {
                 });
     }
 
-    void addEventIdToUser(UserModel userModel, String userModelId, String eventId,
-                          final UserUpdateCompletion completion){
+    public void addEventIdToUser(UserModel userModel, String userModelId, String eventId,
+                                 final UserUpdateCompletion completion){
         userModel.addEventId(eventId);
         mDatabase.child("users").child(userModelId).setValue(userModel)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                completion.onResponse();
-            }
-        });
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        completion.onResponse();
+                    }
+                });
     }
+
+
+
+    public void modifyEvent(EventModel eventModel, String eventModelId,
+                            final EventUpdateCompletion completion){
+        mDatabase.child("events").child(eventModelId).setValue(eventModel)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        completion.onResponse();
+                    }
+
+
+                });
+    }
+
 
     // todo: If stuff works, should add function here to remove an event from the user.
 
@@ -193,7 +218,7 @@ public class DatabaseStreamer {
             public void onCancelled(DatabaseError error) {
                 completion.onError(error);
             }
-            });
+        });
     }
 
     public void fetchUserModelById(String userModelId, final UserFetchingCompletion completion) {
@@ -234,7 +259,7 @@ public class DatabaseStreamer {
     }
 
     private void fetchEventModelsForEventIdsList(final List<String> eventModelIds,
-                                         final EventListFetchingCompletion completion) {
+                                                 final EventListFetchingCompletion completion) {
         final int numberOfEvents = eventModelIds.size();
         final ArrayList<EventModel> modelsList = new ArrayList<>(numberOfEvents);
         final AtomicInteger finishedCount = new AtomicInteger(0);

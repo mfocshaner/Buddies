@@ -15,6 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.MapView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
 import com.huji.foodtricks.buddies.Models.EventModel;
 import com.huji.foodtricks.buddies.Models.UserModel;
 
@@ -22,17 +24,19 @@ import java.util.Objects;
 
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 
+
 public class ViewSingleEventActivity extends AppCompatActivity {
 
     static EventModel curr_event;
     static UserModel curr_user;
-
+    private DatabaseStreamer _dbs = new DatabaseStreamer();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         Intent eventCard = getIntent();
         curr_event = (EventModel) eventCard.getSerializableExtra("event");
-
+//        final String curr_event_id = eventCard.getStringExtra("event_id");
+        final String curr_event_id = "ABCDEFG";
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_single_event);
 
@@ -48,13 +52,35 @@ public class ViewSingleEventActivity extends AppCompatActivity {
             public boolean onMenuItemSelected(MenuItem menuItem) {
                 Toast.makeText(ViewSingleEventActivity.this, getString(R.string.change_rsvp_msg_prefix) + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
                 EventAttendanceProvider attendanceProvider = curr_event.getAttendanceProvider();
-                if (menuItem.getTitle() == getString(R.string.approve_msg)) {
-                    attendanceProvider.markAttending(curr_user.getUserAuthenticationId());
-                } else if (menuItem.getTitle() == getString(R.string.tentative_msg)) {
-                    attendanceProvider.markTentative(curr_user.getUserAuthenticationId());
-                } else if (menuItem.getTitle() == getString(R.string.decline_msg)) {
-                    attendanceProvider.markNotAttending(curr_user.getUserAuthenticationId());
+                String uId;
+                try {
+                    uId = FirebaseAuth.getInstance().getCurrentUser().getUid(); // Should use getIntent().getSerializable
                 }
+                catch (NullPointerException e )
+                {
+                    uId = "Null";
+                }
+
+                if (menuItem.getTitle() == getString(R.string.approve_msg)) {
+                    attendanceProvider.markAttending(uId);
+                } else if (menuItem.getTitle() == getString(R.string.tentative_msg)) {
+                    attendanceProvider.markTentative(uId);
+                } else if (menuItem.getTitle() == getString(R.string.decline_msg)) {
+                    attendanceProvider.markNotAttending(uId);
+                }
+                _dbs.modifyEvent(curr_event, curr_event_id, new EventUpdateCompletion() {
+                    @Override
+                    public void onResponse() {
+                        Toast update_event_updated = Toast.makeText(getApplicationContext(),
+                                "Update completed",Toast.LENGTH_SHORT);
+                        update_event_updated.show();
+                    }
+
+                    @Override
+                    public void onError(DatabaseError error) {
+
+                    }
+                });
                 return true;
             }
 
