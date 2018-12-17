@@ -41,8 +41,6 @@ public class SignInActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
-        Intent signedInIntent = new Intent(this, EventsTabsActivity.class);
-        startActivity(signedInIntent);
 
         // Button listeners
         findViewById(R.id.signInButton).setOnClickListener(this);
@@ -92,7 +90,8 @@ public class SignInActivity extends AppCompatActivity implements
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
-
+                Intent signedInIntent = new Intent(this, EventsTabsActivity.class);
+                startActivity(signedInIntent);
                 updateUI(null);
             }
         }
