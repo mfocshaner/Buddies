@@ -30,6 +30,7 @@ public class ViewSingleEventActivity extends AppCompatActivity {
     static EventModel curr_event;
     static UserModel curr_user;
     private DatabaseStreamer _dbs = new DatabaseStreamer();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -55,9 +56,7 @@ public class ViewSingleEventActivity extends AppCompatActivity {
                 String uId;
                 try {
                     uId = FirebaseAuth.getInstance().getCurrentUser().getUid(); // Should use getIntent().getSerializable
-                }
-                catch (NullPointerException e )
-                {
+                } catch (NullPointerException e) {
                     uId = "Null";
                 }
 
@@ -72,7 +71,7 @@ public class ViewSingleEventActivity extends AppCompatActivity {
                     @Override
                     public void onResponse() {
                         Toast update_event_updated = Toast.makeText(getApplicationContext(),
-                                "Update completed",Toast.LENGTH_SHORT);
+                                "Update completed", Toast.LENGTH_SHORT);
                         update_event_updated.show();
                     }
 
@@ -112,16 +111,15 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         // create the popup window
         PopupWindow pw = new PopupWindow(popupView);
         TextView tv = pw.getContentView().findViewById(R.id.users_list);
-        switch (view.getId())
-        {
+        switch (view.getId()) {
             case R.id.who_is_coming_btn:
-                tv.setText(String.join("\n",curr_event.getAttendanceProvider().getAttending()));
+                tv.setText(String.join("\n", curr_event.getAttendanceProvider().getAttending()));
                 break;
             case R.id.who_is_tentative:
-                tv.setText(String.join("\n",curr_event.getAttendanceProvider().getTentatives()));
+                tv.setText(String.join("\n", curr_event.getAttendanceProvider().getTentatives()));
                 break;
             case R.id.who_isnt_coming_btn:
-                tv.setText(String.join("\n",curr_event.getAttendanceProvider().getNotAttending()));
+                tv.setText(String.join("\n", curr_event.getAttendanceProvider().getNotAttending()));
                 break;
 
         }
