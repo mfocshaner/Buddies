@@ -2,11 +2,9 @@ package com.huji.foodtricks.buddies;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.internal.NavigationMenu;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -22,14 +20,13 @@ import com.huji.foodtricks.buddies.Models.UserModel;
 
 import java.util.Objects;
 
-import io.github.yavski.fabspeeddial.FabSpeedDial;
-
 
 public class ViewSingleEventActivity extends AppCompatActivity {
 
     static EventModel curr_event;
     static UserModel curr_user;
     private DatabaseStreamer _dbs = new DatabaseStreamer();
+    String curr_event_id = "ABCDEFG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,57 +34,11 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         Intent eventCard = getIntent();
         curr_event = (EventModel) eventCard.getSerializableExtra("event");
 //        final String curr_event_id = eventCard.getStringExtra("event_id");
-        final String curr_event_id = "ABCDEFG";
+        curr_event_id = "ABCDEFG";
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_single_event);
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(curr_event.getTitle());
-        FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.fabSpeedDial);
-        fabSpeedDial.setMenuListener(new FabSpeedDial.MenuListener() {
-            @Override
-            public boolean onPrepareMenu(NavigationMenu navigationMenu) {
-                return true;
-            }
-
-            @Override
-            public boolean onMenuItemSelected(MenuItem menuItem) {
-                Toast.makeText(ViewSingleEventActivity.this, getString(R.string.change_rsvp_msg_prefix) + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
-                EventAttendanceProvider attendanceProvider = curr_event.getAttendanceProvider();
-                String uId;
-                try {
-                    uId = FirebaseAuth.getInstance().getCurrentUser().getUid(); // Should use getIntent().getSerializable
-                } catch (NullPointerException e) {
-                    uId = "Null";
-                }
-
-                if (menuItem.getTitle() == getString(R.string.approve_msg)) {
-                    attendanceProvider.markAttending(uId);
-                } else if (menuItem.getTitle() == getString(R.string.tentative_msg)) {
-                    attendanceProvider.markTentative(uId);
-                } else if (menuItem.getTitle() == getString(R.string.decline_msg)) {
-                    attendanceProvider.markNotAttending(uId);
-                }
-                _dbs.modifyEvent(curr_event, curr_event_id, new EventUpdateCompletion() {
-                    @Override
-                    public void onResponse() {
-                        Toast update_event_updated = Toast.makeText(getApplicationContext(),
-                                "Update completed", Toast.LENGTH_SHORT);
-                        update_event_updated.show();
-                    }
-
-                    @Override
-                    public void onError(DatabaseError error) {
-
-                    }
-                });
-                return true;
-            }
-
-            @Override
-            public void onMenuClosed() {
-
-            }
-        });
         updateAllFields(curr_event);
     }
 
@@ -143,5 +94,37 @@ public class ViewSingleEventActivity extends AppCompatActivity {
     }
 
     public void discard_event_click(View view) {
+    }
+
+    public void onRSVPChangeClick(View view) {
+//        Toast.makeText(ViewSingleEventActivity.this, getString(R.string.change_rsvp_msg_prefix) + .getTitle(), Toast.LENGTH_SHORT).show();
+        EventAttendanceProvider attendanceProvider = curr_event.getAttendanceProvider();
+        String uId;
+        try {
+            uId = FirebaseAuth.getInstance().getCurrentUser().getUid(); // Should use getIntent().getSerializable
+        } catch (NullPointerException e) {
+            uId = "Null";
+        }
+
+        if (view.getId() == R.id.approve_btn) {
+            attendanceProvider.markAttending(uId);
+        } else if (view.getId() == R.id.tentative_btn) {
+            attendanceProvider.markTentative(uId);
+        } else if (view.getId() == R.id.decline_btn) {
+            attendanceProvider.markNotAttending(uId);
+        }
+        _dbs.modifyEvent(curr_event, curr_event_id, new EventUpdateCompletion() {
+            @Override
+            public void onResponse() {
+                Toast update_event_updated = Toast.makeText(getApplicationContext(),
+                        "Update completed", Toast.LENGTH_SHORT);
+                update_event_updated.show();
+            }
+
+            @Override
+            public void onError(DatabaseError error) {
+
+            }
+        });
     }
 }
