@@ -4,8 +4,10 @@ import com.huji.foodtricks.buddies.EventAttendanceProvider;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.io.Serializable;
+import java.util.Set;
 
 
 /**
@@ -19,9 +21,9 @@ public class EventModel implements Serializable {
     private state eventStatus;
     private String title;
     private Date time;
-    private String organizerID;
+    private String organizerAuthenticationID;
 
-    private List<String> inviteesIDs;
+    private Set<String> inviteesIDs;
 
     private EventAttendanceProvider attendanceProvider;
 
@@ -29,12 +31,12 @@ public class EventModel implements Serializable {
         attendanceProvider = new EventAttendanceProvider(new ArrayList<String>());
     }
 
-    public EventModel(String title, Date time, List<String> inviteesIDs, String organizerID) {
+    public EventModel(String title, Date time, List<String> inviteesIDs, String organizerAuthenticationID) {
         this.title = title;
         this.time = time;
         eventStatus = state.PENDING;
-        this.inviteesIDs = inviteesIDs;
-        this.organizerID = organizerID;
+        this.inviteesIDs = new HashSet<>(inviteesIDs);
+        this.organizerAuthenticationID = organizerAuthenticationID;
 
         attendanceProvider = new EventAttendanceProvider(inviteesIDs);
     }
@@ -63,12 +65,12 @@ public class EventModel implements Serializable {
         return time;
     }
 
-    public String getOrganizerID() {
-        return organizerID;
+    public String getOrganizerAuthenticationID() {
+        return organizerAuthenticationID;
     }
 
-    public void setOrganizerID(String newID) {
-        this.organizerID = newID;
+    public void setOrganizerAuthenticationID(String newID) {
+        this.organizerAuthenticationID = newID;
     }
 
     public List<String> getInviteesIDs() {
@@ -92,7 +94,7 @@ public class EventModel implements Serializable {
     }
 
     public boolean isUserOrganizer(String userID) {
-        return this.organizerID.equals(userID);
+        return this.organizerAuthenticationID.equals(userID);
     }
 
     public EventAttendanceProvider getAttendanceProvider() {

@@ -49,11 +49,11 @@ public class ViewSingleEventActivity extends AppCompatActivity {
                 Toast.makeText(ViewSingleEventActivity.this, getString(R.string.change_rsvp_msg_prefix) + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
                 EventAttendanceProvider attendanceProvider = curr_event.getAttendanceProvider();
                 if (menuItem.getTitle() == getString(R.string.approve_msg)) {
-                    attendanceProvider.markAttending(curr_user.getUserFirebaseId());
+                    attendanceProvider.markAttending(curr_user.getUserAuthenticationId());
                 } else if (menuItem.getTitle() == getString(R.string.tentative_msg)) {
-                    attendanceProvider.markTentative(curr_user.getUserFirebaseId());
+                    attendanceProvider.markTentative(curr_user.getUserAuthenticationId());
                 } else if (menuItem.getTitle() == getString(R.string.decline_msg)) {
-                    attendanceProvider.markNotAttending(curr_user.getUserFirebaseId());
+                    attendanceProvider.markNotAttending(curr_user.getUserAuthenticationId());
                 }
                 return true;
             }

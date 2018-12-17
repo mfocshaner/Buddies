@@ -11,9 +11,12 @@ import android.view.View;
 
 import android.support.v7.widget.Toolbar;
 
+import com.huji.foodtricks.buddies.Models.UserModel;
+
 
 public class EventsTabsActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener,ViewPager.OnPageChangeListener {
 
+    public static final String EXTRA_CURRENT_USER = "currentUser";
     ViewPager vp;
     TabLayout tabLayout;
 
@@ -24,14 +27,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent signedInIntent = new Intent(view.getContext(), CreateEventActivity.class);
-                startActivity(signedInIntent);
-            }
-        });
+        setupNewEventFAB();
 
         vp = (ViewPager) findViewById(R.id.mViewpager_ID);
         this.addPages();
@@ -41,6 +37,21 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         tabLayout.setupWithViewPager(vp);
         tabLayout.setOnTabSelectedListener(this);
 
+    }
+
+    private void setupNewEventFAB() {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent newEventIntent = new Intent(view.getContext(), CreateEventActivity.class);
+                UserModel currentUserModel = new UserModel("dummy ID", "Dummy username", "Ford", "Fulkerson");
+
+                newEventIntent.putExtra(EXTRA_CURRENT_USER, currentUserModel);
+
+                startActivity(newEventIntent);
+            }
+        });
     }
 
     private void addPages()
