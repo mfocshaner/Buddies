@@ -29,6 +29,7 @@ import java.util.List;
 public class CreateEventActivity extends AppCompatActivity {
 
     private UserModel _currentUserModel;
+    private String _currentUserId;
     private DatabaseStreamer _dbs = new DatabaseStreamer();
 
     /// parameters to be passed to new event
@@ -45,6 +46,8 @@ public class CreateEventActivity extends AppCompatActivity {
         Intent newEventIntent = getIntent();
         _currentUserModel = (UserModel) newEventIntent
                 .getSerializableExtra(EventsTabsActivity.EXTRA_CURRENT_USER);
+
+        _currentUserId = (String) newEventIntent.getStringExtra("userId");
 
         setupDummyGroups(); // not needed after we get actual user data
 
@@ -109,7 +112,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private EventModel createEventFromChoices() {
         EventModel newEvent = new EventModel(_eventTitle, _time, _invitees,
-                _currentUserModel.getUserAuthenticationId());
+                _currentUserId);
         return newEvent;
     }
     
@@ -242,14 +245,9 @@ public class CreateEventActivity extends AppCompatActivity {
         _dbs.addEventIdToUserIdList(createdEvent.getInviteesIDs(), key,
                 new AddEventToUsersCompletion() {
             @Override
-            public void onResponse() {
+            public void onSuccess() {
                 // send users a notification that they've been added to event?
                 // who knows, right?
-            }
-
-            @Override
-            public void onError(DatabaseError error) {
-                // error?
             }
         });
     }
