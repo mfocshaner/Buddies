@@ -136,7 +136,7 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         Set<Integer> allRSVPButtons = new HashSet<>(Arrays.asList(R.id.approve_btn, R.id.tentative_btn, R.id.decline_btn));
         allRSVPButtons.remove(view.getId()); // remove the selected button from the list of buttons to disable
         Button selectedButtonView = (Button) view; // just for readability
-        selectedButtonView.setBackgroundColor(Color.MAGENTA);
+        selectedButtonView.setBackgroundColor(R.color.selectedRSVPButton);
         selectedButtonView.setTextColor(Color.WHITE);
 //        setContentView(R.layout.activity_view_single_event);
 
