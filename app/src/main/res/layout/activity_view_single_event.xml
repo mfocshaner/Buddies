@@ -139,7 +139,8 @@
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:text="@string/rsvp_bottom_bar_question" />
+                android:text="@string/rsvp_bottom_bar_question"
+                android:clickable="false"/>
 
             <Button
                 android:id="@+id/approve_btn"
