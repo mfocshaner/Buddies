@@ -34,21 +34,10 @@ public class UserModel implements Serializable {
         // Default constructor required for calls to DataSnapshot.getValue(UserModel.class)
     }
 
-    public UserModel(String userAuthenticationId, String userName, String firstName, String lastName) {
-        this.userAuthenticationId = userAuthenticationId;
+    public UserModel(String userName) {
         this.userName = userName;
-        this.firstName = firstName;
-        this.lastName = lastName;
         this.EventIDs = new HashSet<>();
         this.groups = new HashMap<>();
-    }
-
-    public String getUserAuthenticationId() {
-        return userAuthenticationId;
-    }
-
-    public void setUserAuthenticationId(String userAuthenticationId) {
-        this.userAuthenticationId = userAuthenticationId;
     }
 
     public String getUserName() {
@@ -57,22 +46,6 @@ public class UserModel implements Serializable {
 
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public List<String> getEventIDs() {

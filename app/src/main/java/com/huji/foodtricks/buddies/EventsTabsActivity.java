@@ -45,7 +45,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
             @Override
             public void onClick(View view) {
                 Intent newEventIntent = new Intent(view.getContext(), CreateEventActivity.class);
-                UserModel currentUserModel = new UserModel("dummy ID", "Dummy username", "Ford", "Fulkerson");
+                UserModel currentUserModel = new UserModel("Dummy username");
 
                 newEventIntent.putExtra(EXTRA_CURRENT_USER, currentUserModel);
 
