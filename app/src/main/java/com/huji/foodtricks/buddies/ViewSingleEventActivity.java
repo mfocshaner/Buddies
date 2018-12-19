@@ -136,10 +136,12 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         allRSVPButtons.remove(view.getId()); // remove the selected button from the list of buttons to disable
         Button selectedButtonView = (Button) view; // just for readability
         selectedButtonView.setBackgroundColor(Color.MAGENTA);
+        selectedButtonView.setTextColor(Color.WHITE);
 //        setContentView(R.layout.activity_view_single_event);
         for(int buttonId:allRSVPButtons) {
            Button currButton =  findViewById(buttonId);
            currButton.setBackgroundColor(Color.WHITE);
+           currButton.setTextColor(Color.BLACK);
         }
     }
 }
