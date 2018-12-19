@@ -184,7 +184,7 @@ public class DatabaseStreamer {
 
 
 
-    public void modifyEvent(EventModel eventModel, String eventModelId,
+    public void modifyEvent(EventModel modifiedEventModel, String eventModelId,
                             final EventUpdateCompletion completion){
         mDatabase.child("events").child(eventModelId).setValue(eventModel)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
