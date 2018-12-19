@@ -1,12 +1,14 @@
 package com.huji.foodtricks.buddies;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -18,7 +20,10 @@ import com.google.firebase.database.DatabaseError;
 import com.huji.foodtricks.buddies.Models.EventModel;
 import com.huji.foodtricks.buddies.Models.UserModel;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 
 public class ViewSingleEventActivity extends AppCompatActivity {
@@ -108,6 +113,7 @@ public class ViewSingleEventActivity extends AppCompatActivity {
 
         if (view.getId() == R.id.approve_btn) {
             attendanceProvider.markAttending(uId);
+
         } else if (view.getId() == R.id.tentative_btn) {
             attendanceProvider.markTentative(uId);
         } else if (view.getId() == R.id.decline_btn) {
@@ -126,5 +132,14 @@ public class ViewSingleEventActivity extends AppCompatActivity {
 
             }
         });
+        Set<Integer> allRSVPButtons = new HashSet<>(Arrays.asList(R.id.approve_btn, R.id.tentative_btn, R.id.decline_btn));
+        allRSVPButtons.remove(view.getId()); // remove the selected button from the list of buttons to disable
+        Button selectedButtonView = (Button) view; // just for readability
+        selectedButtonView.setBackgroundColor(Color.MAGENTA);
+//        setContentView(R.layout.activity_view_single_event);
+        for(int buttonId:allRSVPButtons) {
+           Button currButton =  findViewById(buttonId);
+           currButton.setBackgroundColor(Color.WHITE);
+        }
     }
 }
