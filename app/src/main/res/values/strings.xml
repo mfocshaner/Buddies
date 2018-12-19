@@ -75,5 +75,6 @@
     <string name="tab_text_2">tab_text_2</string>
     <string name="tab_text_3">tab_text_3</string>
     <string name="change_rsvp_msg_prefix">Changed RSVP to</string>
+    <string name="rsvp_bottom_bar_question">Going?</string>
 
 </resources>

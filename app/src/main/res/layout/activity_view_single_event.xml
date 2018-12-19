@@ -111,47 +111,64 @@
 
     </TableLayout>
 
-    <io.github.yavski.fabspeeddial.FabSpeedDial
-        android:id="@+id/fabSpeedDial"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        app:fabDrawable="@drawable/change_rsvp"
-        app:fabGravity="bottom_end"
-        app:fabMenu="@menu/speedial_menu"
-        app:miniFabBackgroundTint="@android:color/white"
-        app:miniFabDrawableTint="?attr/colorPrimaryDark"
-        app:miniFabTitleTextColor="?attr/colorPrimaryDark"
-        tools:fabBackgroundTint="@color/blue_grey_800" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:orientation="horizontal">
 
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/send_event_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start|bottom"
-        android:onClick="send_event_click"
-        android:src="@drawable/approve_event_icon"
-        android:layout_margin="16dp"
-        tools:ignore="OnClick" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/discard_event_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start|bottom"
-            android:layout_margin="16dp"
-            android:layout_marginEnd="15dp"
-            android:onClick="discard_event_click"
-            android:src="@drawable/discard_event_icon"
-            app:layout_constraintEnd_toStartOf="@id/send_event_fab" />
     </LinearLayout>
+
+    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <!-- Other components and views -->
+
+        <android.support.design.bottomappbar.BottomAppBar
+            android:id="@+id/bottomAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:backgroundTint="@android:color/white"
+            app:buttonGravity="bottom|top"
+            app:fabAlignmentMode="end">
+
+            <TextView
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="@string/rsvp_bottom_bar_question"
+                android:clickable="false"/>
+
+            <Button
+                android:id="@+id/approve_btn"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:onClick="onRSVPChangeClick"
+                android:text="Yes" />
+
+            <Button
+                android:id="@+id/decline_btn"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:onClick="onRSVPChangeClick"
+                android:text="No" />
+
+            <Button style="@style/Widget.AppCompat.Button.Borderless"
+                android:id="@+id/tentative_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onRSVPChangeClick"
+                android:text="Maybe" />
+
+        </android.support.design.bottomappbar.BottomAppBar>
+
+
+    </android.support.design.widget.CoordinatorLayout>
 
 
 
