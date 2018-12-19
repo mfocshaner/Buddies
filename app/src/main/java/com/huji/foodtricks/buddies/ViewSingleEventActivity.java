@@ -121,22 +121,18 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         }
         _dbs.modifyEvent(curr_event, curr_event_id, new EventUpdateCompletion() {
             @Override
-            public void onResponse() {
+            public void onUpdateSuccess() {
                 Toast update_event_updated = Toast.makeText(getApplicationContext(),
                         "Update completed", Toast.LENGTH_SHORT);
                 update_event_updated.show();
             }
 
-            @Override
-            public void onError(DatabaseError error) {
-
-            }
         });
         //TODO: refactor the following code
         Set<Integer> allRSVPButtons = new HashSet<>(Arrays.asList(R.id.approve_btn, R.id.tentative_btn, R.id.decline_btn));
         allRSVPButtons.remove(view.getId()); // remove the selected button from the list of buttons to disable
         Button selectedButtonView = (Button) view; // just for readability
-        selectedButtonView.setBackgroundColor(R.color.selectedRSVPButton);
+        selectedButtonView.setBackgroundColor(getResources().getColor(R.color.selectedRSVPButton));
         selectedButtonView.setTextColor(Color.WHITE);
 //        setContentView(R.layout.activity_view_single_event);
 
