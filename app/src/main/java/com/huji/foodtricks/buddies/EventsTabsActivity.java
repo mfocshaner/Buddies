@@ -19,6 +19,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     public static final String EXTRA_CURRENT_USER = "currentUser";
     ViewPager vp;
     TabLayout tabLayout;
+    private UserModel currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +27,10 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         setContentView(R.layout.fragment_events_tabs);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Intent signedInIntent = getIntent();
+        currentUser = (UserModel) signedInIntent
+                .getSerializableExtra(EXTRA_CURRENT_USER);
 
         setupNewEventFAB();
 
@@ -36,7 +41,6 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(vp);
         tabLayout.setOnTabSelectedListener(this);
-
     }
 
     private void setupNewEventFAB() {
@@ -45,10 +49,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
             @Override
             public void onClick(View view) {
                 Intent newEventIntent = new Intent(view.getContext(), CreateEventActivity.class);
-                UserModel currentUserModel = new UserModel("Dummy username");
-
-                newEventIntent.putExtra(EXTRA_CURRENT_USER, currentUserModel);
-
+                newEventIntent.putExtra(EXTRA_CURRENT_USER, currentUser);
                 startActivity(newEventIntent);
             }
         });

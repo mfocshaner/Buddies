@@ -35,7 +35,7 @@ public class CreateEventActivity extends AppCompatActivity {
     /// parameters to be passed to new event
     private Date _time;
     private String _eventTitle;
-    private List<String> _invitees;
+    private ArrayList<String> _invitees;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,13 +57,13 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private void setupDummyGroups() {
-        List<String> firstGroup = new ArrayList<>();
+        ArrayList<String> firstGroup = new ArrayList<>();
         firstGroup.add("Amit the cool");
         firstGroup.add("Ido the sweet");
         firstGroup.add("Matan the busy");
         firstGroup.add("Michael the humble");
         _currentUserModel.addGroup("cool guys", firstGroup);
-        List<String> secondGroup = new ArrayList<>();
+        ArrayList<String> secondGroup = new ArrayList<>();
         secondGroup.add("Amit Silber");
         secondGroup.add("Ido Savion");
         secondGroup.add("Matan Harsat");
@@ -119,7 +119,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private void setupWhoHorizontalPicker() {
         final HorizontalPicker hPicker = (HorizontalPicker) findViewById(R.id.whoHPicker);
 
-        List<String> userGroupNames = new ArrayList<>(_currentUserModel.groupMap().keySet());
+        ArrayList<String> userGroupNames = new ArrayList<>(_currentUserModel.getGroups().keySet());
         hPicker.setItems(EventParametersProvider.getWhoItems(userGroupNames));
 
         HorizontalPicker.OnSelectionChangeListener listener = new HorizontalPicker.OnSelectionChangeListener() {
