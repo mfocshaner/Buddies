@@ -15,7 +15,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.goodiebag.horizontalpicker.HorizontalPicker;
-import com.google.firebase.database.DatabaseError;
 import com.huji.foodtricks.buddies.Models.EventModel;
 import com.huji.foodtricks.buddies.Models.GroupModel;
 import com.huji.foodtricks.buddies.Models.UserModel;
@@ -28,14 +27,14 @@ import java.util.List;
 
 public class CreateEventActivity extends AppCompatActivity {
 
-    private UserModel _currentUserModel;
-    private String _currentUserId;
-    private DatabaseStreamer _dbs = new DatabaseStreamer();
+    private UserModel currentUserModel;
+    private String currentUserId;
+    private DatabaseStreamer dbs = new DatabaseStreamer();
 
     /// parameters to be passed to new event
-    private Date _time;
-    private String _eventTitle;
-    private List<String> _invitees;
+    private Date time;
+    private String eventTitle;
+    private ArrayList<String> invitees;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +43,10 @@ public class CreateEventActivity extends AppCompatActivity {
         disableFAB();
 
         Intent newEventIntent = getIntent();
-        _currentUserModel = (UserModel) newEventIntent
+        currentUserModel = (UserModel) newEventIntent
                 .getSerializableExtra(EventsTabsActivity.EXTRA_CURRENT_USER);
 
-        _currentUserId = (String) newEventIntent.getStringExtra("userId");
+        currentUserId = (String) newEventIntent.getStringExtra("userId");
 
         setupDummyGroups(); // not needed after we get actual user data
 
@@ -57,26 +56,26 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private void setupDummyGroups() {
-        List<String> firstGroup = new ArrayList<>();
+        ArrayList<String> firstGroup = new ArrayList<>();
         firstGroup.add("Amit the cool");
         firstGroup.add("Ido the sweet");
         firstGroup.add("Matan the busy");
         firstGroup.add("Michael the humble");
-        _currentUserModel.addGroup("cool guys", firstGroup);
-        List<String> secondGroup = new ArrayList<>();
+        currentUserModel.addGroup("cool guys", firstGroup);
+        ArrayList<String> secondGroup = new ArrayList<>();
         secondGroup.add("Amit Silber");
         secondGroup.add("Ido Savion");
         secondGroup.add("Matan Harsat");
         secondGroup.add("Michael the Awesome");
-        _currentUserModel.addGroup("friendly guys", secondGroup);
-//        _dbs.writeNewUserModel(_currentUserModel);
+        currentUserModel.addGroup("friendly guys", secondGroup);
+//        dbs.writeNewUserModel(currentUserModel);
     }
 
 
 
     public void chooseGroup(String groupName) {
-        GroupModel chosenGroup = _currentUserModel.getGroupForName(groupName);
-        _invitees = new ArrayList<>(chosenGroup.getUserIds());
+        GroupModel chosenGroup = currentUserModel.getGroupForName(groupName);
+        invitees = new ArrayList<>(chosenGroup.getUserIds());
     }
 
     private void disableFAB(){
@@ -96,30 +95,30 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private void shouldEnableFAB(){
-        if ((_time != null) && (_eventTitle != null && !_eventTitle.equals(""))
-                && (_invitees != null)) {
+        if ((time != null) && (eventTitle != null && !eventTitle.equals(""))
+                && (invitees != null)) {
             enableFAB();
         }
     }
 
     public void chooseTime(Date time) {
-        _time = time;
+        this.time = time;
     }
 
     public void chooseTitle(String eventTitle) {
-        _eventTitle = eventTitle;
+        this.eventTitle = eventTitle;
     }
 
     private EventModel createEventFromChoices() {
-        EventModel newEvent = new EventModel(_eventTitle, _time, _invitees,
-                _currentUserId);
+        EventModel newEvent = new EventModel(eventTitle, time, invitees,
+                currentUserId);
         return newEvent;
     }
     
     private void setupWhoHorizontalPicker() {
         final HorizontalPicker hPicker = (HorizontalPicker) findViewById(R.id.whoHPicker);
 
-        List<String> userGroupNames = new ArrayList<>(_currentUserModel.groupMap().keySet());
+        ArrayList<String> userGroupNames = new ArrayList<>(currentUserModel.getGroups().keySet());
         hPicker.setItems(EventParametersProvider.getWhoItems(userGroupNames));
 
         HorizontalPicker.OnSelectionChangeListener listener = new HorizontalPicker.OnSelectionChangeListener() {
@@ -241,8 +240,8 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     public void updateDatabaseWithNewEvent(final EventModel createdEvent) {
-        String key = _dbs.writeNewEventModel(createdEvent);
-        _dbs.addEventIdToUserIdList(createdEvent.getInviteesIDs(), key,
+        String key = dbs.writeNewEventModel(createdEvent);
+        dbs.addEventIdToUserIdList(createdEvent.getInviteesIDs(), key,
                 new AddEventToUsersCompletion() {
             @Override
             public void onSuccess() {

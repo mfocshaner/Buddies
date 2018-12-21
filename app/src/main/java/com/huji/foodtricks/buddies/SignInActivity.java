@@ -23,6 +23,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.huji.foodtricks.buddies.Models.UserModel;
 
 /**
  * Activity to demonstrate basic retrieval of the Google user's ID, email address, and basic
@@ -36,6 +37,10 @@ public class SignInActivity extends AppCompatActivity implements
     private static final int RC_SIGN_IN = 9001;
 
     private GoogleSignInClient mGoogleSignInClient;
+
+    private DatabaseStreamer dbs = new DatabaseStreamer();
+
+    private UserModel user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +77,6 @@ public class SignInActivity extends AppCompatActivity implements
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
-
     }
 
     @Override
@@ -95,11 +99,11 @@ public class SignInActivity extends AppCompatActivity implements
         }
     }
 
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+    private void firebaseAuthWithGoogle(final GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
         showProgressDialog();
 
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        final AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -107,8 +111,8 @@ public class SignInActivity extends AppCompatActivity implements
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
+                            FirebaseUser currentUser = mAuth.getCurrentUser();
+                            onboradUser(currentUser);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -156,10 +160,11 @@ public class SignInActivity extends AppCompatActivity implements
                 });
     }
 
-    private void updateUI(FirebaseUser user) {
+    private void updateUI(FirebaseUser currentUser) {
         hideProgressDialog();
-        if (user != null) {
+        if (currentUser != null) {
             Intent signedInIntent = new Intent(this, EventsTabsActivity.class);
+            signedInIntent.putExtra(EventsTabsActivity.EXTRA_CURRENT_USER, user);
             startActivity(signedInIntent);
         }
     }
@@ -197,6 +202,32 @@ public class SignInActivity extends AppCompatActivity implements
     public void onStop() {
         super.onStop();
         hideProgressDialog();
+    }
+
+    private void onboradUser(final FirebaseUser currentUser)
+    {
+        dbs.fetchUserModelById(currentUser.getUid(), new UserFetchingCompletion() {
+            @Override
+            public void onFetchSuccess(UserModel model) {
+                // Update user's name and photo from google
+                model.setUserName(currentUser.getDisplayName());
+                model.setImageUrl(String.valueOf(currentUser.getPhotoUrl()));
+                dbs.modifyUser(model, currentUser.getUid(), new UserUpdateCompletion() {
+                    @Override
+                    public void onUpdateSuccess() {
+                    }
+                });
+                user = model;
+                updateUI(currentUser);
+            }
+
+            @Override
+            public void onNoUserFound() {
+                user = new UserModel(currentUser.getDisplayName(), String.valueOf(currentUser.getPhotoUrl()));
+                dbs.writeNewUserModel(user, currentUser.getUid());
+                updateUI(currentUser);
+            }
+        });
     }
 
 

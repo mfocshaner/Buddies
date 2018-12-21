@@ -2,7 +2,6 @@ package com.huji.foodtricks.buddies.Models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 
@@ -12,11 +11,15 @@ import java.util.List;
 public class GroupModel implements Serializable {
 
     private String groupName;
-    private HashSet<String> userIds;
+    private ArrayList<String> userIds;
+
+    public GroupModel() {
+        // Default constructor required for calls to DataSnapshot.getValue(GroupModel.class)
+    }
 
     public GroupModel(String groupName, List<String> userIds) {
         this.groupName = groupName;
-        this.userIds = new HashSet<>(userIds);
+        this.userIds = new ArrayList<>(userIds);
     }
 
     public String getGroupName() {
@@ -31,7 +34,7 @@ public class GroupModel implements Serializable {
         return new ArrayList<>(userIds);
     }
 
-    public void setUserIds(HashSet<String> userIds) {
+    public void setUserIds(ArrayList<String> userIds) {
         this.userIds = userIds;
     }
 

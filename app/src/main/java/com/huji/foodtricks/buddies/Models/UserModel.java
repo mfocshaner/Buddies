@@ -3,25 +3,16 @@ package com.huji.foodtricks.buddies.Models;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Model of a user, holding its details.
  */
 public class UserModel implements Serializable {
 
-    private String userAuthenticationId; /// IMPORTANT NOTE: not the ID of the model, but the
-    // the id of the registered user as shown in Firebase->Authentication->Users.
-
     private String userName;
-    private String firstName;
-    private String lastName;
-    private Set<String> EventIDs;
-
-    private Map<String, GroupModel> groups;
+    private String imageUrl;
+    private ArrayList<String> eventIDs;
+    private HashMap<String, GroupModel> groups;
     // todo: i'm not entirely happy with having the name as key (to ensure there're no two groups
     // with the same name, and having the GroupModel hold the name as well, but it seems to be
     // the easier solution (to remove a group by name, add new group etc.)
@@ -34,9 +25,10 @@ public class UserModel implements Serializable {
         // Default constructor required for calls to DataSnapshot.getValue(UserModel.class)
     }
 
-    public UserModel(String userName) {
+    public UserModel(String userName, String imageUrl) {
         this.userName = userName;
-        this.EventIDs = new HashSet<>();
+        this.imageUrl = imageUrl;
+        this.eventIDs = new ArrayList<>();
         this.groups = new HashMap<>();
     }
 
@@ -48,30 +40,42 @@ public class UserModel implements Serializable {
         this.userName = userName;
     }
 
-    public List<String> getEventIDs() {
-        return new ArrayList<>(EventIDs);
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setEventIDs(List<String> eventIDs) {
-        EventIDs = new HashSet<>(eventIDs);
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
-    public void addEventId(String eventId) {
-        if (EventIDs == null) {
-            EventIDs = new HashSet<>();
-        }
-        EventIDs.add(eventId);
+    public ArrayList<String> getEventIDs() {
+        return eventIDs;
     }
 
-    public void removeEventId(String eventId) {
-        EventIDs.remove(eventId);
+    public void setEventIDs(ArrayList<String> eventIDs) {
+        this.eventIDs = eventIDs;
     }
 
-    public Map<String, GroupModel> groupMap() {
+    public HashMap<String, GroupModel> getGroups() {
         return groups;
     }
 
-    public List<GroupModel> getGroups() {
+    public void setGroups(HashMap<String, GroupModel> groups) {
+        this.groups = groups;
+    }
+
+    public void addEventId(String eventId) {
+        if (eventIDs == null) {
+            eventIDs = new ArrayList<>();
+        }
+        eventIDs.add(eventId);
+    }
+
+    public void removeEventId(String eventId) {
+        eventIDs.remove(eventId);
+    }
+
+    public ArrayList<GroupModel> getGroupList() {
         return new ArrayList<>(groups.values());
     }
 
@@ -86,7 +90,7 @@ public class UserModel implements Serializable {
         groups.remove(groupName);
     }
 
-    public void addGroup(String groupName, List<String> groupMembersIds) {
+    public void addGroup(String groupName, ArrayList<String> groupMembersIds) {
         if (groups == null) {
             groups = new HashMap<>();
         }
@@ -102,5 +106,4 @@ public class UserModel implements Serializable {
         }
         return groups.containsKey(groupName);
     }
-
 }

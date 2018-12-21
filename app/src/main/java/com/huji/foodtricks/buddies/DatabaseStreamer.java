@@ -11,11 +11,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.huji.foodtricks.buddies.Models.EventModel;
+import com.huji.foodtricks.buddies.Models.GroupModel;
 import com.huji.foodtricks.buddies.Models.UserModel;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -37,7 +37,7 @@ interface UserFetchingCompletion {
  * Interface for passing methods to execute after fetching a list of EventModels.
  */
 interface EventMapFetchingCompletion {
-    void onFetchSuccess(Map<String, EventModel> modelList);
+    void onFetchSuccess(HashMap<String, EventModel> modelList);
     void onNoEventsFound();
 }
 
@@ -82,9 +82,8 @@ public class DatabaseStreamer {
         return newEventRef.getKey();
     }
 
-    public void writeNewUserModel(UserModel userModel, String userAuthenticationId) {
-        DatabaseReference newUserModelRef = mDatabase.child("users").child(userAuthenticationId);
-        newUserModelRef.setValue(userModel);
+    public void writeNewUserModel(UserModel userModel, String uid) {
+        mDatabase.child("users").child(uid).setValue(userModel);
     }
 
     /// Updating
@@ -102,6 +101,10 @@ public class DatabaseStreamer {
 
     public void modifyUser(UserModel modifiedUserModel, String userModelId,
                            final UserUpdateCompletion completion){
+        if (modifiedUserModel.getEventIDs() == null)
+            modifiedUserModel.setEventIDs(new ArrayList<String>());
+        if (modifiedUserModel.getGroups() == null)
+            modifiedUserModel.setGroups(new HashMap<String, GroupModel>());
         mDatabase.child("users").child(userModelId).setValue(modifiedUserModel)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -166,8 +169,8 @@ public class DatabaseStreamer {
         fetchUserModelById(userId, new UserFetchingCompletion() {
             @Override
             public void onFetchSuccess(UserModel user) {
-                List<String> eventIdsList = user.getEventIDs();
-                fetchEventModelsForEventIdsList(eventIdsList, completion);
+                ArrayList<String> eventIds = user.getEventIDs();
+                fetchEventModelsForEventIdsList(eventIds, completion);
             }
 
             @Override
@@ -179,7 +182,7 @@ public class DatabaseStreamer {
 
     // fetch helper
 
-    private void fetchEventModelsForEventIdsList(final List<String> eventModelIds,
+    private void fetchEventModelsForEventIdsList(final ArrayList<String> eventModelIds,
                                                  final EventMapFetchingCompletion completion) {
         final int numberOfEvents = eventModelIds.size();
         final HashMap<String, EventModel> modelsMap = new HashMap<>(numberOfEvents);
@@ -209,7 +212,7 @@ public class DatabaseStreamer {
 
     // Adding an event to users
 
-    public void addEventIdToUserIdList(final List<String> userIdList, String eventId,
+    public void addEventIdToUserIdList(final ArrayList<String> userIdList, String eventId,
                                        final AddEventToUsersCompletion completion){
         final AtomicInteger usersUpdatedCount = new AtomicInteger(0);
         final int usersCount = userIdList.size();
