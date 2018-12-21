@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.MapView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseError;
 import com.huji.foodtricks.buddies.Models.EventModel;
 import com.huji.foodtricks.buddies.Models.UserModel;
 
@@ -30,7 +29,7 @@ public class ViewSingleEventActivity extends AppCompatActivity {
 
     static EventModel curr_event;
     static UserModel curr_user;
-    private DatabaseStreamer _dbs = new DatabaseStreamer();
+    private DatabaseStreamer dbs = new DatabaseStreamer();
     String curr_event_id = "ABCDEFG";
 
     @Override
@@ -119,7 +118,7 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         } else if (view.getId() == R.id.decline_btn) {
             attendanceProvider.markNotAttending(uId);
         }
-        _dbs.modifyEvent(curr_event, curr_event_id, new EventUpdateCompletion() {
+        dbs.modifyEvent(curr_event, curr_event_id, new EventUpdateCompletion() {
             @Override
             public void onUpdateSuccess() {
                 Toast update_event_updated = Toast.makeText(getApplicationContext(),
