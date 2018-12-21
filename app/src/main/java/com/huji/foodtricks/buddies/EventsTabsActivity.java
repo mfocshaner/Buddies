@@ -50,13 +50,13 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //this.currentUser = (UserModel) getIntent().getSerializableExtra("user");
-        String id = "-LTJGR0VymdJqMePNrcB";
+        String id = "-LTwz0sgaPrQvzT_PF0z";
         final FirebaseDatabase DB = FirebaseDatabase.getInstance();
         DBref = DB.getReference("users" + "/" + id);
         DBref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                final String eventId = dataSnapshot.child("firstName").getValue().toString();
+                final String eventId = dataSnapshot.child("eventIDs").child("0").getValue().toString();
                 streamer.fetchEventModelById(eventId, new EventFetchingCompletion() {
                     @Override
                     public void onResponse(EventModel model) {
