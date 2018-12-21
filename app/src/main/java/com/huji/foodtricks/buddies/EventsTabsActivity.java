@@ -1,9 +1,12 @@
 package com.huji.foodtricks.buddies;
 
 import android.content.Intent;
+
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 
@@ -13,7 +16,10 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+
+
 
 import android.view.View;
 import android.view.Menu;
@@ -28,7 +34,7 @@ import com.huji.foodtricks.buddies.Models.EventModel;
 import com.huji.foodtricks.buddies.Models.UserModel;
 
 
-public class EventsTabsActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener,ViewPager.OnPageChangeListener {
+public class EventsTabsActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener, ViewPager.OnPageChangeListener {
 
     public static final String EXTRA_CURRENT_USER = "currentUser";
     public static final String EXTRA_CURRENT_UID = "currentUserID";
@@ -43,20 +49,18 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.currentUser = (UserModel)getIntent().getSerializableExtra("user");
-        final FirebaseDatabase DB = FirebaseDatabase.getInstance(currentUser.getUserAuthenticationId()+"\\"+"eventIDs");
+        //this.currentUser = (UserModel) getIntent().getSerializableExtra("user");
+        String id = "-LTJGR0VymdJqMePNrcB";
+        final FirebaseDatabase DB = FirebaseDatabase.getInstance();
+        DBref = DB.getReference("users" + "/" + id);
         DBref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String eventId = dataSnapshot.getValue(String.class);
+                final String eventId = dataSnapshot.child("firstName").getValue().toString();
                 streamer.fetchEventModelById(eventId, new EventFetchingCompletion() {
                     @Override
                     public void onResponse(EventModel model) {
-                        switch (model.getEventStatus()) {
-                            case PAST:
-                                vp.getAdapter().instantiateItem(vp,1);
-
-                        }
+                        sendNewEventSwitch(eventId, model);
                     }
 
                     @Override
@@ -111,6 +115,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         });
     }
 
+
     @Override
     public void onBackPressed() {
         Intent exit = new Intent(Intent.ACTION_MAIN);
@@ -119,9 +124,24 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         startActivity(exit);
     }
 
-    private void addPages()
-    {
-        ViewPagerAdapter pagerAdapter=new ViewPagerAdapter(this.getSupportFragmentManager());
+
+    private void sendNewEventSwitch(String id, EventModel model) {
+        switch (model.getEventStatus()) {
+            case PAST:
+                PastEventsTabFragment past = (PastEventsTabFragment) getSupportFragmentManager().findFragmentById(R.id.list_view_past);
+                past.addEvents(id, model);
+            case PENDING:
+                PendingEventsTabFragment pending = (PendingEventsTabFragment) getSupportFragmentManager().findFragmentById(R.id.list_view_pending);
+                pending.addEvents(id, model);
+            case UPCOMING:
+                FutureEventsTabFragment future = (FutureEventsTabFragment) getSupportFragmentManager().findFragmentById(R.id.list_view_future);
+                future.addEvents(id, model);
+
+        }
+    }
+
+    private void addPages() {
+        ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(this.getSupportFragmentManager());
         pagerAdapter.addFragment(new UpcomingEventsTabFragment());
         pagerAdapter.addFragment(new PastEventsTabFragment());
         pagerAdapter.addFragment(new PendingEventsTabFragment());

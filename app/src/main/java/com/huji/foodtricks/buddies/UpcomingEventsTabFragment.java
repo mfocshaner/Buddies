@@ -2,6 +2,7 @@ package com.huji.foodtricks.buddies;
 
 import android.graphics.Color;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -22,8 +23,8 @@ public class UpcomingEventsTabFragment extends Fragment {
 
     View view;
     EventListAdaptor adapter;
-    ArrayList<EventModel> future_events = new ArrayList<>();
-    ArrayList<EventModel> new_events = new ArrayList<>();
+    HashMap<String, EventModel> future_events = new HashMap<>();
+    HashMap<String, EventModel> new_events = new HashMap<>();
 
     @Nullable
     @Override
@@ -50,32 +51,30 @@ public class UpcomingEventsTabFragment extends Fragment {
 
 
     private void updateEvents() {
-            this.future_events.addAll(this.new_events);
-            this.adapter.notifyDataSetChanged();
-        }
+
+        this.future_events.putAll(this.new_events);
+        this.new_events.clear();
+        this.adapter.notifyDataSetChanged();
+    }
 
     private ArrayList<EventModel> getUpcomingEvents() {
 
         EventModel event1 = new EventModel("brunch at Zunni's", new Date(2018, 11, 25, 10, 0), new HashMap<String, String>(), "Amit");
 
-            this.future_events.add(event1);
+        this.future_events.put("dsfodsf34324", event1);
 
-            EventModel event2 = new EventModel("Failing ", new Date(2019, 1, 1, 0, 0), new ArrayList<String>(), "Amit");
-
-            this.future_events.add(event2);
-            return this.future_events;
-        }
-
-        public void addEvents(ArrayList<EventModel> events) {
-            this.new_events.addAll(events);
-            this.adapter.notifyDataSetChanged();
-        }
-
-        @Override
-        public String toString() {
-            return "Upcoming";
-        }
+        return new ArrayList<EventModel>(future_events.values());
     }
+
+    public void addEvents(String id, EventModel event) {
+        this.new_events.put(id, event);
+    }
+
+    @Override
+    public String toString() {
+        return "Upcoming";
+    }
+}
 
 
 

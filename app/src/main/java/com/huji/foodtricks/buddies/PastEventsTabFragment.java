@@ -21,8 +21,8 @@ public class PastEventsTabFragment extends Fragment {
 
     View view;
     EventListAdaptor adapter;
-    ArrayList<EventModel> past_events = new ArrayList<>();
-    ArrayList<EventModel> new_events = new ArrayList<>();
+    HashMap<String, EventModel> past_events = new HashMap<>();
+    HashMap<String, EventModel> new_events = new HashMap<>();
 
     @Nullable
     @Override
@@ -43,21 +43,24 @@ public class PastEventsTabFragment extends Fragment {
 
         return rootView;
     }
+
     private void updateEvents() {
-        this.past_events.addAll(this.new_events);
+        this.past_events.putAll(this.new_events);
+        this.new_events.clear();
         this.adapter.notifyDataSetChanged();
     }
 
     private ArrayList<EventModel> getPastEvents() {
 
         EventModel event = new EventModel("past", new Date(2018, 10, 10, 13, 0), new HashMap<String, String>(), "Amit");
-        past_events.add(event);
-        return past_events;
+
+
+        past_events.put("kfafsamd214u13", event);
+        return new ArrayList<EventModel>(past_events.values());
     }
 
-    public void addEvents(ArrayList<EventModel> events){
-        this.new_events.addAll(events);
-        this.adapter.notifyDataSetChanged();
+    public void addEvents(String id, EventModel event) {
+        this.new_events.put(id, event);
     }
 
     @Override

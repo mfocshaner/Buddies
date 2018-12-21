@@ -21,8 +21,8 @@ public class PendingEventsTabFragment extends Fragment {
 
     View view;
     EventListAdaptor adapter;
-    ArrayList<EventModel> pending_events = new ArrayList<>();
-    ArrayList<EventModel> new_events = new ArrayList<>();
+    HashMap<String, EventModel> pending_events = new HashMap<>();
+    HashMap<String, EventModel> new_events = new HashMap<>();
 
     @Nullable
     @Override
@@ -47,7 +47,8 @@ public class PendingEventsTabFragment extends Fragment {
     }
 
     private void updateEvents() {
-        this.pending_events.addAll(this.new_events);
+        this.pending_events.putAll(this.new_events);
+        this.new_events.clear();
         this.adapter.notifyDataSetChanged();
     }
 
@@ -55,12 +56,12 @@ public class PendingEventsTabFragment extends Fragment {
     private ArrayList<EventModel> getPendingEvents() {
 
         EventModel event = new EventModel("pending", new Date(2018, 12, 12, 12, 30), new HashMap<String, String>(), "Amit");
-        pending_events.add(event);
-        return pending_events;
+        pending_events.put("afkaflkaflkma13", event);
+        return new ArrayList<EventModel>(pending_events.values());
     }
 
-    public void addEvents(ArrayList<EventModel> events) {
-        this.new_events.addAll(events);
+    public void addEvents(String id, EventModel event) {
+        this.new_events.put(id, event);
     }
 
     @Override
