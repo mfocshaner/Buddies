@@ -11,6 +11,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.huji.foodtricks.buddies.Models.EventModel;
+import com.huji.foodtricks.buddies.Models.GroupModel;
 import com.huji.foodtricks.buddies.Models.UserModel;
 
 import java.util.ArrayList;
@@ -100,6 +101,10 @@ public class DatabaseStreamer {
 
     public void modifyUser(UserModel modifiedUserModel, String userModelId,
                            final UserUpdateCompletion completion){
+        if (modifiedUserModel.getEventIDs() == null)
+            modifiedUserModel.setEventIDs(new ArrayList<String>());
+        if (modifiedUserModel.getGroups() == null)
+            modifiedUserModel.setGroups(new HashMap<String, GroupModel>());
         mDatabase.child("users").child(userModelId).setValue(modifiedUserModel)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

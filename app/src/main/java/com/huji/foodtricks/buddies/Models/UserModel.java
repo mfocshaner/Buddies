@@ -1,7 +1,5 @@
 package com.huji.foodtricks.buddies.Models;
 
-import android.net.Uri;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +11,7 @@ public class UserModel implements Serializable {
 
     private String userName;
     private String imageUrl;
-    private ArrayList<String> EventIDs;
+    private ArrayList<String> eventIDs;
     private HashMap<String, GroupModel> groups;
     // todo: i'm not entirely happy with having the name as key (to ensure there're no two groups
     // with the same name, and having the GroupModel hold the name as well, but it seems to be
@@ -30,6 +28,8 @@ public class UserModel implements Serializable {
     public UserModel(String userName, String imageUrl) {
         this.userName = userName;
         this.imageUrl = imageUrl;
+        this.eventIDs = new ArrayList<>();
+        this.groups = new HashMap<>();
     }
 
     public String getUserName() {
@@ -49,7 +49,11 @@ public class UserModel implements Serializable {
     }
 
     public ArrayList<String> getEventIDs() {
-        return EventIDs;
+        return eventIDs;
+    }
+
+    public void setEventIDs(ArrayList<String> eventIDs) {
+        this.eventIDs = eventIDs;
     }
 
     public HashMap<String, GroupModel> getGroups() {
@@ -61,14 +65,14 @@ public class UserModel implements Serializable {
     }
 
     public void addEventId(String eventId) {
-        if (EventIDs == null) {
-            EventIDs = new ArrayList<>();
+        if (eventIDs == null) {
+            eventIDs = new ArrayList<>();
         }
-        EventIDs.add(eventId);
+        eventIDs.add(eventId);
     }
 
     public void removeEventId(String eventId) {
-        EventIDs.remove(eventId);
+        eventIDs.remove(eventId);
     }
 
     public ArrayList<GroupModel> getGroupList() {
