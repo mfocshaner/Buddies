@@ -17,9 +17,11 @@ import com.huji.foodtricks.buddies.Models.UserModel;
 public class EventsTabsActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener,ViewPager.OnPageChangeListener {
 
     public static final String EXTRA_CURRENT_USER = "currentUser";
+    public static final String EXTRA_CURRENT_UID = "currentUserID";
     ViewPager vp;
     TabLayout tabLayout;
     private UserModel currentUser;
+    private String currentUserID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +32,9 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
 
         Intent signedInIntent = getIntent();
         currentUser = (UserModel) signedInIntent
-                .getSerializableExtra(EXTRA_CURRENT_USER);
+                .getSerializableExtra(getResources().getString(R.string.extra_current_user_model));
+        currentUserID = signedInIntent
+                .getStringExtra(getResources().getString(R.string.extra_current_user_id));
 
         setupNewEventFAB();
 
@@ -49,7 +53,10 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
             @Override
             public void onClick(View view) {
                 Intent newEventIntent = new Intent(view.getContext(), CreateEventActivity.class);
-                newEventIntent.putExtra(EXTRA_CURRENT_USER, currentUser);
+                newEventIntent.putExtra(getResources().getString(R.string.extra_current_user_model),
+                        currentUser);
+                newEventIntent.putExtra(getResources().getString(R.string.extra_current_user_id),
+                        currentUserID);
                 startActivity(newEventIntent);
             }
         });

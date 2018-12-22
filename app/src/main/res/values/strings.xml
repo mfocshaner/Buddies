@@ -46,6 +46,11 @@
     <string name="create_new_event_disabled">Choose Event Details</string>
     <string name="create_group">Create Group!</string>
 
+    <!-- Keys to Extras -->
+    <string name="extra_current_user_model">Current User Model Extra</string>
+    <string name="extra_current_user_id">Current User ID Extra</string>
+    <string name="extra_current_event_model">Current Event Model Extra</string>
+    <string name="extra_current_event_id">Current Event ID Extra</string>
 
     <!-- Content Description for images -->
     <string name="desc_google_icon">Google Logo</string>

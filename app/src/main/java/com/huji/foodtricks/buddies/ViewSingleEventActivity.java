@@ -28,17 +28,21 @@ import java.util.Set;
 public class ViewSingleEventActivity extends AppCompatActivity {
 
     static EventModel curr_event;
-    static UserModel curr_user;
+    private UserModel currentUser;
+    private String currentUserID;
     private DatabaseStreamer dbs = new DatabaseStreamer();
-    String curr_event_id = "ABCDEFG";
+    private String curr_event_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         Intent eventCard = getIntent();
-        curr_event = (EventModel) eventCard.getSerializableExtra("event");
-//        final String curr_event_id = eventCard.getStringExtra("event_id");
-        curr_event_id = "ABCDEFG";
+        curr_event = (EventModel) eventCard.getSerializableExtra(getResources().getString(R.string.extra_current_event_model));
+        curr_event_id = eventCard.getStringExtra(getResources().getString(R.string.extra_current_event_id));
+        if (curr_event_id == null) {
+            curr_event_id = "ABCDEFG";
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_single_event);
 
