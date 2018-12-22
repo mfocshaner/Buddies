@@ -40,7 +40,8 @@ public class SignInActivity extends AppCompatActivity implements
 
     private DatabaseStreamer dbs = new DatabaseStreamer();
 
-    private UserModel user;
+    private UserModel userModel;
+    private String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +113,7 @@ public class SignInActivity extends AppCompatActivity implements
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser currentUser = mAuth.getCurrentUser();
+                            userID = currentUser.getUid();
                             onboardUser(currentUser);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -164,7 +166,8 @@ public class SignInActivity extends AppCompatActivity implements
         hideProgressDialog();
         if (currentUser != null) {
             Intent signedInIntent = new Intent(this, EventsTabsActivity.class);
-            signedInIntent.putExtra(EventsTabsActivity.EXTRA_CURRENT_USER, user);
+            signedInIntent.putExtra(getResources().getString(R.string.extra_current_user_model), userModel);
+            signedInIntent.putExtra(getResources().getString(R.string.extra_current_user_id), userID);
             startActivity(signedInIntent);
         }
     }
@@ -204,27 +207,26 @@ public class SignInActivity extends AppCompatActivity implements
         hideProgressDialog();
     }
 
-    private void onboardUser(final FirebaseUser currentUser)
-    {
-        dbs.fetchUserModelById(currentUser.getUid(), new UserFetchingCompletion() {
+    private void onboardUser(final FirebaseUser currentUser) {
+        dbs.fetchUserModelById(userID, new UserFetchingCompletion() {
             @Override
             public void onFetchSuccess(UserModel model) {
                 // Update user's name and photo from google
                 model.setUserName(currentUser.getDisplayName());
                 model.setImageUrl(String.valueOf(currentUser.getPhotoUrl()));
-                dbs.modifyUser(model, currentUser.getUid(), new UserUpdateCompletion() {
+                dbs.modifyUser(model, userID, new UserUpdateCompletion() {
                     @Override
                     public void onUpdateSuccess() {
                     }
                 });
-                user = model;
+                userModel = model;
                 updateUI(currentUser);
             }
 
             @Override
             public void onNoUserFound() {
-                user = new UserModel(currentUser.getDisplayName(), String.valueOf(currentUser.getPhotoUrl()));
-                dbs.writeNewUserModel(user, currentUser.getUid());
+                userModel = new UserModel(currentUser.getDisplayName(), String.valueOf(currentUser.getPhotoUrl()));
+                dbs.writeNewUserModel(userModel, userID);
                 updateUI(currentUser);
             }
         });
