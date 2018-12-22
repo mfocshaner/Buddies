@@ -1,15 +1,17 @@
 package com.huji.foodtricks.buddies;
 
 import android.content.Intent;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 
 public class CreateEventActivity extends AppCompatActivity {
@@ -132,15 +135,57 @@ public class CreateEventActivity extends AppCompatActivity {
                         toastMessage, Toast.LENGTH_SHORT).show();
 
                 if (selectedGroupName.equals("Custom")) {
-                    // custom group - create new group somehow!
+                    createGroupFromFriends();
                 } else {
                     chooseGroup(selectedGroupName);
                 }
-                shouldEnableFAB();
+                shouldEnableCreateEventButton();
             }
         };
 
         hPicker.setChangeListener(listener);
+    }
+
+    private void createGroupFromFriends() {
+        final LinearLayout linearLayout = (LinearLayout)findViewById(R.id.linearLayoutForCheckBoxes);
+        final ArrayList<String> groupOfFriends = new ArrayList<>();
+
+        final HashMap<String, String> usersToChooseFrom = dummyUserNamesInDB();
+        int id = 0;
+        for (String userName : usersToChooseFrom.keySet()) {
+            CheckBox checkBox = new CheckBox(this);
+            checkBox.setText(userName);
+            checkBox.setId(id++);
+            linearLayout.addView(checkBox);
+        }
+
+        Button finalizeSelectionButton = new Button(linearLayout.getContext());
+        finalizeSelectionButton.setText(R.string.create_group);
+        finalizeSelectionButton.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        finalizeSelectionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (int i = 0; i < usersToChooseFrom.keySet().size(); i++) {
+                    CheckBox checkBox = (CheckBox)linearLayout.findViewById(i);
+                    if (checkBox.isChecked()) {
+                        String userId = checkBox.getText().toString();
+                        groupOfFriends.add(usersToChooseFrom.get(userId));
+                    }
+                }
+                linearLayout.removeAllViews();
+                invitees = groupOfFriends;
+            }
+        });
+        linearLayout.addView(finalizeSelectionButton);
+    }
+
+    private HashMap<String, String> dummyUserNamesInDB(){
+        HashMap<String, String> users = new HashMap<>();
+        users.put("Michael", "BfsSucGUquSib4qKztVUz8SWDH42");
+        users.put("Amit", "5UUwOK8Ac6cvg4OSexrHBK7Wi952");
+        users.put("Ido","LPUwbrBuQod8Sbaj1nT5uzOJe812");
+        users.put("Matan","YLsU95DSh3dEFDmW7z8SCx5el382");
+        return users;
     }
 
     private void setupWhatTextInput() {

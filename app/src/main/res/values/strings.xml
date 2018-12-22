@@ -42,6 +42,10 @@
     <string name="sign_out">Sign Out</string>
     <string name="disconnect">Disconnect</string>
     <string name="refresh_token">Get Fresh Token</string>
+    <string name="create_new_event_enabled">Create New Event!</string>
+    <string name="create_new_event_disabled">Choose Event Details</string>
+    <string name="create_group">Create Group!</string>
+
 
     <!-- Content Description for images -->
     <string name="desc_google_icon">Google Logo</string>

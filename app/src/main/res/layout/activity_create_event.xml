@@ -159,6 +159,20 @@
         android:imeOptions="actionDone"
         android:hint="enter event title" />
 
+    <LinearLayout
+        android:id="@+id/linearLayoutForCheckBoxes"
+        android:layout_width="368dp"
+        android:layout_height="281dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/WhenHorizontalScrollView">
+    </LinearLayout>
 
 
 </android.support.constraint.ConstraintLayout>
