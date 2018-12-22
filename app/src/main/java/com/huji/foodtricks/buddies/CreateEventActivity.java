@@ -43,7 +43,7 @@ public class CreateEventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
-        disableFAB();
+        disableCreateEventButton();
 
         Intent newEventIntent = getIntent();
         currentUserModel = (UserModel) newEventIntent
@@ -71,7 +71,6 @@ public class CreateEventActivity extends AppCompatActivity {
         secondGroup.add("Matan Harsat");
         secondGroup.add("Michael the Awesome");
         currentUserModel.addGroup("friendly guys", secondGroup);
-//        dbs.writeNewUserModel(currentUserModel);
     }
 
 
@@ -81,26 +80,25 @@ public class CreateEventActivity extends AppCompatActivity {
         invitees = new ArrayList<>(chosenGroup.getUserIds());
     }
 
-    private void disableFAB(){
-        FloatingActionButton fab = findViewById(R.id.floatingActionButton);
-        fab.setEnabled(false);
-        fab.setAlpha(0.4f);
-        fab.setImageAlpha(127);
+    private void disableCreateEventButton(){
+        Button createEventButton = findViewById(R.id.createEventButton);
+        createEventButton.setEnabled(false);
+        createEventButton.setAlpha(0.4f);
     }
 
-    private void enableFAB(){
-        FloatingActionButton fab = findViewById(R.id.floatingActionButton);
-        fab.setEnabled(true);
-        fab.setBackgroundTintList(this.getBaseContext().getResources()
+    private void enableCreateEventButton(){
+        Button createEventButton = findViewById(R.id.createEventButton);
+        createEventButton.setEnabled(true);
+        createEventButton.setBackgroundTintList(this.getBaseContext().getResources()
                 .getColorStateList(R.color.colorEnabledFAB));
-        fab.setAlpha(1f);
-        fab.setImageAlpha(255);
+        createEventButton.setAlpha(1f);
+        createEventButton.setText(R.string.create_new_event_enabled);
     }
 
-    private void shouldEnableFAB(){
+    private void shouldEnableCreateEventButton(){
         if ((time != null) && (eventTitle != null && !eventTitle.equals(""))
                 && (invitees != null)) {
-            enableFAB();
+            enableCreateEventButton();
         }
     }
 
@@ -197,7 +195,7 @@ public class CreateEventActivity extends AppCompatActivity {
                     String userText = v.getText().toString();
                     Toast.makeText(CreateEventActivity.this, userText, Toast.LENGTH_SHORT).show();
                     chooseTitle(userText);
-                    shouldEnableFAB();
+                    shouldEnableCreateEventButton();
                     v.clearFocus();
                 }
                 return false;
@@ -230,7 +228,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 } else {
                     showDateTimePicker();
                 }
-                shouldEnableFAB();
+                shouldEnableCreateEventButton();
             }
         };
 
@@ -278,7 +276,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
     }
 
-    public void createNewEventFabClicked(View view) {
+    public void createNewEventButtonClicked(View view) {
         final EventModel createdEvent = createEventFromChoices();
         updateDatabaseWithNewEvent(createdEvent);
         moveToSingleEventView(view, createdEvent);
@@ -290,8 +288,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 new AddEventToUsersCompletion() {
             @Override
             public void onSuccess() {
-                // send users a notification that they've been added to event?
-                // who knows, right?
+                // do nothing
             }
         });
     }
