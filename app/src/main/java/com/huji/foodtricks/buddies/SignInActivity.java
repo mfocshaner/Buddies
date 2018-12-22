@@ -112,7 +112,7 @@ public class SignInActivity extends AppCompatActivity implements
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser currentUser = mAuth.getCurrentUser();
-                            onboradUser(currentUser);
+                            onboardUser(currentUser);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -204,7 +204,7 @@ public class SignInActivity extends AppCompatActivity implements
         hideProgressDialog();
     }
 
-    private void onboradUser(final FirebaseUser currentUser)
+    private void onboardUser(final FirebaseUser currentUser)
     {
         dbs.fetchUserModelById(currentUser.getUid(), new UserFetchingCompletion() {
             @Override
