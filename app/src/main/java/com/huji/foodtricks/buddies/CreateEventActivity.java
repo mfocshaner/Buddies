@@ -128,11 +128,16 @@ public class CreateEventActivity extends AppCompatActivity {
                 HorizontalPicker.PickerItem selected = picker.getSelectedItem();
                 String selectedGroupName = selected.getText();
                 String toastMessage = selectedGroupName + " is selected";
-                Toast.makeText(CreateEventActivity.this, selected.hasDrawable() ?
-                        "Item at " + (picker.getSelectedIndex() + 1) + " is selected" :
+                Toast.makeText(CreateEventActivity.this,
                         toastMessage, Toast.LENGTH_SHORT).show();
 
+                final LinearLayout linearLayout =
+                        (LinearLayout)findViewById(R.id.linearLayoutForCheckBoxes);
+                linearLayout.removeAllViews();
+
                 if (selectedGroupName.equals("Custom")) {
+                    invitees = null;
+                    disableCreateEventButton();
                     createGroupFromFriends();
                 } else {
                     chooseGroup(selectedGroupName);
@@ -172,6 +177,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 }
                 linearLayout.removeAllViews();
                 invitees = groupOfFriends;
+                shouldEnableCreateEventButton();
             }
         });
         linearLayout.addView(finalizeSelectionButton);
@@ -191,6 +197,10 @@ public class CreateEventActivity extends AppCompatActivity {
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                final LinearLayout linearLayout =
+                        (LinearLayout)findViewById(R.id.linearLayoutForCheckBoxes);
+                linearLayout.removeAllViews();
+
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     String userText = v.getText().toString();
                     Toast.makeText(CreateEventActivity.this, userText, Toast.LENGTH_SHORT).show();
@@ -212,6 +222,10 @@ public class CreateEventActivity extends AppCompatActivity {
                 new HorizontalPicker.OnSelectionChangeListener() {
             @Override
             public void onItemSelect(HorizontalPicker picker, int index) {
+                final LinearLayout linearLayout =
+                        (LinearLayout)findViewById(R.id.linearLayoutForCheckBoxes);
+                linearLayout.removeAllViews();
+
                 if (index < 0) {
                     return;
                 }
@@ -278,13 +292,14 @@ public class CreateEventActivity extends AppCompatActivity {
 
     public void createNewEventButtonClicked(View view) {
         final EventModel createdEvent = createEventFromChoices();
-        updateDatabaseWithNewEvent(createdEvent);
-        moveToSingleEventView(view, createdEvent);
+        final String createdEventID = dbs.writeNewEventModel(createdEvent);
+
+        updateInviteesWithNewEventID(createdEventID);
+        moveToSingleEventView(createdEvent, createdEventID);
     }
 
-    public void updateDatabaseWithNewEvent(final EventModel createdEvent) {
-        String key = dbs.writeNewEventModel(createdEvent);
-        dbs.addEventIdToUserIdList(createdEvent.getInviteesIDs(), key,
+    public void updateInviteesWithNewEventID(String eventID) {
+        dbs.addEventIdToUserIdList(invitees, eventID,
                 new AddEventToUsersCompletion() {
             @Override
             public void onSuccess() {
