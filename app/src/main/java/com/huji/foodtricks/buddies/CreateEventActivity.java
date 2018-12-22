@@ -296,9 +296,9 @@ public class CreateEventActivity extends AppCompatActivity {
     public void moveToSingleEventView(View view, EventModel createdEvent) {
         Intent viewEventIntent = new Intent(view.getContext(), ViewSingleEventActivity.class);
         viewEventIntent.putExtra("event", createdEvent);
+        viewEventIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(viewEventIntent);
+        this.finish();
     }
 
-    // note: after moving to new activity, if user clicks 'back', does he return to this activity
-    // or to the EventsTabsActivity?
 }
