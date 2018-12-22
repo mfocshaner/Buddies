@@ -30,8 +30,8 @@ import java.util.List;
 
 public class CreateEventActivity extends AppCompatActivity {
 
-    private UserModel currentUserModel;
-    private String currentUserId;
+    private UserModel currentUser;
+    private String currentUserID;
     private DatabaseStreamer dbs = new DatabaseStreamer();
 
     /// parameters to be passed to new event
@@ -46,10 +46,10 @@ public class CreateEventActivity extends AppCompatActivity {
         disableCreateEventButton();
 
         Intent newEventIntent = getIntent();
-        currentUserModel = (UserModel) newEventIntent
-                .getSerializableExtra(EventsTabsActivity.EXTRA_CURRENT_USER);
-
-        currentUserId = (String) newEventIntent.getStringExtra("userId");
+        currentUser = (UserModel) newEventIntent
+                .getSerializableExtra(getResources().getString(R.string.extra_current_user_model));
+        currentUserID = newEventIntent
+                .getStringExtra(getResources().getString(R.string.extra_current_user_id));
 
         setupDummyGroups(); // not needed after we get actual user data
 
@@ -64,19 +64,19 @@ public class CreateEventActivity extends AppCompatActivity {
         firstGroup.add("Ido the sweet");
         firstGroup.add("Matan the busy");
         firstGroup.add("Michael the humble");
-        currentUserModel.addGroup("cool guys", firstGroup);
+        currentUser.addGroup("cool guys", firstGroup);
         ArrayList<String> secondGroup = new ArrayList<>();
         secondGroup.add("Amit Silber");
         secondGroup.add("Ido Savion");
         secondGroup.add("Matan Harsat");
         secondGroup.add("Michael the Awesome");
-        currentUserModel.addGroup("friendly guys", secondGroup);
+        currentUser.addGroup("friendly guys", secondGroup);
     }
 
 
 
     public void chooseGroup(String groupName) {
-        GroupModel chosenGroup = currentUserModel.getGroupForName(groupName);
+        GroupModel chosenGroup = currentUser.getGroupForName(groupName);
         invitees = new ArrayList<>(chosenGroup.getUserIds());
     }
 
@@ -112,14 +112,14 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private EventModel createEventFromChoices() {
         EventModel newEvent = new EventModel(eventTitle, time, invitees,
-                currentUserId);
+                currentUserID);
         return newEvent;
     }
     
     private void setupWhoHorizontalPicker() {
         final HorizontalPicker hPicker = (HorizontalPicker) findViewById(R.id.whoHPicker);
 
-        ArrayList<String> userGroupNames = new ArrayList<>(currentUserModel.getGroups().keySet());
+        ArrayList<String> userGroupNames = new ArrayList<>(currentUser.getGroups().keySet());
         hPicker.setItems(EventParametersProvider.getWhoItems(userGroupNames));
 
         HorizontalPicker.OnSelectionChangeListener listener = new HorizontalPicker.OnSelectionChangeListener() {
@@ -293,9 +293,18 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
-    public void moveToSingleEventView(View view, EventModel createdEvent) {
-        Intent viewEventIntent = new Intent(view.getContext(), ViewSingleEventActivity.class);
-        viewEventIntent.putExtra("event", createdEvent);
+    public void moveToSingleEventView(EventModel createdEvent, String createdEventID) {
+        Intent viewEventIntent = new Intent(this, ViewSingleEventActivity.class);
+
+        viewEventIntent.putExtra(getResources().getString(R.string.extra_current_user_model),
+                currentUser);
+        viewEventIntent.putExtra(getResources().getString(R.string.extra_current_user_id),
+                currentUserID);
+        viewEventIntent.putExtra(getResources().getString(R.string.extra_current_event_model),
+                createdEvent);
+        viewEventIntent.putExtra(getResources().getString(R.string.extra_current_event_id),
+                createdEventID);
+
         viewEventIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(viewEventIntent);
         this.finish();
