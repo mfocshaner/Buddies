@@ -14,21 +14,21 @@ import java.util.ArrayList;
 
 public class EventListAdaptor extends BaseAdapter {
     Context context;
-    ArrayList<EventModel> events;
+    ArrayList<EventModel> eventModels;
 
-    public EventListAdaptor(Context context, ArrayList<EventModel> spacecrafts) {
+    public EventListAdaptor(Context context, ArrayList<EventModel> eventModels) {
         this.context = context;
-        this.events = spacecrafts;
+        this.eventModels = eventModels;
     }
 
     @Override
     public int getCount() {
-        return events.size();
+        return eventModels.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return events.get(i);
+        return eventModels.get(i);
     }
 
     @Override
@@ -57,8 +57,10 @@ public class EventListAdaptor extends BaseAdapter {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent viewEventIntent = new Intent(view.getContext(), ViewSingleEventActivity.class);
-                viewEventIntent.putExtra("event", event);
+                Context context = view.getContext();
+                Intent viewEventIntent = new Intent(context, ViewSingleEventActivity.class);
+                viewEventIntent.putExtra(context.getResources()
+                        .getString(R.string.extra_current_event_model), event);
                 context.startActivity(viewEventIntent);
             }
         });
