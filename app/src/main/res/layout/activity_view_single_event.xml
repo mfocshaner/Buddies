@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    tools:context=".ViewSingleEventActivity" >
+    tools:context=".ViewSingleEventActivity">
 
     <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -15,101 +15,50 @@
 
         <TableRow>
 
-            <TextView
-                android:layout_width="70dp"
-                android:layout_column="0"
-                android:padding="3dip"
-                android:text="@string/what_title" />
 
             <TextView
                 android:id="@+id/what_text"
-                android:gravity="end"
+                android:gravity="start"
                 android:padding="3dip"
-                android:text="Ctrl-O" />
+                android:textSize="20sp" />
         </TableRow>
 
         <TableRow>
 
             <TextView
-                android:layout_column="0"
+                android:id="@+id/date_textView"
+                android:gravity="start"
                 android:padding="3dip"
-                android:text="@string/who_title" />
-
-            <TextView
-                android:id="@+id/who_text"
-                android:layout_column="1"
-                android:gravity="end"
-                android:padding="3dip"
-                android:text="Ctrl-S" />
+                android:textAlignment="textStart"
+                android:textSize="16sp" />
         </TableRow>
 
         <TableRow>
 
             <TextView
-                android:layout_column="0"
+                android:id="@+id/hour_textView"
+                android:gravity="start"
                 android:padding="3dip"
-                android:text="@string/when_title" />
-
-            <TextView
-                android:id="@+id/when_textView"
-                android:gravity="end"
-                android:padding="3dip"
-                android:text="Ctrl-S"
-                android:textAlignment="textEnd" />
+                android:textAlignment="textStart"
+                android:textSize="16sp" />
         </TableRow>
 
         <TableRow>
 
             <TextView
-                android:layout_column="0"
+                android:id="@+id/RSVPText"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="start"
                 android:padding="3dip"
-                android:text="@string/where_title" />
+                android:text="@string/error_loading_user_rsvp_text"
+                android:textSize="20sp" />
 
-            <com.google.android.gms.maps.MapView
-                android:id="@+id/mapView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
 
         </TableRow>
-
-        <TableRow>
-
-            <Button
-                android:id="@+id/who_is_coming_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@android:color/holo_green_dark"
-                android:onClick="onButtonShowPopupWindowClick"
-                android:text="Who's coming?"
-                android:textSize="10sp"
-                android:layout_span="1">
-            </Button>
-
-            <Button
-                android:id="@+id/who_is_tentative"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_span="1"
-                android:backgroundTint="@android:color/holo_orange_light"
-                android:onClick="onButtonShowPopupWindowClick"
-                android:text="tentative?"
-                android:textSize="10dp">
-
-            </Button>
-
-            <Button
-                android:id="@+id/who_isnt_coming_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@android:color/holo_red_dark"
-                android:onClick="onButtonShowPopupWindowClick"
-                android:text="Who isn't?"
-                android:textSize="10sp">
-            </Button>
-
-        </TableRow>
-
     </TableLayout>
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -122,7 +71,7 @@
     <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
         <!-- Other components and views -->
 
@@ -131,7 +80,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            app:backgroundTint="@android:color/white"
+            android:background="@color/common_google_signin_btn_text_dark_disabled"
             app:buttonGravity="bottom|top"
             app:fabAlignmentMode="end">
 
@@ -139,8 +88,8 @@
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:text="@string/rsvp_bottom_bar_question"
-                android:clickable="false"/>
+                android:clickable="false"
+                android:text="@string/rsvp_bottom_bar_question" />
 
             <Button
                 android:id="@+id/approve_btn"
@@ -158,8 +107,9 @@
                 android:onClick="onRSVPChangeClick"
                 android:text="No" />
 
-            <Button style="@style/Widget.AppCompat.Button.Borderless"
+            <Button
                 android:id="@+id/tentative_btn"
+                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="onRSVPChangeClick"
@@ -169,7 +119,6 @@
 
 
     </android.support.design.widget.CoordinatorLayout>
-
 
 
 </FrameLayout>
