@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.huji.foodtricks.buddies.Models.EventModel;
 import com.huji.foodtricks.buddies.Models.UserModel;
 
@@ -43,6 +44,10 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         curr_event = (EventModel) eventCard.getSerializableExtra(getResources().getString(R.string.extra_current_event_model));
         curr_event_id = eventCard.getStringExtra(getResources().getString(R.string.extra_current_event_id));
         currentUser = (UserModel) eventCard.getSerializableExtra(getResources().getString(R.string.extra_current_user_model));
+        currentUserID = eventCard.getStringExtra(getResources().getString(R.string.extra_current_user_id));
+        if (currentUserID == null) {
+            currentUserID = FirebaseAuth.getInstance().getUid();
+        }
         if (curr_event_id == null) {
             curr_event_id = "ABCDEFG";
         }
@@ -93,13 +98,13 @@ public class ViewSingleEventActivity extends AppCompatActivity {
 
     public void modifyAttendersTextView(EventAttendanceProvider eventAttendanceProvider, TextView tv) {
         SpannableString attending = new SpannableString(
-                String.join("\n", curr_event.getAttendanceProvider().getAttending()));
+                String.join("\n", curr_event.getAttendanceProvider().getAttending().values()) + "\n");
         SpannableString tentative = new SpannableString(
-                String.join("\n", curr_event.getAttendanceProvider().getTentatives()));
+                String.join("\n", curr_event.getAttendanceProvider().getTentatives().values()) + "\n");
         SpannableString not_attending = new SpannableString(
-                String.join("\n", curr_event.getAttendanceProvider().getNotAttending()));
+                String.join("\n", curr_event.getAttendanceProvider().getNotAttending().values()) + "\n");
         SpannableString not_responsive = new SpannableString(
-                String.join("\n", curr_event.getAttendanceProvider().getNonResponsive()));
+                String.join("\n", curr_event.getAttendanceProvider().getNonResponsive().values()) + "\n");
 
         // setting the string's style:
         int flag = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
@@ -121,12 +126,11 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         if (currentUser == null)
             return;
         if (view.getId() == R.id.approve_btn) {
-            attendanceProvider.markAttending(currentUser.getUserName());
-
+            attendanceProvider.markAttending(currentUserID);
         } else if (view.getId() == R.id.tentative_btn) {
-            attendanceProvider.markTentative(currentUser.getUserName());
+            attendanceProvider.markTentative(currentUserID);
         } else if (view.getId() == R.id.decline_btn) {
-            attendanceProvider.markNotAttending(currentUser.getUserName());
+            attendanceProvider.markNotAttending(currentUserID);
         }
         curr_event.setAttendanceProvider(attendanceProvider);
         dbs.modifyEvent(curr_event, curr_event_id, new EventUpdateCompletion() {
@@ -135,7 +139,7 @@ public class ViewSingleEventActivity extends AppCompatActivity {
                 Toast update_event_updated = Toast.makeText(getApplicationContext(),
                         "Update completed", Toast.LENGTH_SHORT);
                 update_event_updated.show();
-
+                // we'd maybe want to notify all users that there's something new about this event.
             }
 
         });
