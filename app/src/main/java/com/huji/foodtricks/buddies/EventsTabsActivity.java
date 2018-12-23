@@ -4,6 +4,8 @@ import android.content.Intent;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.appcompat.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
@@ -13,6 +15,16 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 
+import android.view.View;
+import android.view.Menu;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.huji.foodtricks.buddies.Models.EventModel;
 import com.huji.foodtricks.buddies.Models.UserModel;
 
 
@@ -25,9 +37,41 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     private UserModel currentUser;
     private String currentUserID;
 
+    final DatabaseStreamer streamer = new DatabaseStreamer();
+    DatabaseReference DBref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.currentUser = (UserModel)getIntent().getSerializableExtra("user");
+        final FirebaseDatabase DB = FirebaseDatabase.getInstance(currentUser.getUserAuthenticationId()+"\\"+"eventIDs");
+        DBref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String eventId = dataSnapshot.getValue(String.class);
+                streamer.fetchEventModelById(eventId, new EventFetchingCompletion() {
+                    @Override
+                    public void onResponse(EventModel model) {
+                        switch (model.getEventStatus()) {
+                            case PAST:
+                                vp.getAdapter().instantiateItem(vp,1);
+
+                        }
+                    }
+
+                    @Override
+                    public void onError(DatabaseError error) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+
         setContentView(R.layout.fragment_events_tabs);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
@@ -40,7 +84,6 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
                 .getStringExtra(getResources().getString(R.string.extra_current_user_id));
 
         setupNewEventFAB();
-
         vp = (ViewPager) findViewById(R.id.mViewpager_ID);
         this.addPages();
 
@@ -80,8 +123,8 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     {
         ViewPagerAdapter pagerAdapter=new ViewPagerAdapter(this.getSupportFragmentManager());
         pagerAdapter.addFragment(new UpcomingEventsTabFragment());
-        pagerAdapter.addFragment(new PendingEventsTabFragment());
         pagerAdapter.addFragment(new PastEventsTabFragment());
+        pagerAdapter.addFragment(new PendingEventsTabFragment());
 
         vp.setAdapter(pagerAdapter);
     }
