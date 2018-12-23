@@ -1,25 +1,23 @@
 package com.huji.foodtricks.buddies;
 
 import android.content.Intent;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.goodiebag.horizontalpicker.HorizontalPicker;
 import com.huji.foodtricks.buddies.Models.EventModel;
 import com.huji.foodtricks.buddies.Models.GroupModel;
 import com.huji.foodtricks.buddies.Models.UserModel;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,14 +26,18 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 public class CreateEventActivity extends AppCompatActivity {
 
     private UserModel currentUser;
     private String currentUserID;
     private DatabaseStreamer dbs = new DatabaseStreamer();
+    private TimePickerDialog tpd;
 
     /// parameters to be passed to new event
-    private Date time;
+    private Date date;
+    private GregorianCalendar calendar = new GregorianCalendar();
     private String eventTitle;
     private ArrayList<String> invitees;
 
@@ -96,14 +98,14 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private void shouldEnableCreateEventButton(){
-        if ((time != null) && (eventTitle != null && !eventTitle.equals(""))
+        if ((date != null) && (eventTitle != null && !eventTitle.equals(""))
                 && (invitees != null)) {
             enableCreateEventButton();
         }
     }
 
     public void chooseTime(Date time) {
-        this.time = time;
+        this.date = time;
     }
 
     public void chooseTitle(String eventTitle) {
@@ -111,7 +113,7 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private EventModel createEventFromChoices() {
-        EventModel newEvent = new EventModel(eventTitle, time, invitees,
+        EventModel newEvent = new EventModel(eventTitle, date, invitees,
                 currentUserID);
         return newEvent;
     }
@@ -250,31 +252,37 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private void showDateTimePicker() {
-        final View dialogView = View.inflate(this, R.layout.date_time_picker, null);
-        final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-
-        dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                DatePicker datePicker = (DatePicker) dialogView.findViewById(R.id.date_picker);
-                TimePicker timePicker = (TimePicker) dialogView.findViewById(R.id.time_picker);
-
-                Calendar calendar = new GregorianCalendar(datePicker.getYear(),
-                        datePicker.getMonth(),
-                        datePicker.getDayOfMonth(),
-                        timePicker.getHour(),
-                        timePicker.getMinute());
-
-                chooseTime(calendar.getTime());
-
-                changeTitleOfCustomDate(calendar.getTime());
-
-                alertDialog.dismiss();
-            }});
-        alertDialog.setView(dialogView);
-        alertDialog.show();
+        Calendar now = Calendar.getInstance();
+        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                this::onDateSet,
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH)
+        );
+        dpd.setVersion(DatePickerDialog.Version.VERSION_1);
+        dpd.show(getSupportFragmentManager(), "Datepickerdialog");
+        tpd = TimePickerDialog.newInstance(
+                this::onTimeSet,
+                now.get(Calendar.HOUR_OF_DAY),
+                now.get(Calendar.MINUTE),
+                true
+        );
     }
+
+
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        calendar.set(year, monthOfYear, dayOfMonth);
+        tpd.show(getSupportFragmentManager(), "Timepickerdialog");
+    }
+
+
+    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        calendar.set(Calendar.MINUTE, minute);
+        chooseTime(calendar.getTime());
+        changeTitleOfCustomDate(calendar.getTime());
+    }
+
 
     private void changeTitleOfCustomDate(Date chosenDateTime) {
         HorizontalPicker whenHPicker = (HorizontalPicker) findViewById(R.id.whenHPicker);
