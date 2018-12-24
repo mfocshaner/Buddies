@@ -19,12 +19,14 @@ import com.huji.foodtricks.buddies.Models.UserModel;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -267,6 +269,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 now.get(Calendar.MINUTE),
                 true
         );
+        tpd.setTimeInterval(1, 15, 60);
     }
 
 
@@ -280,16 +283,22 @@ public class CreateEventActivity extends AppCompatActivity {
         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         calendar.set(Calendar.MINUTE, minute);
         chooseTime(calendar.getTime());
-        changeTitleOfCustomDate(calendar.getTime());
+        changeTitleOfCustomDate(calendar);
     }
 
 
-    private void changeTitleOfCustomDate(Date chosenDateTime) {
+    private void changeTitleOfCustomDate(Calendar chosenDateTime) {
         HorizontalPicker whenHPicker = (HorizontalPicker) findViewById(R.id.whenHPicker);
         List<HorizontalPicker.PickerItem> oldItems = whenHPicker.getItems();
         oldItems.remove(2);
 
-        oldItems.add(new HorizontalPicker.TextItem(chosenDateTime.toString()));
+        String dateTime = MessageFormat.format("{4}\n{0}/{1} {2}:{3}",
+                chosenDateTime.get(Calendar.DATE),
+                chosenDateTime.get(Calendar.MONTH),
+                chosenDateTime.get(Calendar.HOUR_OF_DAY),
+                chosenDateTime.get(Calendar.MINUTE),
+                chosenDateTime.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()));
+        oldItems.add(new HorizontalPicker.TextItem(dateTime));
 
         HorizontalPicker.OnSelectionChangeListener listener = whenHPicker.getChangeListener();
         whenHPicker.setChangeListener(null); // disable so the onSelect function isn't called

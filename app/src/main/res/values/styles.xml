@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/blue_grey_800</item>
         <item name="colorPrimaryDark">@color/blue_grey_900</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="viewInflaterClass">androidx.appcompat.app.AppCompatViewInflater</item>
     </style>
 
     <!-- Activity with no Title -->

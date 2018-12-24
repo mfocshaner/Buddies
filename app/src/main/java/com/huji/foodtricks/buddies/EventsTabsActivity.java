@@ -48,7 +48,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     }
 
     private void setupNewEventFAB() {
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.eventCreationActivityButton);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
