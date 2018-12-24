@@ -73,7 +73,7 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         modifyHourTextView(curr_event.getTime(), hour_tv);
 
         TextView rsvpText = findViewById(R.id.RSVPText);
-        modifyAttendersTextView(curr_event.attendanceProvider(), rsvpText);
+        modifyAttendersTextView(curr_event.getAttendanceProvider(), rsvpText);
     }
 
 
@@ -124,7 +124,7 @@ public class ViewSingleEventActivity extends AppCompatActivity {
 
     public void onRSVPChangeClick(View view) {
 //        Toast.makeText(ViewSingleEventActivity.this, getString(R.string.change_rsvp_msg_prefix) + .getTitle(), Toast.LENGTH_SHORT).show();
-        EventAttendanceProvider attendanceProvider = curr_event.attendanceProvider();
+        EventAttendanceProvider attendanceProvider = curr_event.getAttendanceProvider();
         if (currentUser == null)
             return;
 
@@ -147,7 +147,7 @@ public class ViewSingleEventActivity extends AppCompatActivity {
 
         });
         TextView rsvp_tv = findViewById(R.id.RSVPText);
-        modifyAttendersTextView(curr_event.attendanceProvider(), rsvp_tv);
+        modifyAttendersTextView(curr_event.getAttendanceProvider(), rsvp_tv);
         //TODO: refactor the following code
         Set<Integer> allRSVPButtons = new HashSet<>(Arrays.asList(R.id.approve_btn, R.id.tentative_btn, R.id.decline_btn));
         allRSVPButtons.remove(view.getId()); // remove the selected button from the list of buttons to disable

@@ -79,7 +79,7 @@ public class EventModel implements Serializable {
         this.invitees = invitees;
     }
 
-    public EventAttendanceProvider attendanceProvider() {
+    public EventAttendanceProvider getAttendanceProvider() {
         return attendanceProvider;
     }
 

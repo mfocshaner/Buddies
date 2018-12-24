@@ -22,6 +22,15 @@ public class EventAttendanceProvider implements Serializable {
     private HashMap<String, String> tentatives;
     private HashMap<String, String> nonResponsive;
 
+
+    public EventAttendanceProvider() {
+        this.invitees = new HashMap<String, String>();
+        this.nonResponsive = new HashMap<String, String>();
+        this.attending = new HashMap<String, String>();
+        this.notAttending = new HashMap<String, String>();
+        this.tentatives = new HashMap<String, String>();
+    }
+
     public EventAttendanceProvider(HashMap<String, String> invitees) {
         this.invitees = invitees; // reference ?
         this.nonResponsive = new HashMap<>(invitees);
