@@ -3,7 +3,6 @@ package com.huji.foodtricks.buddies;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -27,6 +26,8 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 
 public class ViewSingleEventActivity extends AppCompatActivity {
@@ -98,13 +99,13 @@ public class ViewSingleEventActivity extends AppCompatActivity {
 
     public void modifyAttendersTextView(EventAttendanceProvider eventAttendanceProvider, TextView tv) {
         SpannableString attending = new SpannableString(
-                String.join("\n", curr_event.getAttendanceProvider().getAttending().values()) + "\n");
+                String.join("\n", curr_event.getAttendanceProvider().getAttending().values()) );
         SpannableString tentative = new SpannableString(
-                String.join("\n", curr_event.getAttendanceProvider().getTentatives().values()) + "\n");
+                String.join("\n", curr_event.getAttendanceProvider().getTentatives().values()));
         SpannableString not_attending = new SpannableString(
-                String.join("\n", curr_event.getAttendanceProvider().getNotAttending().values()) + "\n");
+                String.join("\n", curr_event.getAttendanceProvider().getNotAttending().values()));
         SpannableString not_responsive = new SpannableString(
-                String.join("\n", curr_event.getAttendanceProvider().getNonResponsive().values()) + "\n");
+                String.join("\n", curr_event.getAttendanceProvider().getNonResponsive().values()));
 
         // setting the string's style:
         int flag = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
@@ -114,9 +115,9 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         not_responsive.setSpan(new ForegroundColorSpan(Color.GRAY), 0, not_responsive.length(), flag);
         SpannableStringBuilder builder = new SpannableStringBuilder(); // to concatenate string together
         builder.append(attending);
-        builder.append(tentative);
-        builder.append(not_attending);
-        builder.append(not_responsive);
+        builder.append(attending.toString().equals("") ? tentative:"\n" + tentative);
+        builder.append(tentative.toString().equals("") ? not_attending:"\n" + not_attending);
+        builder.append(not_attending.toString().equals("") ? not_responsive: "\n" + not_responsive);
         tv.setText(builder);
     }
 
