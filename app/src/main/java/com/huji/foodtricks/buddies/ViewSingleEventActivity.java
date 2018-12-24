@@ -147,7 +147,7 @@ public class ViewSingleEventActivity extends AppCompatActivity {
 
         });
         TextView rsvp_tv = findViewById(R.id.RSVPText);
-        modifyAttendersTextView(curr_event.getAttendanceProvider(), rsvp_tv);
+        modifyAttendersTextView(curr_event.attendanceProvider(), rsvp_tv);
         //TODO: refactor the following code
         Set<Integer> allRSVPButtons = new HashSet<>(Arrays.asList(R.id.approve_btn, R.id.tentative_btn, R.id.decline_btn));
         allRSVPButtons.remove(view.getId()); // remove the selected button from the list of buttons to disable
