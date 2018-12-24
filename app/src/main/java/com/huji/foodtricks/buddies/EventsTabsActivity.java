@@ -6,6 +6,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.viewpager.widget.ViewPager;
+
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 
@@ -45,6 +48,9 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(vp);
         tabLayout.setOnTabSelectedListener(this);
+        tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary, getTheme()));
+        tabLayout.setTabTextColors(ColorStateList.valueOf(Color.WHITE));
+        tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
     }
 
     private void setupNewEventFAB() {
@@ -73,9 +79,9 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     private void addPages()
     {
         ViewPagerAdapter pagerAdapter=new ViewPagerAdapter(this.getSupportFragmentManager());
-        pagerAdapter.addFragment(new FutureEventsTabFragment());
-        pagerAdapter.addFragment(new PastEventsTabFragment());
+        pagerAdapter.addFragment(new UpcomingEventsTabFragment());
         pagerAdapter.addFragment(new PendingEventsTabFragment());
+        pagerAdapter.addFragment(new PastEventsTabFragment());
 
         vp.setAdapter(pagerAdapter);
     }
