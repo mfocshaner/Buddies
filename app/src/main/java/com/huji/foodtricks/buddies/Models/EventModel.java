@@ -5,6 +5,7 @@ import com.huji.foodtricks.buddies.EventAttendanceProvider;
 import java.util.ArrayList;
 import java.util.Date;
 import java.io.Serializable;
+import java.util.HashMap;
 
 
 /**
@@ -20,22 +21,22 @@ public class EventModel implements Serializable {
     private Date time;
     private String organizerUID;
 
-    private ArrayList<String> inviteesIDs;
+    private HashMap<String, String> invitees;
 
     private EventAttendanceProvider attendanceProvider;
 
     public EventModel() {
-        attendanceProvider = new EventAttendanceProvider(new ArrayList<String>());
+        attendanceProvider = new EventAttendanceProvider(new HashMap<String, String>());
     }
 
-    public EventModel(String title, Date time, ArrayList<String> inviteesIDs, String organizerUID) {
+    public EventModel(String title, Date time, HashMap<String, String> invitees, String organizerUID) {
         this.title = title;
         this.time = time;
         eventStatus = state.PENDING;
-        this.inviteesIDs = new ArrayList(inviteesIDs);
+        this.invitees = new HashMap<>(invitees);
         this.organizerUID = organizerUID;
 
-        attendanceProvider = new EventAttendanceProvider(inviteesIDs);
+        attendanceProvider = new EventAttendanceProvider(invitees);
     }
 
     public state getEventStatus() {
@@ -70,12 +71,12 @@ public class EventModel implements Serializable {
         this.organizerUID = organizerUID;
     }
 
-    public ArrayList<String> getInviteesIDs() {
-        return inviteesIDs;
+    public HashMap<String, String> getInvitees() {
+        return invitees;
     }
 
-    public void setInviteesIDs(ArrayList<String> inviteesIDs) {
-        this.inviteesIDs = inviteesIDs;
+    public void setInvitees(HashMap<String, String> invitees) {
+        this.invitees = invitees;
     }
 
     public EventAttendanceProvider getAttendanceProvider() {

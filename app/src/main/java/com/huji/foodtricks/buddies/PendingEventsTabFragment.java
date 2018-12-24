@@ -13,6 +13,7 @@ import com.huji.foodtricks.buddies.Models.EventModel;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 public class PendingEventsTabFragment extends Fragment {
 
@@ -35,7 +36,7 @@ public class PendingEventsTabFragment extends Fragment {
     private ArrayList<EventModel> getPendingEvents() {
         ArrayList<EventModel> future_events = new ArrayList<>();
 
-        EventModel event = new EventModel("pending", new Date(2018, 12, 12, 12, 30), new ArrayList<String>(), "Amit");
+        EventModel event = new EventModel("pending", new Date(2018, 12, 12, 12, 30), new HashMap<String, String>(), "Amit");
 
         future_events.add(event);
         return future_events;

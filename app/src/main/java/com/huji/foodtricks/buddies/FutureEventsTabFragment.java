@@ -13,6 +13,7 @@ import com.huji.foodtricks.buddies.Models.EventModel;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 public class FutureEventsTabFragment extends Fragment {
 
@@ -34,11 +35,11 @@ public class FutureEventsTabFragment extends Fragment {
     private ArrayList<EventModel> getFutureEvents() {
         ArrayList<EventModel> future_events = new ArrayList<>();
 
-        EventModel event1 = new EventModel("brunch at Zunni's", new Date(2018, 11, 25, 10, 0), new ArrayList<String>(), "Amit");
+        EventModel event1 = new EventModel("brunch at Zunni's", new Date(2018, 11, 25, 10, 0), new HashMap<String, String>(), "Amit");
 
         future_events.add(event1);
 
-        EventModel event2 = new EventModel("kissing Data", new Date(2019, 1, 1, 0, 0), new ArrayList<String>(), "Amit");
+        EventModel event2 = new EventModel("kissing Data", new Date(2019, 1, 1, 0, 0), new HashMap<String, String>(), "Amit");
 
         future_events.add(event2);
         return future_events;
