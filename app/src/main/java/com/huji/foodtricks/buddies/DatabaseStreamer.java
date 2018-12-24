@@ -1,6 +1,5 @@
 package com.huji.foodtricks.buddies;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnSuccessListener;

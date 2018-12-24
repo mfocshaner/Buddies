@@ -68,19 +68,19 @@
 
     </LinearLayout>
 
-    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <!-- Other components and views -->
 
-        <android.support.design.bottomappbar.BottomAppBar
+        <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/bottomAppBar"
+            style="@style/Widget.MaterialComponents.BottomAppBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:background="@color/common_google_signin_btn_text_dark_disabled"
             app:buttonGravity="bottom|top"
             app:fabAlignmentMode="end">
 
@@ -91,7 +91,7 @@
                 android:clickable="false"
                 android:text="@string/rsvp_bottom_bar_question" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/approve_btn"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="80dp"
@@ -99,7 +99,7 @@
                 android:onClick="onRSVPChangeClick"
                 android:text="Yes" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/decline_btn"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="80dp"
@@ -107,7 +107,7 @@
                 android:onClick="onRSVPChangeClick"
                 android:text="No" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/tentative_btn"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
@@ -115,10 +115,10 @@
                 android:onClick="onRSVPChangeClick"
                 android:text="Maybe" />
 
-        </android.support.design.bottomappbar.BottomAppBar>
+        </com.google.android.material.bottomappbar.BottomAppBar>
 
 
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
 </FrameLayout>
