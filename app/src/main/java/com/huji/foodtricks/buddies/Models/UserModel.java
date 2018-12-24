@@ -13,6 +13,7 @@ public class UserModel implements Serializable {
     private String imageUrl;
     private ArrayList<String> eventIDs;
     private HashMap<String, GroupModel> groups;
+    private ArrayList<String> changedEvents = new ArrayList<>();
     // todo: i'm not entirely happy with having the name as key (to ensure there're no two groups
     // with the same name, and having the GroupModel hold the name as well, but it seems to be
     // the easier solution (to remove a group by name, add new group etc.)
@@ -105,5 +106,29 @@ public class UserModel implements Serializable {
             return false;
         }
         return groups.containsKey(groupName);
+    }
+
+
+    public ArrayList<String> getChangedEvents() {
+        return changedEvents;
+    }
+
+    public void setChangedEvents(ArrayList<String> changedEvents) {
+        this.changedEvents = changedEvents;
+    }
+
+    public void addChangedEvent(String changes) {
+        if (this.changedEvents == null) {
+            this.changedEvents = new ArrayList<>();
+        }
+        this.changedEvents.add(changes);
+    }
+
+    public void clearChangedEvents() {
+        if (this.changedEvents == null) {
+            this.changedEvents = new ArrayList<>();
+            return;
+        }
+        this.changedEvents.clear();
     }
 }

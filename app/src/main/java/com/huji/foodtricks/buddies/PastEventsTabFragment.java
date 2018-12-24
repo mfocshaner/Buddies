@@ -44,7 +44,7 @@ public class PastEventsTabFragment extends Fragment {
         return rootView;
     }
 
-    private void updateEvents() {
+    public void updateEvents() {
         this.past_events.putAll(this.new_events);
         this.new_events.clear();
         this.adapter.notifyDataSetChanged();

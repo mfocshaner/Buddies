@@ -22,6 +22,10 @@ public class EventListAdaptor extends BaseAdapter {
         this.eventModels = eventModels;
     }
 
+    public void addItems(ArrayList<EventModel> events){
+        eventModels.addAll(events);
+    }
+
     @Override
     public int getCount() {
         return eventModels.size();

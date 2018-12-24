@@ -249,6 +249,7 @@ public class DatabaseStreamer {
     private void addEventIdToUser(UserModel userModel, String userModelId, String eventId,
                                  final UserUpdateCompletion completion) {
         userModel.addEventId(eventId);
+        userModel.addChangedEvent(eventId);
         modifyUser(userModel, userModelId, completion);
     }
 }

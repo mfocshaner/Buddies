@@ -19,7 +19,7 @@ import java.util.HashMap;
 
 public class PendingEventsTabFragment extends Fragment {
 
-    View view;
+    ListView view;
     EventListAdaptor adapter;
     HashMap<String, EventModel> pending_events = new HashMap<>();
     HashMap<String, EventModel> new_events = new HashMap<>();
@@ -30,9 +30,9 @@ public class PendingEventsTabFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.pending_events, container, false);
 
-        ListView lv = (ListView) rootView.findViewById(R.id.list_view_pending);
-        EventListAdaptor adapter = new EventListAdaptor(this.getActivity(), getPendingEvents());
-        lv.setAdapter(adapter);
+        this.view = (ListView) rootView.findViewById(R.id.list_view_pending);
+        this.adapter = new EventListAdaptor(this.getActivity(), getPendingEvents());
+        this.view.setAdapter(adapter);
         final SwipeRefreshLayout pullToRefresh = rootView.findViewById(R.id.swipe_refresh_pending);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -46,8 +46,8 @@ public class PendingEventsTabFragment extends Fragment {
         return rootView;
     }
 
-    private void updateEvents() {
-        this.pending_events.putAll(this.new_events);
+    public void updateEvents() {
+        this.adapter.addItems(new ArrayList<EventModel>(this.new_events.values()));
         this.new_events.clear();
         this.adapter.notifyDataSetChanged();
     }

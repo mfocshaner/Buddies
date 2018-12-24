@@ -50,8 +50,7 @@ public class UpcomingEventsTabFragment extends Fragment {
     }
 
 
-    private void updateEvents() {
-
+    public void updateEvents() {
         this.future_events.putAll(this.new_events);
         this.new_events.clear();
         this.adapter.notifyDataSetChanged();
