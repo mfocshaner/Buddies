@@ -37,7 +37,7 @@ public class CreateEventActivity extends AppCompatActivity {
     /// parameters to be passed to new event
     private Date time;
     private String eventTitle;
-    private ArrayList<String> invitees;
+    private HashMap<String, String> invitees;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,17 +59,17 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private void setupDummyGroups() {
-        ArrayList<String> firstGroup = new ArrayList<>();
-        firstGroup.add("Amit the cool");
-        firstGroup.add("Ido the sweet");
-        firstGroup.add("Matan the busy");
-        firstGroup.add("Michael the humble");
+        HashMap<String, String> firstGroup = new HashMap<>();
+        firstGroup.put("fakeId1", "Amit the cool");
+        firstGroup.put("fakeId2", "Ido the sweet");
+        firstGroup.put("fakeId3", "Matan the busy");
+        firstGroup.put("fakeId4", "Michael the humble");
         currentUser.addGroup("cool guys", firstGroup);
-        ArrayList<String> secondGroup = new ArrayList<>();
-        secondGroup.add("Amit Silber");
-        secondGroup.add("Ido Savion");
-        secondGroup.add("Matan Harsat");
-        secondGroup.add("Michael the Awesome");
+        HashMap<String, String> secondGroup = new HashMap<>();
+        secondGroup.put("fakeId1", "Amit Silber");
+        secondGroup.put("fakeId2", "Ido Savion");
+        secondGroup.put("fakeId3", "Matan Harsat");
+        secondGroup.put("fakeId4", "Michael the Awesome");
         currentUser.addGroup("friendly guys", secondGroup);
     }
 
@@ -77,7 +77,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
     public void chooseGroup(String groupName) {
         GroupModel chosenGroup = currentUser.getGroupForName(groupName);
-        invitees = new ArrayList<>(chosenGroup.getUserIds());
+        invitees = chosenGroup.getUsers();
     }
 
     private void disableCreateEventButton(){
@@ -151,14 +151,14 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private void createGroupFromFriends() {
         final LinearLayout linearLayout = (LinearLayout)findViewById(R.id.linearLayoutForCheckBoxes);
-        final ArrayList<String> groupOfFriends = new ArrayList<>();
+        final HashMap<String, String> customGroupOfFriends = new HashMap<>();
 
         final HashMap<String, String> usersToChooseFrom = dummyUserNamesInDB();
-        int id = 0;
-        for (String userName : usersToChooseFrom.keySet()) {
+
+        for (String userId : usersToChooseFrom.keySet()) {
             CheckBox checkBox = new CheckBox(this);
-            checkBox.setText(userName);
-            checkBox.setId(id++);
+            checkBox.setText(usersToChooseFrom.get(userId));
+            checkBox.setId(userId.hashCode());
             linearLayout.addView(checkBox);
         }
 
@@ -168,15 +168,16 @@ public class CreateEventActivity extends AppCompatActivity {
         finalizeSelectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (int i = 0; i < usersToChooseFrom.keySet().size(); i++) {
-                    CheckBox checkBox = (CheckBox)linearLayout.findViewById(i);
+                for (String userId : usersToChooseFrom.keySet()) {
+                    CheckBox checkBox = (CheckBox)linearLayout.findViewById(userId.hashCode());
                     if (checkBox.isChecked()) {
-                        String userId = checkBox.getText().toString();
-                        groupOfFriends.add(usersToChooseFrom.get(userId));
+                        String userName = checkBox.getText().toString();
+                        customGroupOfFriends.put(userId , usersToChooseFrom.get(userId));
                     }
                 }
+
                 linearLayout.removeAllViews();
-                invitees = groupOfFriends;
+                invitees = customGroupOfFriends;
                 shouldEnableCreateEventButton();
             }
         });
@@ -185,10 +186,10 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private HashMap<String, String> dummyUserNamesInDB(){
         HashMap<String, String> users = new HashMap<>();
-        users.put("Michael", "BfsSucGUquSib4qKztVUz8SWDH42");
-        users.put("Amit", "5UUwOK8Ac6cvg4OSexrHBK7Wi952");
-        users.put("Ido","LPUwbrBuQod8Sbaj1nT5uzOJe812");
-        users.put("Matan","YLsU95DSh3dEFDmW7z8SCx5el382");
+        users.put("BfsSucGUquSib4qKztVUz8SWDH42", "Michael Focshaner");
+        users.put("5UUwOK8Ac6cvg4OSexrHBK7Wi952", "Amit Silber");
+        users.put("LPUwbrBuQod8Sbaj1nT5uzOJe812", "Ido Savion");
+        users.put("YLsU95DSh3dEFDmW7z8SCx5el382", "Matan Harsat");
         return users;
     }
 
@@ -299,7 +300,7 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     public void updateInviteesWithNewEventID(String eventID) {
-        dbs.addEventIdToUserIdList(invitees, eventID,
+        dbs.addEventIdToUserIdList(new ArrayList<String>(invitees.keySet()), eventID,
                 new AddEventToUsersCompletion() {
             @Override
             public void onSuccess() {

@@ -1,6 +1,7 @@
 package com.huji.foodtricks.buddies;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.io.Serializable;
 
@@ -11,54 +12,54 @@ import java.io.Serializable;
 @SuppressWarnings("serial") //With this annotation we are going to hide compiler warnings
 public class EventAttendanceProvider implements Serializable {
 
-    private List<String> invitees; // will maybe change if invitees become "People" objects.
+    private HashMap<String, String> invitees; // will maybe change if invitees become "People" objects.
 
     /// should there be an "invitees" or just these three separate groups?
     /// where should the person's attendance status be stored?
-    private ArrayList<String> attending;
-    private ArrayList<String> notAttending;
-    private ArrayList<String> tentatives;
-    private ArrayList<String> nonResponsive;
+    private HashMap<String, String> attending;
+    private HashMap<String, String> notAttending;
+    private HashMap<String, String> tentatives;
+    private HashMap<String, String> nonResponsive;
 
-    public EventAttendanceProvider(List<String> invitees) {
+    public EventAttendanceProvider(HashMap<String, String> invitees) {
         this.invitees = invitees; // reference ?
-        this.nonResponsive = new ArrayList<String>(invitees);
-        this.attending = new ArrayList<String>();
-        this.notAttending = new ArrayList<String>();
-        this.tentatives = new ArrayList<String>();
+        this.nonResponsive = new HashMap<>(invitees);
+        this.attending = new HashMap<String, String>();
+        this.notAttending = new HashMap<String, String>();
+        this.tentatives = new HashMap<String, String>();
     }
 
-    public void markAttending(String userName) {
-        if (!invitees.contains(userName)) { /// throw exception? assert?
+    public void markAttending(String userID) {
+        if (!invitees.keySet().contains(userID)) { /// throw exception? assert?
             return;
         }
-        tentatives.remove(userName);
-        notAttending.remove(userName);
-        attending.add(userName);
+        tentatives.remove(userID);
+        notAttending.remove(userID);
+        attending.put(userID, invitees.get(userID));
 
-        nonResponsive.remove(userName);
+        nonResponsive.remove(userID);
     }
 
-    public void markNotAttending(String userName) {
-        if (!invitees.contains(userName)) { /// throw exception? assert?
+    public void markNotAttending(String userID) {
+        if (!invitees.keySet().contains(userID)) { /// throw exception? assert?
             return;
         }
-        tentatives.remove(userName);
-        notAttending.add(userName);
-        attending.remove(userName);
+        tentatives.remove(userID);
+        notAttending.put(userID, invitees.get(userID));
+        attending.remove(userID);
     }
 
-    public void markTentative(String userName) {
-        if (!invitees.contains(userName)) { /// throw exception? assert?
+    public void markTentative(String userID) {
+        if (!invitees.keySet().contains(userID)) { /// throw exception? assert?
             return;
         }
-        tentatives.add(userName);
-        notAttending.remove(userName);
-        attending.remove(userName);
+        tentatives.put(userID, invitees.get(userID));
+        notAttending.remove(userID);
+        attending.remove(userID);
     }
 
 
-    public List<String> getAttending() {
+    public HashMap<String, String> getAttending() {
         return attending;
     }
 
@@ -66,7 +67,7 @@ public class EventAttendanceProvider implements Serializable {
         return attending.size();
     }
 
-    public List<String> getNotAttending() {
+    public HashMap<String, String> getNotAttending() {
         return notAttending;
     }
 
@@ -74,7 +75,7 @@ public class EventAttendanceProvider implements Serializable {
         return notAttending.size();
     }
 
-    public List<String> getTentatives() {
+    public HashMap<String, String> getTentatives() {
         return tentatives;
     }
 
@@ -82,7 +83,7 @@ public class EventAttendanceProvider implements Serializable {
         return tentatives.size();
     }
 
-    public List<String> getNonResponsive() {
+    public HashMap<String, String> getNonResponsive() {
         return nonResponsive;
     }
 

@@ -2,6 +2,7 @@ package com.huji.foodtricks.buddies.Models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -11,15 +12,15 @@ import java.util.List;
 public class GroupModel implements Serializable {
 
     private String groupName;
-    private ArrayList<String> userIds;
+    private HashMap<String, String> users;
 
     public GroupModel() {
         // Default constructor required for calls to DataSnapshot.getValue(GroupModel.class)
     }
 
-    public GroupModel(String groupName, List<String> userIds) {
+    public GroupModel(String groupName, HashMap<String, String> users) {
         this.groupName = groupName;
-        this.userIds = new ArrayList<>(userIds);
+        this.users = new HashMap<>(users);
     }
 
     public String getGroupName() {
@@ -30,19 +31,19 @@ public class GroupModel implements Serializable {
         this.groupName = groupName;
     }
 
-    public List<String> getUserIds() {
-        return new ArrayList<>(userIds);
+    public HashMap<String, String> getUsers() {
+        return users;
     }
 
-    public void setUserIds(ArrayList<String> userIds) {
-        this.userIds = userIds;
+    public void setUsers(HashMap<String, String> users) {
+        this.users = users;
     }
 
-    public void addUserToGroup(String userId) {
-        this.userIds.add(userId);
+    public void addUserToGroup(String userId, String userName) {
+        this.users.put(userId, userName);
     }
 
     public void removeUserFromGroup(String userId) {
-        this.userIds.remove(userId);
+        this.users.remove(userId);
     }
 }
