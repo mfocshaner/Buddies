@@ -31,12 +31,12 @@ public class PastEventsTabFragment extends Fragment {
     }
 
     private ArrayList<EventModel> getPastEvents() {
-        ArrayList<EventModel> future_events = new ArrayList<>();
+        ArrayList<EventModel> upcoming_events = new ArrayList<>();
 
         EventModel event = new EventModel("past", new Date(2018, 10, 10, 13, 0), new HashMap<String, String>(), "Amit");
 
-        future_events.add(event);
-        return future_events;
+        upcoming_events.add(event);
+        return upcoming_events;
     }
 
     @Override

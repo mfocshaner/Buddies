@@ -1,5 +1,6 @@
 package com.huji.foodtricks.buddies;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-public class FutureEventsTabFragment extends Fragment {
+public class UpcomingEventsTabFragment extends Fragment {
 
     View view;
 
@@ -23,30 +24,30 @@ public class FutureEventsTabFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.future_events, container, false);
+        View rootView = inflater.inflate(R.layout.upcoming_events, container, false);
 
-        ListView lv = (ListView) rootView.findViewById(R.id.list_view_future);
-        EventListAdaptor adapter = new EventListAdaptor(this.getActivity(), getFutureEvents());
+        ListView lv = (ListView) rootView.findViewById(R.id.list_view_upcoming);
+        EventListAdaptor adapter = new EventListAdaptor(this.getActivity(), getUpcomingEvents());
         lv.setAdapter(adapter);
 
         return rootView;
     }
 
-    private ArrayList<EventModel> getFutureEvents() {
-        ArrayList<EventModel> future_events = new ArrayList<>();
+    private ArrayList<EventModel> getUpcomingEvents() {
+        ArrayList<EventModel> upcoming_events = new ArrayList<>();
 
         EventModel event1 = new EventModel("brunch at Zunni's", new Date(2018, 11, 25, 10, 0), new HashMap<String, String>(), "Amit");
 
-        future_events.add(event1);
+        upcoming_events.add(event1);
 
         EventModel event2 = new EventModel("kissing Data", new Date(2019, 1, 1, 0, 0), new HashMap<String, String>(), "Amit");
 
-        future_events.add(event2);
-        return future_events;
+        upcoming_events.add(event2);
+        return upcoming_events;
     }
 
     @Override
     public String toString() {
-        return "Future";
+        return "Upcoming";
     }
 }

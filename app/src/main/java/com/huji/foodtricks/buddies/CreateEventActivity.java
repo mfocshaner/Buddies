@@ -10,7 +10,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.goodiebag.horizontalpicker.HorizontalPicker;
 import com.huji.foodtricks.buddies.Models.EventModel;
@@ -131,9 +130,6 @@ public class CreateEventActivity extends AppCompatActivity {
             public void onItemSelect(HorizontalPicker picker, int index) {
                 HorizontalPicker.PickerItem selected = picker.getSelectedItem();
                 String selectedGroupName = selected.getText();
-                String toastMessage = selectedGroupName + " is selected";
-                Toast.makeText(CreateEventActivity.this,
-                        toastMessage, Toast.LENGTH_SHORT).show();
 
                 final LinearLayout linearLayout =
                         (LinearLayout)findViewById(R.id.linearLayoutForCheckBoxes);
@@ -208,7 +204,6 @@ public class CreateEventActivity extends AppCompatActivity {
 
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     String userText = v.getText().toString();
-                    Toast.makeText(CreateEventActivity.this, userText, Toast.LENGTH_SHORT).show();
                     chooseTitle(userText);
                     shouldEnableCreateEventButton();
                     v.clearFocus();

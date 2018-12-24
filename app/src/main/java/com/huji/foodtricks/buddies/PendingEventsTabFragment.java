@@ -34,12 +34,12 @@ public class PendingEventsTabFragment extends Fragment {
 
 
     private ArrayList<EventModel> getPendingEvents() {
-        ArrayList<EventModel> future_events = new ArrayList<>();
+        ArrayList<EventModel> upcoming_events = new ArrayList<>();
 
         EventModel event = new EventModel("pending", new Date(2018, 12, 12, 12, 30), new HashMap<String, String>(), "Amit");
 
-        future_events.add(event);
-        return future_events;
+        upcoming_events.add(event);
+        return upcoming_events;
     }
 
     @Override
