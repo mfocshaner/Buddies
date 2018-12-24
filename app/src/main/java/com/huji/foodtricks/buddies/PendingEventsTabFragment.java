@@ -4,7 +4,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +33,7 @@ public class PendingEventsTabFragment extends Fragment {
         this.view = (ListView) rootView.findViewById(R.id.list_view_pending);
         this.adapter = new EventListAdaptor(this.getActivity(), getPendingEvents());
         this.view.setAdapter(adapter);
+        updateEvents();
         final SwipeRefreshLayout pullToRefresh = rootView.findViewById(R.id.swipe_refresh_pending);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -46,7 +47,7 @@ public class PendingEventsTabFragment extends Fragment {
         return rootView;
     }
 
-    public void updateEvents() {
+    private void updateEvents() {
         this.adapter.addItems(new ArrayList<EventModel>(this.new_events.values()));
         this.new_events.clear();
         this.adapter.notifyDataSetChanged();

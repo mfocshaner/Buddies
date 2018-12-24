@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +37,7 @@ public class UpcomingEventsTabFragment extends Fragment {
         ListView lv = (ListView) rootView.findViewById(R.id.list_view_upcoming);
         this.adapter = new EventListAdaptor(this.getActivity(), getUpcomingEvents());
         lv.setAdapter(adapter);
+        updateEvents();
         final SwipeRefreshLayout pullToRefresh = rootView.findViewById(R.id.swipe_refresh_future);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -50,7 +51,7 @@ public class UpcomingEventsTabFragment extends Fragment {
     }
 
 
-    public void updateEvents() {
+    private void updateEvents() {
         this.future_events.putAll(this.new_events);
         this.new_events.clear();
         this.adapter.notifyDataSetChanged();

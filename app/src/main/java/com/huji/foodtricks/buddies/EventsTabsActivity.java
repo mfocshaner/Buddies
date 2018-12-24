@@ -7,8 +7,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.fragment.app.Fragment;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
@@ -60,7 +60,6 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         //this.spinner.setVisibility(View.GONE);
 
         getCurrentUser();
-        firstEntry();
         setDbListener();
         setContentView(R.layout.fragment_events_tabs);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -69,6 +68,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         vp = (ViewPager) findViewById(R.id.mViewpager_ID);
         this.addPages();
         this.setupNewTabLayout();
+        this.firstEntry();
     }
 
     private void setDbListener() {
@@ -127,13 +127,6 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
                 for (Map.Entry<String, EventModel> entry : modelList.entrySet()) {
                     sendNewEventSwitch(entry.getKey(), entry.getValue());
                 }
-                ViewPagerAdapter adapter = (ViewPagerAdapter) vp.getAdapter();
-                FutureEventsTabFragment future = (FutureEventsTabFragment) adapter.getItem(0);
-                future.updateEvents();
-                PastEventsTabFragment past = (PastEventsTabFragment) adapter.getItem(1);
-                past.updateEvents();
-                PendingEventsTabFragment pending = (PendingEventsTabFragment) adapter.getItem(2);
-                pending.updateEvents();
             }
 
             @Override
@@ -190,7 +183,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         ViewPagerAdapter adapter = (ViewPagerAdapter) vp.getAdapter();
         switch (model.getEventStatus()) {
             case UPCOMING:
-                FutureEventsTabFragment future = (FutureEventsTabFragment) adapter.getItem(0);
+                UpcomingEventsTabFragment future = (UpcomingEventsTabFragment) adapter.getItem(0);
                 future.addEvents(id, model);
             case PAST:
                 PastEventsTabFragment past = (PastEventsTabFragment) adapter.getItem(1);

@@ -5,7 +5,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ public class PastEventsTabFragment extends Fragment {
         ListView lv = (ListView) rootView.findViewById(R.id.list_view_past);
         this.adapter = new EventListAdaptor(this.getActivity(), getPastEvents());
         lv.setAdapter(this.adapter);
+        updateEvents();
         final SwipeRefreshLayout pullToRefresh = rootView.findViewById(R.id.swipe_refresh_past);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -44,7 +46,8 @@ public class PastEventsTabFragment extends Fragment {
         return rootView;
     }
 
-    public void updateEvents() {
+
+    private void updateEvents() {
         this.past_events.putAll(this.new_events);
         this.new_events.clear();
         this.adapter.notifyDataSetChanged();
