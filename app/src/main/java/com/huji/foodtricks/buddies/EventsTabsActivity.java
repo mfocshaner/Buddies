@@ -1,9 +1,14 @@
 package com.huji.foodtricks.buddies;
 
 import android.content.Intent;
+
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.fragment.app.Fragment;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
@@ -11,12 +16,30 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
+
+
+import android.view.View;
+import android.view.Menu;
+import android.widget.ProgressBar;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.huji.foodtricks.buddies.Models.EventModel;
 import com.huji.foodtricks.buddies.Models.UserModel;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-public class EventsTabsActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener,ViewPager.OnPageChangeListener {
+
+public class EventsTabsActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener, ViewPager.OnPageChangeListener {
 
     public static final String EXTRA_CURRENT_USER = "currentUser";
     public static final String EXTRA_CURRENT_UID = "currentUserID";
@@ -24,26 +47,104 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     TabLayout tabLayout;
     private UserModel currentUser;
     private String currentUserID;
+    private ProgressBar spinner;
+
+
+    final DatabaseStreamer streamer = new DatabaseStreamer();
+    DatabaseReference DBref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //this.spinner =  findViewById(R.id.progressBar1);
+        //this.spinner.setVisibility(View.GONE);
+
+        getCurrentUser();
+        setDbListener();
+        setContentView(R.layout.fragment_events_tabs);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        setupNewEventFAB();
+        vp = (ViewPager) findViewById(R.id.mViewpager_ID);
+        this.addPages();
+        this.setupNewTabLayout();
+        this.firstEntry();
+    }
+
+    private void setDbListener() {
+        final FirebaseDatabase DB = FirebaseDatabase.getInstance();
+
+        DBref = DB.getReference("users" + "/" + this.currentUserID);
+        DBref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                DataSnapshot changedEvents = dataSnapshot.child("changedEvents");
+                if (changedEvents.getValue() == null) {
+                    return;
+                }
+                ArrayList<String> newEvents = (ArrayList<String>) changedEvents.getValue();
+                for (final String eventId : newEvents) {
+                    streamer.fetchEventModelById(eventId, new EventFetchingCompletion() {
+                        @Override
+                        public void onFetchSuccess(EventModel model) {
+                            sendNewEventSwitch(eventId, model);
+                        }
+
+                        @Override
+                        public void onNoEventFound() {
+                            // cry :(
+                        }
+                    });
+                }
+                currentUser.clearChangedEvents();
+                streamer.modifyUser(currentUser, currentUserID, new UserUpdateCompletion() {
+                    @Override
+                    public void onUpdateSuccess() {
+                        return;
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+
         setContentView(R.layout.fragment_events_tabs);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
 
+
+    }
+
+    private void firstEntry() {
+        //this.spinner.setVisibility(View.VISIBLE);
+        this.streamer.fetchEventModelsMapForCurrentUser(new EventMapFetchingCompletion() {
+            @Override
+            public void onFetchSuccess(HashMap<String, EventModel> modelList) {
+                for (Map.Entry<String, EventModel> entry : modelList.entrySet()) {
+                    sendNewEventSwitch(entry.getKey(), entry.getValue());
+                }
+            }
+
+            @Override
+            public void onNoEventsFound() {
+            }
+        });
+        //this.spinner.setVisibility(View.GONE);
+    }
+
+    private void getCurrentUser() {
         Intent signedInIntent = getIntent();
         currentUser = (UserModel) signedInIntent
                 .getSerializableExtra(getResources().getString(R.string.extra_current_user_model));
         currentUserID = signedInIntent
                 .getStringExtra(getResources().getString(R.string.extra_current_user_id));
+    }
 
-        setupNewEventFAB();
-
-        vp = (ViewPager) findViewById(R.id.mViewpager_ID);
-        this.addPages();
-
+    private void setupNewTabLayout() {
         tabLayout = (TabLayout) findViewById(R.id.mTab_ID);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(vp);
@@ -68,6 +169,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         });
     }
 
+
     @Override
     public void onBackPressed() {
         Intent exit = new Intent(Intent.ACTION_MAIN);
@@ -76,12 +178,28 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         startActivity(exit);
     }
 
-    private void addPages()
-    {
-        ViewPagerAdapter pagerAdapter=new ViewPagerAdapter(this.getSupportFragmentManager());
+
+    private void sendNewEventSwitch(String id, EventModel model) {
+        ViewPagerAdapter adapter = (ViewPagerAdapter) vp.getAdapter();
+        switch (model.getEventStatus()) {
+            case UPCOMING:
+                UpcomingEventsTabFragment future = (UpcomingEventsTabFragment) adapter.getItem(0);
+                future.addEvents(id, model);
+            case PAST:
+                PastEventsTabFragment past = (PastEventsTabFragment) adapter.getItem(1);
+                past.addEvents(id, model);
+            case PENDING:
+                PendingEventsTabFragment pending = (PendingEventsTabFragment) adapter.getItem(2);
+                pending.addEvents(id, model);
+
+        }
+    }
+
+    private void addPages() {
+        ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(this.getSupportFragmentManager());
         pagerAdapter.addFragment(new UpcomingEventsTabFragment());
-        pagerAdapter.addFragment(new PendingEventsTabFragment());
         pagerAdapter.addFragment(new PastEventsTabFragment());
+        pagerAdapter.addFragment(new PendingEventsTabFragment());
 
         vp.setAdapter(pagerAdapter);
     }

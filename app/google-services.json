@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "733859879220-pu9gcsigabtq4ntu05rttu9e74f1g322.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.huji.foodtricks.buddies",
+            "certificate_hash": "72e63ad084eaf3e93a7271528fd644f5308f8c9a"
+          }
+        },
+        {
           "client_id": "733859879220-lpn7nk1er12uc05q9i0athehlins675q.apps.googleusercontent.com",
           "client_type": 3
         }

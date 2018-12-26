@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 interface EventFetchingCompletion {
     void onFetchSuccess(EventModel model);
+
     void onNoEventFound();
 }
 
@@ -28,6 +29,7 @@ interface EventFetchingCompletion {
  */
 interface UserFetchingCompletion {
     void onFetchSuccess(UserModel model);
+
     void onNoUserFound();
 }
 
@@ -37,6 +39,7 @@ interface UserFetchingCompletion {
  */
 interface EventMapFetchingCompletion {
     void onFetchSuccess(HashMap<String, EventModel> modelList);
+
     void onNoEventsFound();
 }
 
@@ -88,7 +91,7 @@ public class DatabaseStreamer {
     /// Updating
 
     public void modifyEvent(EventModel modifiedEventModel, String eventModelId,
-                            final EventUpdateCompletion completion){
+                            final EventUpdateCompletion completion) {
         mDatabase.child("events").child(eventModelId).setValue(modifiedEventModel)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -99,11 +102,13 @@ public class DatabaseStreamer {
     }
 
     public void modifyUser(UserModel modifiedUserModel, String userModelId,
-                           final UserUpdateCompletion completion){
+                           final UserUpdateCompletion completion) {
         if (modifiedUserModel.getEventIDs() == null)
             modifiedUserModel.setEventIDs(new ArrayList<String>());
         if (modifiedUserModel.getGroups() == null)
             modifiedUserModel.setGroups(new HashMap<String, GroupModel>());
+        if (modifiedUserModel.getChangedEvents() == null)
+            modifiedUserModel.setChangedEvents(new ArrayList<String>());
         mDatabase.child("users").child(userModelId).setValue(modifiedUserModel)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -164,7 +169,7 @@ public class DatabaseStreamer {
     }
 
     public void fetchEventModelsMapForUserId(String userId,
-                                          final EventMapFetchingCompletion completion) {
+                                             final EventMapFetchingCompletion completion) {
         fetchUserModelById(userId, new UserFetchingCompletion() {
             @Override
             public void onFetchSuccess(UserModel user) {
@@ -188,7 +193,7 @@ public class DatabaseStreamer {
         final AtomicInteger finishedCount = new AtomicInteger(0);
         final AtomicBoolean stopFetching = new AtomicBoolean(false);
 
-        for (final String eventModelId: eventModelIds) {
+        for (final String eventModelId : eventModelIds) {
             fetchEventModelById(eventModelId, new EventFetchingCompletion() {
                 @Override
                 public void onFetchSuccess(EventModel model) {
@@ -212,7 +217,7 @@ public class DatabaseStreamer {
     // Adding an event to users
 
     public void addEventIdToUserIdList(final ArrayList<String> userIdList, String eventId,
-                                       final AddEventToUsersCompletion completion){
+                                       final AddEventToUsersCompletion completion) {
         final AtomicInteger usersUpdatedCount = new AtomicInteger(0);
         final int usersCount = userIdList.size();
 
@@ -230,25 +235,26 @@ public class DatabaseStreamer {
     }
 
     public void addEventIdToUserById(final String userModelId, final String eventId,
-                                     final UserUpdateCompletion completion){
+                                     final UserUpdateCompletion completion) {
         fetchUserModelById(userModelId, new UserFetchingCompletion() {
-                    @Override
-                    public void onFetchSuccess(UserModel model) {
-                        addEventIdToUser(model, userModelId, eventId, completion);
-                    }
+            @Override
+            public void onFetchSuccess(UserModel model) {
+                addEventIdToUser(model, userModelId, eventId, completion);
+            }
 
-                    @Override
-                    public void onNoUserFound() {
-                        Log.d("fetchingFailure", "tried to add event to user that doesn't exist: " + userModelId);
-                    }
-                });
+            @Override
+            public void onNoUserFound() {
+                Log.d("fetchingFailure", "tried to add event to user that doesn't exist: " + userModelId);
+            }
+        });
     }
 
     // event adding helper
 
     private void addEventIdToUser(UserModel userModel, String userModelId, String eventId,
-                                 final UserUpdateCompletion completion) {
+                                  final UserUpdateCompletion completion) {
         userModel.addEventId(eventId);
+        userModel.addChangedEvent(eventId);
         modifyUser(userModel, userModelId, completion);
     }
 }

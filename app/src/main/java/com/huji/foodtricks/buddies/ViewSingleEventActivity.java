@@ -33,7 +33,6 @@ import androidx.appcompat.app.AppCompatActivity;
 public class ViewSingleEventActivity extends AppCompatActivity {
 
     static EventModel curr_event;
-    private UserModel currentUser;
     private String currentUserID;
     private DatabaseStreamer dbs = new DatabaseStreamer();
     private String curr_event_id;
@@ -44,11 +43,8 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         Intent eventCard = getIntent();
         curr_event = (EventModel) eventCard.getSerializableExtra(getResources().getString(R.string.extra_current_event_model));
         curr_event_id = eventCard.getStringExtra(getResources().getString(R.string.extra_current_event_id));
-        currentUser = (UserModel) eventCard.getSerializableExtra(getResources().getString(R.string.extra_current_user_model));
-        currentUserID = eventCard.getStringExtra(getResources().getString(R.string.extra_current_user_id));
-        if (currentUserID == null) {
-            currentUserID = FirebaseAuth.getInstance().getUid();
-        }
+        currentUserID = FirebaseAuth.getInstance().getUid();
+
         if (curr_event_id == null) {
             curr_event_id = "ABCDEFG";
         }
@@ -72,10 +68,10 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         TextView hour_tv = findViewById(R.id.hour_textView);
         modifyHourTextView(curr_event.getTime(), hour_tv);
 
-
         TextView rsvpText = findViewById(R.id.RSVPText);
         modifyAttendersTextView(curr_event.getAttendanceProvider(), rsvpText);
     }
+
 
     private void modifyDateTextView(Date time, TextView date_tv) {
         // TODO : might want to use this format, we need to decide
@@ -99,6 +95,7 @@ public class ViewSingleEventActivity extends AppCompatActivity {
 
     public void modifyAttendersTextView(EventAttendanceProvider eventAttendanceProvider, TextView tv) {
         SpannableString attending = new SpannableString(
+
                 String.join("\n", curr_event.getAttendanceProvider().getAttending().values()) );
         SpannableString tentative = new SpannableString(
                 String.join("\n", curr_event.getAttendanceProvider().getTentatives().values()));
@@ -124,8 +121,9 @@ public class ViewSingleEventActivity extends AppCompatActivity {
     public void onRSVPChangeClick(View view) {
 //        Toast.makeText(ViewSingleEventActivity.this, getString(R.string.change_rsvp_msg_prefix) + .getTitle(), Toast.LENGTH_SHORT).show();
         EventAttendanceProvider attendanceProvider = curr_event.getAttendanceProvider();
-        if (currentUser == null)
+        if (currentUserID == null)
             return;
+
         if (view.getId() == R.id.approve_btn) {
             attendanceProvider.markAttending(currentUserID);
         } else if (view.getId() == R.id.tentative_btn) {

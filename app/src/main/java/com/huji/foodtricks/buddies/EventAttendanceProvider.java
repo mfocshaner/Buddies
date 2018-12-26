@@ -14,12 +14,22 @@ public class EventAttendanceProvider implements Serializable {
 
     private HashMap<String, String> invitees; // will maybe change if invitees become "People" objects.
 
+
     /// should there be an "invitees" or just these three separate groups?
     /// where should the person's attendance status be stored?
     private HashMap<String, String> attending;
     private HashMap<String, String> notAttending;
     private HashMap<String, String> tentatives;
     private HashMap<String, String> nonResponsive;
+
+
+    public EventAttendanceProvider() {
+        this.invitees = new HashMap<String, String>();
+        this.nonResponsive = new HashMap<String, String>();
+        this.attending = new HashMap<String, String>();
+        this.notAttending = new HashMap<String, String>();
+        this.tentatives = new HashMap<String, String>();
+    }
 
     public EventAttendanceProvider(HashMap<String, String> invitees) {
         this.invitees = invitees; // reference ?

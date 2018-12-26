@@ -1,9 +1,12 @@
 package com.huji.foodtricks.buddies;
 
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +20,10 @@ import java.util.HashMap;
 
 public class PendingEventsTabFragment extends Fragment {
 
-    View view;
+    ListView view;
+    EventListAdaptor adapter;
+    HashMap<String, EventModel> pending_events = new HashMap<>();
+    HashMap<String, EventModel> new_events = new HashMap<>();
 
     @Nullable
     @Override
@@ -25,25 +31,43 @@ public class PendingEventsTabFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.pending_events, container, false);
 
-        ListView lv = (ListView) rootView.findViewById(R.id.list_view_pending);
-        EventListAdaptor adapter = new EventListAdaptor(this.getActivity(), getPendingEvents());
-        lv.setAdapter(adapter);
+        this.view = (ListView) rootView.findViewById(R.id.list_view_pending);
+        this.adapter = new EventListAdaptor(this.getActivity(), getPendingEvents());
+        this.view.setAdapter(adapter);
+        updateEvents();
+        final SwipeRefreshLayout pullToRefresh = rootView.findViewById(R.id.swipe_refresh_pending);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updateEvents();
+                pullToRefresh.setRefreshing(false);
+            }
+        });
+
 
         return rootView;
     }
 
+    private void updateEvents() {
+        this.adapter.addItems(this.new_events);
+        this.new_events.clear();
+        this.adapter.notifyDataSetChanged();
+    }
 
-    private ArrayList<EventModel> getPendingEvents() {
-        ArrayList<EventModel> upcoming_events = new ArrayList<>();
+
+    private HashMap<String, EventModel> getPendingEvents() {
 
         EventModel event = new EventModel("pending", new Date(2018, 12, 12, 12, 30), new HashMap<String, String>(), "Amit");
+        pending_events.put("afkaflkaflkma13", event);
+        return pending_events;
+    }
 
-        upcoming_events.add(event);
-        return upcoming_events;
+    public void addEvents(String id, EventModel event) {
+        this.new_events.put(id, event);
     }
 
     @Override
     public String toString() {
-        return "Pending";
+        return "In planning";
     }
 }

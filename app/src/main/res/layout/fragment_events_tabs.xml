@@ -17,10 +17,13 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme" />
+
         <com.google.android.material.tabs.TabLayout
+
             android:id="@+id/mTab_ID"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            app:tabTextColor="@color/card" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -30,15 +33,23 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
+        android:clickable="true"
         android:src="@drawable/plus"
-        app:backgroundTint="@color/colorAccent"
-        android:clickable="true"/>
+        app:backgroundTint="@color/colorAccent" />
+
+    <!--ProgressBar
+    android:id="@+id/progressBar1"
+    style="?android:attr/progressBarStyleLarge"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true" /-->
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/mViewpager_ID"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
+
         />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
