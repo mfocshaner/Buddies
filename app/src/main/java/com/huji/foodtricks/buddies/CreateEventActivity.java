@@ -1,10 +1,12 @@
 package com.huji.foodtricks.buddies;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -118,7 +120,11 @@ public class CreateEventActivity extends AppCompatActivity {
                 currentUserID);
         return newEvent;
     }
-    
+
+    ///////////
+    /// WHO ///
+    ///////////
+
     private void setupWhoHorizontalPicker() {
         final HorizontalPicker hPicker = (HorizontalPicker) findViewById(R.id.whoHPicker);
 
@@ -128,6 +134,7 @@ public class CreateEventActivity extends AppCompatActivity {
         HorizontalPicker.OnSelectionChangeListener listener = new HorizontalPicker.OnSelectionChangeListener() {
             @Override
             public void onItemSelect(HorizontalPicker picker, int index) {
+                hideSoftKeyboard();
                 HorizontalPicker.PickerItem selected = picker.getSelectedItem();
                 String selectedGroupName = selected.getText();
 
@@ -168,6 +175,7 @@ public class CreateEventActivity extends AppCompatActivity {
         finalizeSelectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hideSoftKeyboard();
                 for (String userId : usersToChooseFrom.keySet()) {
                     CheckBox checkBox = (CheckBox)linearLayout.findViewById(userId.hashCode());
                     if (checkBox.isChecked()) {
@@ -193,6 +201,10 @@ public class CreateEventActivity extends AppCompatActivity {
         return users;
     }
 
+    ////////////
+    /// WHAT ///
+    ////////////
+
     private void setupWhatTextInput() {
         EditText editText = (EditText) findViewById(R.id.editText);
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -211,7 +223,28 @@ public class CreateEventActivity extends AppCompatActivity {
                 return false;
             }
         });
+        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideSoftKeyboard();
+                    chooseTitle(editText.getText().toString());
+                }
+            }
+        });
     }
+
+    private void hideSoftKeyboard() {
+        EditText editText = findViewById(R.id.editText);
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+        editText.clearFocus();
+    }
+
+    ////////////
+    /// WHEN ///
+    ////////////
 
     private void setupWhenPicker() {
         HorizontalPicker hPicker = (HorizontalPicker) findViewById(R.id.whenHPicker);
@@ -222,6 +255,8 @@ public class CreateEventActivity extends AppCompatActivity {
                 new HorizontalPicker.OnSelectionChangeListener() {
             @Override
             public void onItemSelect(HorizontalPicker picker, int index) {
+                hideSoftKeyboard();
+
                 final LinearLayout linearLayout =
                         (LinearLayout)findViewById(R.id.linearLayoutForCheckBoxes);
                 linearLayout.removeAllViews();
@@ -337,5 +372,4 @@ public class CreateEventActivity extends AppCompatActivity {
         startActivity(viewEventIntent);
         this.finish();
     }
-
 }
