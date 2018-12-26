@@ -52,18 +52,18 @@ public class UpcomingEventsTabFragment extends Fragment {
 
 
     private void updateEvents() {
-        this.future_events.putAll(this.new_events);
+        this.adapter.addItems(this.new_events);
         this.new_events.clear();
         this.adapter.notifyDataSetChanged();
     }
 
-    private ArrayList<EventModel> getUpcomingEvents() {
+    private HashMap<String,EventModel> getUpcomingEvents() {
 
         EventModel event1 = new EventModel("brunch at Zunni's", new Date(2018, 11, 25, 10, 0), new HashMap<String, String>(), "Amit");
 
         this.future_events.put("dsfodsf34324", event1);
 
-        return new ArrayList<EventModel>(future_events.values());
+        return future_events;
     }
 
     public void addEvents(String id, EventModel event) {

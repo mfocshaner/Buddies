@@ -1,6 +1,7 @@
 package com.huji.foodtricks.buddies;
 
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -48,18 +49,18 @@ public class PastEventsTabFragment extends Fragment {
 
 
     private void updateEvents() {
-        this.past_events.putAll(this.new_events);
+        this.adapter.addItems(this.new_events);
         this.new_events.clear();
         this.adapter.notifyDataSetChanged();
     }
 
-    private ArrayList<EventModel> getPastEvents() {
+    private HashMap<String, EventModel> getPastEvents() {
 
         EventModel event = new EventModel("past", new Date(2018, 10, 10, 13, 0), new HashMap<String, String>(), "Amit");
 
 
         past_events.put("kfafsamd214u13", event);
-        return new ArrayList<EventModel>(past_events.values());
+        return past_events;
     }
 
     public void addEvents(String id, EventModel event) {

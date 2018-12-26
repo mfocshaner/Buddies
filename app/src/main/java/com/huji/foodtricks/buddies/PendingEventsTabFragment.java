@@ -1,6 +1,7 @@
 package com.huji.foodtricks.buddies;
 
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -48,17 +49,17 @@ public class PendingEventsTabFragment extends Fragment {
     }
 
     private void updateEvents() {
-        this.adapter.addItems(new ArrayList<EventModel>(this.new_events.values()));
+        this.adapter.addItems(this.new_events);
         this.new_events.clear();
         this.adapter.notifyDataSetChanged();
     }
 
 
-    private ArrayList<EventModel> getPendingEvents() {
+    private HashMap<String, EventModel> getPendingEvents() {
 
         EventModel event = new EventModel("pending", new Date(2018, 12, 12, 12, 30), new HashMap<String, String>(), "Amit");
         pending_events.put("afkaflkaflkma13", event);
-        return new ArrayList<EventModel>(pending_events.values());
+        return pending_events;
     }
 
     public void addEvents(String id, EventModel event) {
