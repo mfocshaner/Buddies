@@ -5,14 +5,13 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-
-import androidx.appcompat.widget.Toolbar;
 
 import com.huji.foodtricks.buddies.Models.UserModel;
 
@@ -31,6 +30,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_events_tabs);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
 
         Intent signedInIntent = getIntent();
