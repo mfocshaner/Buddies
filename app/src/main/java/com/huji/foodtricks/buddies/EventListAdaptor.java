@@ -26,8 +26,14 @@ public class EventListAdaptor extends BaseAdapter {
         this.keys = new ArrayList<>(eventModels.keySet());
     }
 
-    public void addItems(HashMap<String,EventModel> events) {
+    public void addItems(HashMap<String, EventModel> events) {
         eventModels.putAll(events);
+        this.keys.addAll(events.keySet());
+    }
+
+    public void removeItems(HashMap<String, EventModel> events) {
+        eventModels.keySet().removeAll(events.keySet());
+        this.keys.removeAll(events.keySet());
     }
 
     @Override

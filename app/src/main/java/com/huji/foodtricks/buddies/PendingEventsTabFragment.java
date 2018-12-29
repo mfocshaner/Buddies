@@ -24,6 +24,7 @@ public class PendingEventsTabFragment extends Fragment {
     EventListAdaptor adapter;
     HashMap<String, EventModel> pending_events = new HashMap<>();
     HashMap<String, EventModel> new_events = new HashMap<>();
+    HashMap<String, EventModel> events_to_delete = new HashMap<>();
 
     @Nullable
     @Override
@@ -51,6 +52,8 @@ public class PendingEventsTabFragment extends Fragment {
     private void updateEvents() {
         this.adapter.addItems(this.new_events);
         this.new_events.clear();
+        this.adapter.removeItems(this.events_to_delete);
+        this.events_to_delete.clear();
         this.adapter.notifyDataSetChanged();
     }
 
@@ -64,6 +67,10 @@ public class PendingEventsTabFragment extends Fragment {
 
     public void addEvents(String id, EventModel event) {
         this.new_events.put(id, event);
+    }
+
+    public void removeEvent(String id, EventModel event) {
+        this.events_to_delete.put(id, event);
     }
 
     @Override
