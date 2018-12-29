@@ -1,9 +1,7 @@
 package com.huji.foodtricks.buddies;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.io.Serializable;
+import java.util.HashMap;
 
 
 /**
@@ -22,6 +20,19 @@ public class EventAttendanceProvider implements Serializable {
     private HashMap<String, String> tentatives;
     private HashMap<String, String> nonResponsive;
 
+    public enum RSVP {ATTENDING, NOT_ATTENDING, TENTATIVE, NON_RESPONSIVE};
+
+    public RSVP getUserRSVP(String userId) {
+        if (attending.get(userId) != null)
+            return RSVP.ATTENDING;
+        if (nonResponsive.get(userId) != null)
+            return RSVP.NON_RESPONSIVE;
+        if (tentatives.get(userId) != null)
+            return RSVP.TENTATIVE;
+        if (notAttending.get(userId) != null)
+            return RSVP.NOT_ATTENDING;
+        return null;
+    }
 
     public EventAttendanceProvider() {
         this.invitees = new HashMap<String, String>();

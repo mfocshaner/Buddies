@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.huji.foodtricks.buddies.Models.EventModel;
-import com.huji.foodtricks.buddies.Models.UserModel;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -32,6 +31,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class ViewSingleEventActivity extends AppCompatActivity {
 
+    public static final HashSet<Integer> ALL_RSVP_BUTTONS = new HashSet<>(Arrays.asList(R.id.approve_btn, R.id.tentative_btn, R.id.decline_btn));
     static EventModel curr_event;
     private String currentUserID;
     private DatabaseStreamer dbs = new DatabaseStreamer();
@@ -70,12 +70,12 @@ public class ViewSingleEventActivity extends AppCompatActivity {
 
         TextView rsvpText = findViewById(R.id.RSVPText);
         modifyAttendersTextView(curr_event.getAttendanceProvider(), rsvpText);
+        modifyRSVPButtons();
+
     }
 
 
     private void modifyDateTextView(Date time, TextView date_tv) {
-        // TODO : might want to use this format, we need to decide
-        // DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
         DateFormat formatter = new SimpleDateFormat("dd/MM", Locale.getDefault());
         try {
             time = formatter.parse(formatter.format(time));
@@ -119,7 +119,6 @@ public class ViewSingleEventActivity extends AppCompatActivity {
     }
 
     public void onRSVPChangeClick(View view) {
-//        Toast.makeText(ViewSingleEventActivity.this, getString(R.string.change_rsvp_msg_prefix) + .getTitle(), Toast.LENGTH_SHORT).show();
         EventAttendanceProvider attendanceProvider = curr_event.getAttendanceProvider();
         if (currentUserID == null)
             return;
@@ -142,20 +141,38 @@ public class ViewSingleEventActivity extends AppCompatActivity {
             }
 
         });
-        TextView rsvp_tv = findViewById(R.id.RSVPText);
-        modifyAttendersTextView(curr_event.getAttendanceProvider(), rsvp_tv);
-        //TODO: refactor the following code
-        Set<Integer> allRSVPButtons = new HashSet<>(Arrays.asList(R.id.approve_btn, R.id.tentative_btn, R.id.decline_btn));
-        allRSVPButtons.remove(view.getId()); // remove the selected button from the list of buttons to disable
-        Button selectedButtonView = (Button) view; // just for readability
-        selectedButtonView.setBackgroundColor(getResources().getColor(R.color.selectedRSVPButton));
-        selectedButtonView.setTextColor(Color.WHITE);
-//        setContentView(R.layout.activity_view_single_event);
+        modifyRSVPButtons();
+    }
 
+    private void modifyRSVPButtons() {
+        Set<Integer> allRSVPButtons = new HashSet<>(ALL_RSVP_BUTTONS);
         for (int buttonId : allRSVPButtons) {
             Button currButton = findViewById(buttonId);
-            currButton.setBackgroundColor(Color.WHITE);
-            currButton.setTextColor(Color.BLACK);
+            changeButtonToDisabled(currButton);
         }
+        TextView rsvp_tv = findViewById(R.id.RSVPText);
+        modifyAttendersTextView(curr_event.getAttendanceProvider(), rsvp_tv);
+        EventAttendanceProvider attendanceProvider = curr_event.getAttendanceProvider();
+        EventAttendanceProvider.RSVP status = attendanceProvider.getUserRSVP(currentUserID);
+        if (status == EventAttendanceProvider.RSVP.ATTENDING) {
+            changeButtonToEnabled(findViewById(R.id.approve_btn));
+        }
+        else if (status == EventAttendanceProvider.RSVP.NOT_ATTENDING)
+            changeButtonToEnabled(findViewById(R.id.decline_btn));
+        else if (status == EventAttendanceProvider.RSVP.TENTATIVE)
+            changeButtonToEnabled(findViewById(R.id.tentative_btn));
+
+
+
+    }
+
+    private void changeButtonToEnabled(Button selectedButtonView) {
+        selectedButtonView.setBackgroundColor(getResources().getColor(R.color.selectedRSVPButton));
+        selectedButtonView.setTextColor(Color.WHITE);
+    }
+
+    private void changeButtonToDisabled(Button currButton) {
+        currButton.setBackgroundColor(Color.WHITE);
+        currButton.setTextColor(Color.BLACK);
     }
 }
