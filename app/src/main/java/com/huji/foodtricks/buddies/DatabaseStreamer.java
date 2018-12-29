@@ -105,6 +105,13 @@ public class DatabaseStreamer {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
+                        addEventIdToUserIdList(new ArrayList<>(modifiedEventModel.getInvitees().keySet()),
+                                eventModelId, new AddEventToUsersCompletion() {
+                                    @Override
+                                    public void onSuccess() {
+                                        // nothing
+                                    }
+                                });
                         completion.onUpdateSuccess();
                     }
                 });
