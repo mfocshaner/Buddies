@@ -17,8 +17,8 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
-
 
 
 import android.view.View;
@@ -48,6 +48,8 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     private UserModel currentUser;
     private String currentUserID;
     private ProgressBar spinner;
+
+    private enum action {ADD, REMOVE}
 
 
     final DatabaseStreamer streamer = new DatabaseStreamer();
@@ -87,7 +89,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
                     streamer.fetchEventModelById(eventId, new EventFetchingCompletion() {
                         @Override
                         public void onFetchSuccess(EventModel model) {
-                            sendNewEventSwitch(eventId, model);
+                            sendEventSwitch(eventId, model, action.ADD);
                         }
 
                         @Override
@@ -125,7 +127,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
             @Override
             public void onFetchSuccess(HashMap<String, EventModel> modelList) {
                 for (Map.Entry<String, EventModel> entry : modelList.entrySet()) {
-                    sendNewEventSwitch(entry.getKey(), entry.getValue());
+                    sendEventSwitch(entry.getKey(), entry.getValue(), action.ADD);
                 }
             }
 
@@ -178,20 +180,50 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         startActivity(exit);
     }
 
+    public void moveEvent(Pair<String, EventModel> event, EventModel.state current_state, EventModel.state new_state) {
+        sendEventSwitch(event.first, event.second, action.REMOVE);
+        event.second.setEventStatus(new_state);
+        this.streamer.modifyEvent(event.second, event.first, new EventUpdateCompletion() {
+            @Override
+            public void onUpdateSuccess() {
+            }
+        });
+        sendEventSwitch(event.first, event.second, action.ADD);
 
-    private void sendNewEventSwitch(String id, EventModel model) {
+    }
+
+    /**
+     * @param id
+     * @param model
+     * @param flag  false- remove event, true- add event
+     */
+    private void sendEventSwitch(String id, EventModel model, action flag) {
         ViewPagerAdapter adapter = (ViewPagerAdapter) vp.getAdapter();
         switch (model.getEventStatus()) {
             case UPCOMING:
                 UpcomingEventsTabFragment future = (UpcomingEventsTabFragment) adapter.getItem(0);
-                future.addEvents(id, model);
+                if (flag == action.ADD) {
+                    future.addEvents(id, model);
+                    return;
+                }
+                future.removeEvent(id, model);
+                break;
             case PAST:
                 PastEventsTabFragment past = (PastEventsTabFragment) adapter.getItem(1);
-                past.addEvents(id, model);
+                if (flag == action.ADD) {
+                    past.addEvents(id, model);
+                    return;
+                }
+                past.removeEvent(id, model);
+                break;
             case PENDING:
                 PendingEventsTabFragment pending = (PendingEventsTabFragment) adapter.getItem(2);
-                pending.addEvents(id, model);
-
+                if (flag == action.ADD) {
+                    pending.addEvents(id, model);
+                    return;
+                }
+                pending.removeEvent(id, model);
+                break;
         }
     }
 

@@ -14,6 +14,7 @@ import com.huji.foodtricks.buddies.Models.GroupModel;
 import com.huji.foodtricks.buddies.Models.UserModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -174,6 +175,7 @@ public class DatabaseStreamer {
             @Override
             public void onFetchSuccess(UserModel user) {
                 ArrayList<String> eventIds = user.getEventIDs();
+                eventIds.removeAll(Collections.singleton(null));
                 fetchEventModelsForEventIdsList(eventIds, completion);
             }
 
@@ -207,8 +209,11 @@ public class DatabaseStreamer {
                 // currently stops fetching if a single non-existing event was requested.
                 @Override
                 public void onNoEventFound() {
-                    stopFetching.set(true);
-                    completion.onNoEventsFound();
+//                    stopFetching.set(true);
+                    finishedCount.getAndAdd(1);
+                    //TODO: remove event form DB
+                    Log.d("missing event", eventModelId);
+//                    completion.onNoEventsFound();
                 }
             });
         }
