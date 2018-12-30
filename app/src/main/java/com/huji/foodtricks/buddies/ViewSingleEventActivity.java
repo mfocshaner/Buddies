@@ -181,6 +181,8 @@ public class ViewSingleEventActivity extends AppCompatActivity {
     private void changeButtonToDisabled(Button currButton) {
         currButton.setBackgroundColor(Color.WHITE);
         currButton.setTextColor(Color.BLACK);
+        currButton.setClickable(true);
+
     }
 
     public void approve_event(View view) {
