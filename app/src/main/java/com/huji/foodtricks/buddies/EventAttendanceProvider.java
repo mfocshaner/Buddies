@@ -12,9 +12,6 @@ public class EventAttendanceProvider implements Serializable {
 
     private HashMap<String, String> invitees; // will maybe change if invitees become "People" objects.
 
-
-    /// should there be an "invitees" or just these three separate groups?
-    /// where should the person's attendance status be stored?
     private HashMap<String, String> attending;
     private HashMap<String, String> notAttending;
     private HashMap<String, String> tentatives;
@@ -72,6 +69,8 @@ public class EventAttendanceProvider implements Serializable {
         tentatives.remove(userID);
         notAttending.put(userID, invitees.get(userID));
         attending.remove(userID);
+
+        nonResponsive.remove(userID);
     }
 
     public void markTentative(String userID) {
@@ -81,6 +80,8 @@ public class EventAttendanceProvider implements Serializable {
         tentatives.put(userID, invitees.get(userID));
         notAttending.remove(userID);
         attending.remove(userID);
+
+        nonResponsive.remove(userID);
     }
 
 
@@ -116,7 +117,29 @@ public class EventAttendanceProvider implements Serializable {
         return nonResponsive.size();
     }
 
+
+    public void setInvitees(HashMap<String, String> invitees) {
+        this.invitees = invitees;
+    }
+
     public HashMap<String, String> getInvitees() {
         return invitees;
     }
+
+    public void setAttending(HashMap<String, String> attending) {
+        this.attending = attending;
+    }
+
+    public void setNotAttending(HashMap<String, String> notAttending) {
+        this.notAttending = notAttending;
+    }
+
+    public void setTentatives(HashMap<String, String> tentatives) {
+        this.tentatives = tentatives;
+    }
+
+    public void setNonResponsive(HashMap<String, String> nonResponsive) {
+        this.nonResponsive = nonResponsive;
+    }
+
 }

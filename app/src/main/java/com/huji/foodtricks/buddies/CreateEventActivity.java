@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -43,6 +42,8 @@ public class CreateEventActivity extends AppCompatActivity {
     private GregorianCalendar calendar = new GregorianCalendar();
     private String eventTitle;
     private HashMap<String, String> invitees;
+
+    static final int CREATE_NEW_GROUP_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +130,7 @@ public class CreateEventActivity extends AppCompatActivity {
         final HorizontalPicker hPicker = (HorizontalPicker) findViewById(R.id.whoHPicker);
 
         ArrayList<String> userGroupNames = new ArrayList<>(currentUser.getGroups().keySet());
+        userGroupNames.add(0, getResources().getString(R.string.create_group_button));
         hPicker.setItems(EventParametersProvider.getWhoItems(userGroupNames));
 
         HorizontalPicker.OnSelectionChangeListener listener = new HorizontalPicker.OnSelectionChangeListener() {
@@ -142,10 +144,11 @@ public class CreateEventActivity extends AppCompatActivity {
                         (LinearLayout)findViewById(R.id.linearLayoutForCheckBoxes);
                 linearLayout.removeAllViews();
 
-                if (selectedGroupName.equals("Custom")) {
+                if (selectedGroupName.equals(getResources()
+                        .getString(R.string.create_group_button))) {
                     invitees = null;
                     disableCreateEventButton();
-                    createGroupFromFriends();
+                    createCustomGroup();
                 } else {
                     chooseGroup(selectedGroupName);
                 }
@@ -156,49 +159,52 @@ public class CreateEventActivity extends AppCompatActivity {
         hPicker.setChangeListener(listener);
     }
 
-    private void createGroupFromFriends() {
-        final LinearLayout linearLayout = (LinearLayout)findViewById(R.id.linearLayoutForCheckBoxes);
-        final HashMap<String, String> customGroupOfFriends = new HashMap<>();
-
-        final HashMap<String, String> usersToChooseFrom = dummyUserNamesInDB();
-
-        for (String userId : usersToChooseFrom.keySet()) {
-            CheckBox checkBox = new CheckBox(this);
-            checkBox.setText(usersToChooseFrom.get(userId));
-            checkBox.setId(userId.hashCode());
-            linearLayout.addView(checkBox);
-        }
-
-        Button finalizeSelectionButton = new Button(linearLayout.getContext());
-        finalizeSelectionButton.setText(R.string.create_group);
-        finalizeSelectionButton.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        finalizeSelectionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftKeyboard();
-                for (String userId : usersToChooseFrom.keySet()) {
-                    CheckBox checkBox = (CheckBox)linearLayout.findViewById(userId.hashCode());
-                    if (checkBox.isChecked()) {
-                        String userName = checkBox.getText().toString();
-                        customGroupOfFriends.put(userId , usersToChooseFrom.get(userId));
-                    }
-                }
-
-                linearLayout.removeAllViews();
-                invitees = customGroupOfFriends;
-                shouldEnableCreateEventButton();
-            }
-        });
-        linearLayout.addView(finalizeSelectionButton);
+    private void createCustomGroup() {
+        Intent createCustomGroup = new Intent(this, CreateGroupActivity.class);
+        createCustomGroup.putExtra(getResources().getString(R.string.extra_current_user_model),
+                currentUser);
+        createCustomGroup.putExtra(getResources().getString(R.string.extra_current_user_id),
+                currentUserID);
+        startActivityForResult(createCustomGroup, CREATE_NEW_GROUP_REQUEST);
     }
 
-    private HashMap<String, String> dummyUserNamesInDB(){
-        HashMap<String, String> users = new HashMap<>();
-        users.put("BfsSucGUquSib4qKztVUz8SWDH42", "Michael Focshaner");
-        users.put("5UUwOK8Ac6cvg4OSexrHBK7Wi952", "Amit Silber");
-        users.put("LPUwbrBuQod8Sbaj1nT5uzOJe812", "Ido Savion");
-        users.put("YLsU95DSh3dEFDmW7z8SCx5el382", "Matan Harsat");
-        return users;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent resultIntent) {
+        // Check which request we're responding to
+        if (requestCode == CREATE_NEW_GROUP_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                HashMap<String, String> customInvitees =
+                        (HashMap<String, String>)resultIntent.getSerializableExtra("Custom Group");
+                String groupName = resultIntent.getStringExtra("Group Name");
+                // create group for user in DB and on screen
+                this.invitees = customInvitees;
+                updateUserInDBWithNewGroup(groupName, customInvitees);
+            }
+        }
+    }
+
+    private void updateUserInDBWithNewGroup(String groupName, HashMap<String, String> inviteesMap) {
+        currentUser.addGroup(groupName, inviteesMap);
+        dbs.modifyUser(currentUser, currentUserID, new UserUpdateCompletion() {
+            @Override
+            public void onUpdateSuccess() {
+                updateWhoPicker(groupName);
+            }
+        });
+    }
+
+    private void updateWhoPicker(String chosenGroup) {
+        final HorizontalPicker hPicker = (HorizontalPicker) findViewById(R.id.whoHPicker);
+        HorizontalPicker.OnSelectionChangeListener listener = hPicker.getChangeListener();
+        hPicker.setChangeListener(null);
+        ArrayList<String> userGroupNames = new ArrayList<>(currentUser.getGroups().keySet());
+        int chosenIndex = userGroupNames.indexOf(chosenGroup);
+        userGroupNames.add(0, userGroupNames.get(chosenIndex));
+        userGroupNames.remove(chosenIndex+1);
+        userGroupNames.add(0, getResources().getString(R.string.create_group_button));
+        hPicker.setItems(EventParametersProvider.getWhoItems(userGroupNames), chosenIndex);
+        hPicker.setChangeListener(listener);
     }
 
     ////////////
