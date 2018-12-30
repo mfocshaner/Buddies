@@ -69,15 +69,13 @@ public class UserModel implements Serializable {
         if (eventIDs == null) {
             eventIDs = new ArrayList<>();
         }
-        eventIDs.add(eventId);
+        if (!eventIDs.contains(eventId)) {
+            eventIDs.add(eventId);
+        }
     }
 
     public void removeEventId(String eventId) {
         eventIDs.remove(eventId);
-    }
-
-    public ArrayList<GroupModel> getGroupList() {
-        return new ArrayList<>(groups.values());
     }
 
     public GroupModel getGroupForName(String groupName) {

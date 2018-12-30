@@ -44,6 +44,7 @@ interface UsersMapFetchingCompletion {
     void onNoUsersFound();
 }
 
+
 /**
  * Interface for receiving all UserModels
  */
@@ -53,6 +54,7 @@ interface UsersArrayListFetchingCompletion {
 
     void onNoUsersFound();
 }
+
 
 /**
  * Interface for passing methods to execute after fetching a list of EventModels.
@@ -116,6 +118,13 @@ public class DatabaseStreamer {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
+                        addEventIdToUserIdList(new ArrayList<>(modifiedEventModel.getInvitees().keySet()),
+                                eventModelId, new AddEventToUsersCompletion() {
+                                    @Override
+                                    public void onSuccess() {
+                                        // nothing
+                                    }
+                                });
                         completion.onUpdateSuccess();
                     }
                 });
@@ -236,6 +245,32 @@ public class DatabaseStreamer {
                 }
             });
         }
+    }
+
+    public void fetchIdsOfAllUsersInDB(UsersMapFetchingCompletion completion) {
+        DatabaseReference ref = mDatabase.child("users");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> users = dataSnapshot.getChildren();
+                HashMap<String, String> usersMap = new HashMap<>();
+                for (DataSnapshot user : users) {
+                    UserModel userModel = user.getValue(UserModel.class);
+                    usersMap.put(user.getKey(), userModel.getUserName());
+                }
+                if (usersMap.size() == 0) {
+                    completion.onNoUsersFound();
+                    return;
+                }
+                completion.onFetchSuccess(usersMap);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                completion.onNoUsersFound();
+            }
+        });
+
     }
 
     // Adding an event to users

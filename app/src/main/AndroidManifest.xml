@@ -19,7 +19,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".SignInActivity"
+        <activity
+            android:name=".SignInActivity"
             android:label="@string/app_name"
             android:theme="@style/ThemeOverlay.MyNoTitleActivity">
             <intent-filter>
@@ -28,13 +29,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".EventsTabsActivity" android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
-        <activity android:name=".ViewSingleEventActivity">
-        </activity>
-        <activity android:name=".CreateEventActivity">
-        </activity>
-
-
+        <activity
+            android:name=".EventsTabsActivity"
+            android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
+        <activity android:name=".ViewSingleEventActivity"></activity>
+        <activity android:name=".CreateEventActivity"></activity>
+        <activity android:name=".CreateGroupActivity"></activity>
     </application>
 
 </manifest>
