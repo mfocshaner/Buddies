@@ -86,5 +86,6 @@
     <string name="change_rsvp_msg_prefix">Changed RSVP to</string>
     <string name="rsvp_bottom_bar_question">Going?</string>
     <string name="error_loading_user_rsvp_text">\"Error loading RSVP\"</string>
+    <string name="ORANGE">#ffa500</string>
 
 </resources>

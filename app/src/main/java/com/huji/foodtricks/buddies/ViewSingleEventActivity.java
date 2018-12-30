@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.huji.foodtricks.buddies.Models.EventModel;
 
@@ -37,27 +38,7 @@ public class ViewSingleEventActivity extends AppCompatActivity {
     private DatabaseStreamer dbs = new DatabaseStreamer();
     private String curr_event_id;
 
-    String[] itemname ={
-            "Safari",
-            "Camera",
-            "Global",
-            "FireFox",
-            "UC Browser",
-            "Android Folder",
-            "VLC Player",
-            "Cold War"
-    };
 
-    Integer[] imgid={
-            R.drawable.ic_action_name,
-            R.drawable.apple,
-            R.drawable.apple,
-            R.drawable.apple,
-            R.drawable.apple,
-            R.drawable.apple,
-            R.drawable.apple,
-            R.drawable.apple,
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,10 +47,6 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         curr_event = (EventModel) eventCard.getSerializableExtra(getResources().getString(R.string.extra_current_event_model));
         curr_event_id = eventCard.getStringExtra(getResources().getString(R.string.extra_current_event_id));
         currentUserID = FirebaseAuth.getInstance().getUid();
-
-        if (curr_event_id == null) {
-            curr_event_id = "ABCDEFG";
-        }
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_single_event);
@@ -95,6 +72,15 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         TextView rsvpText = findViewById(R.id.RSVPText);
         modifyAttendersTextView(curr_event.getAttendanceProvider(), rsvpText);
         modifyRSVPButtons();
+
+        if (!curr_event.isUserOrganizer(currentUserID) || curr_event.getEventStatus() != EventModel.state.PENDING )
+        {
+            FloatingActionButton discart_btn = findViewById(R.id.discard_event);
+            FloatingActionButton approve_btn= findViewById(R.id.approve_event);
+
+            discart_btn.setVisibility(View.GONE);
+            approve_btn.setVisibility(View.GONE);
+        }
 
     }
 
@@ -131,7 +117,7 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         // setting the string's style:
         int flag = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
         attending.setSpan(new ForegroundColorSpan(Color.GREEN), 0, attending.length(), flag);
-        tentative.setSpan(new ForegroundColorSpan(Color.YELLOW), 0, tentative.length(), flag);
+        tentative.setSpan(new ForegroundColorSpan(Color.parseColor(getString(R.string.ORANGE))), 0, tentative.length(), flag);
         not_attending.setSpan(new ForegroundColorSpan(Color.RED), 0, not_attending.length(), flag);
         not_responsive.setSpan(new ForegroundColorSpan(Color.GRAY), 0, not_responsive.length(), flag);
         SpannableStringBuilder builder = new SpannableStringBuilder(); // to concatenate string together
@@ -198,5 +184,21 @@ public class ViewSingleEventActivity extends AppCompatActivity {
     private void changeButtonToDisabled(Button currButton) {
         currButton.setBackgroundColor(Color.WHITE);
         currButton.setTextColor(Color.BLACK);
+    }
+
+    public void approve_event(View view) {
+        curr_event.setEventStatus(EventModel.state.UPCOMING);
+        dbs.modifyEvent(curr_event, curr_event_id, () -> {
+
+        });
+        updateAllFields(curr_event);
+    }
+
+    public void discard_event(View view) {
+        curr_event.setEventStatus(EventModel.state.DELETED);
+        dbs.modifyEvent(curr_event, curr_event_id, () -> {
+
+        });
+        updateAllFields(curr_event);
     }
 }

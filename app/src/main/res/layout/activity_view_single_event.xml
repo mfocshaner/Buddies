@@ -11,7 +11,8 @@
     <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:stretchColumns="3">
+        android:stretchColumns="3"
+        tools:context=".ListViewWithImageAndText">
 
         <TableRow>
 
@@ -30,7 +31,7 @@
                 android:gravity="start"
                 android:padding="3dip"
                 android:textAlignment="textStart"
-                android:textSize="16sp" />
+                android:textSize="24sp" />
         </TableRow>
 
         <TableRow>
@@ -40,7 +41,7 @@
                 android:gravity="start"
                 android:padding="3dip"
                 android:textAlignment="textStart"
-                android:textSize="16sp" />
+                android:textSize="24sp" />
         </TableRow>
 
         <TableRow>
@@ -52,10 +53,12 @@
                 android:gravity="start"
                 android:padding="3dip"
                 android:text="@string/error_loading_user_rsvp_text"
-                android:textSize="20sp" />
+                android:textSize="23sp" />
 
 
         </TableRow>
+
+
     </TableLayout>
 
 
@@ -92,20 +95,20 @@
                 android:id="@+id/approve_btn"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="60dp"
-                android:layout_margin="5dp"
-                android:singleLine="true"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:onClick="onRSVPChangeClick"
+                android:singleLine="true"
                 android:text="Yes" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/decline_btn"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="60dp"
-                android:layout_margin="5dp"
-                android:singleLine="true"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:onClick="onRSVPChangeClick"
+                android:singleLine="true"
                 android:text="No" />
 
             <com.google.android.material.button.MaterialButton
@@ -113,13 +116,45 @@
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:padding="3dp"
                 android:gravity="center"
                 android:onClick="onRSVPChangeClick"
+                android:padding="3dp"
                 android:singleLine="true"
                 android:text="Maybe" />
 
         </com.google.android.material.bottomappbar.BottomAppBar>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/approve_event"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_gravity="top|end"
+                android:clickable="true"
+                android:onClick="approve_event"
+
+                app:backgroundTint="@color/colorEnabledFAB"
+                app:srcCompat="@drawable/approve_event_icon" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/discard_event"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
+                android:clickable="true"
+                android:gravity="end"
+                android:onClick="discard_event"
+                app:backgroundTint="@color/design_default_color_error"
+                app:layout_constraintStart_toStartOf="@+id/approve_event"
+                app:layout_constraintTop_toBottomOf="@+id/approve_event"
+                app:srcCompat="@drawable/decline_icon" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

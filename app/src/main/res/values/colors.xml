@@ -9,7 +9,7 @@
     <color name="colorPrimaryDark">@color/blue_grey_900</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorForSelection">#0a1AB4</color>
-    <color name="colorEnabledFAB">#008100</color>
+    <color name="colorEnabledFAB">#00c853</color>
     <color name="selectedRSVPButton">#03A9F4</color>
     <color name="card">#d0e0fd</color>
 </resources>
