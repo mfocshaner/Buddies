@@ -12,8 +12,12 @@ import android.widget.TextView;
 
 import com.huji.foodtricks.buddies.Models.EventModel;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class EventListAdaptor extends BaseAdapter {
     Context context;
@@ -65,9 +69,16 @@ public class EventListAdaptor extends BaseAdapter {
         TextView eventDate = (TextView) view.findViewById(R.id.date);
 
         final String name = event.getTitle();
-        String time = event.getTime().toString();
+        Calendar dateTime = new GregorianCalendar();
+        dateTime.setTime(event.getTime());
+        String dateTimeString = MessageFormat.format("{4} {0}/{1} {2}:{3}",
+                dateTime.get(Calendar.DATE),
+                dateTime.get(Calendar.MONTH),
+                dateTime.get(Calendar.HOUR_OF_DAY),
+                dateTime.get(Calendar.MINUTE),
+                dateTime.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()));
         eventName.setText(name);
-        eventDate.setText(time);
+        eventDate.setText(dateTimeString);
 
 
         view.setOnClickListener(new View.OnClickListener() {
