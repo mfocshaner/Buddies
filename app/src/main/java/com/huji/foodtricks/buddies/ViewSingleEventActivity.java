@@ -32,7 +32,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class ViewSingleEventActivity extends AppCompatActivity {
 
-    public static final HashSet<Integer> ALL_RSVP_BUTTONS = new HashSet<>(Arrays.asList(R.id.approve_btn, R.id.tentative_btn, R.id.decline_btn));
+    public static final HashSet<Integer> ALL_RSVP_BUTTONS =
+            new HashSet<>(Arrays.asList(R.id.approve_btn, R.id.tentative_btn, R.id.decline_btn));
     static EventModel curr_event;
     private String currentUserID;
     private DatabaseStreamer dbs = new DatabaseStreamer();
@@ -77,7 +78,6 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         {
             FloatingActionButton discart_btn = findViewById(R.id.discard_event);
             FloatingActionButton approve_btn= findViewById(R.id.approve_event);
-
             discart_btn.setVisibility(View.GONE);
             approve_btn.setVisibility(View.GONE);
         }
@@ -149,7 +149,6 @@ public class ViewSingleEventActivity extends AppCompatActivity {
                 update_event_updated.show();
                 // we'd maybe want to notify all users that there's something new about this event.
             }
-
         });
         modifyRSVPButtons();
     }
@@ -171,14 +170,12 @@ public class ViewSingleEventActivity extends AppCompatActivity {
             changeButtonToEnabled(findViewById(R.id.decline_btn));
         else if (status == EventAttendanceProvider.RSVP.TENTATIVE)
             changeButtonToEnabled(findViewById(R.id.tentative_btn));
-
-
-
     }
 
     private void changeButtonToEnabled(Button selectedButtonView) {
         selectedButtonView.setBackgroundColor(getResources().getColor(R.color.selectedRSVPButton));
         selectedButtonView.setTextColor(Color.WHITE);
+        selectedButtonView.setClickable(false);
     }
 
     private void changeButtonToDisabled(Button currButton) {

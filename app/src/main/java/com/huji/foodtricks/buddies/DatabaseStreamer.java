@@ -287,7 +287,6 @@ public class DatabaseStreamer {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Iterable<DataSnapshot> users = dataSnapshot.getChildren();
-//                HashMap<String, String> usersMap = new HashMap<>();
                 HashSet<UserModel> userModels = new HashSet<>();
                 for (DataSnapshot user : users) {
                     UserModel userModel = user.getValue(UserModel.class);

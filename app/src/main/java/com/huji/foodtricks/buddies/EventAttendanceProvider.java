@@ -23,14 +23,18 @@ public class EventAttendanceProvider implements Serializable {
     public enum RSVP {ATTENDING, NOT_ATTENDING, TENTATIVE, NON_RESPONSIVE};
 
     public RSVP getUserRSVP(String userId) {
-        if (attending.get(userId) != null)
+        if (attending.containsKey(userId)) {
             return RSVP.ATTENDING;
-        if (tentatives.get(userId) != null)
+        }
+        if (tentatives.containsKey(userId)) {
             return RSVP.TENTATIVE;
-        if (notAttending.get(userId) != null)
+        }
+        if (notAttending.containsKey(userId)) {
             return RSVP.NOT_ATTENDING;
-        if (nonResponsive.get(userId) != null)
+        }
+        if (nonResponsive.containsKey(userId)) {
             return RSVP.NON_RESPONSIVE;
+        }
         return null;
     }
 
