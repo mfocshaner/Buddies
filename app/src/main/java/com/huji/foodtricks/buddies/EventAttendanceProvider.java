@@ -25,12 +25,12 @@ public class EventAttendanceProvider implements Serializable {
     public RSVP getUserRSVP(String userId) {
         if (attending.get(userId) != null)
             return RSVP.ATTENDING;
-        if (nonResponsive.get(userId) != null)
-            return RSVP.NON_RESPONSIVE;
         if (tentatives.get(userId) != null)
             return RSVP.TENTATIVE;
         if (notAttending.get(userId) != null)
             return RSVP.NOT_ATTENDING;
+        if (nonResponsive.get(userId) != null)
+            return RSVP.NON_RESPONSIVE;
         return null;
     }
 
@@ -112,5 +112,7 @@ public class EventAttendanceProvider implements Serializable {
         return nonResponsive.size();
     }
 
-
+    public HashMap<String, String> getInvitees() {
+        return invitees;
+    }
 }

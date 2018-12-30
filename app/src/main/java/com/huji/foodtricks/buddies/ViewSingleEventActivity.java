@@ -37,6 +37,28 @@ public class ViewSingleEventActivity extends AppCompatActivity {
     private DatabaseStreamer dbs = new DatabaseStreamer();
     private String curr_event_id;
 
+    String[] itemname ={
+            "Safari",
+            "Camera",
+            "Global",
+            "FireFox",
+            "UC Browser",
+            "Android Folder",
+            "VLC Player",
+            "Cold War"
+    };
+
+    Integer[] imgid={
+            R.drawable.ic_action_name,
+            R.drawable.apple,
+            R.drawable.apple,
+            R.drawable.apple,
+            R.drawable.apple,
+            R.drawable.apple,
+            R.drawable.apple,
+            R.drawable.apple,
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -54,6 +76,8 @@ public class ViewSingleEventActivity extends AppCompatActivity {
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(curr_event.getTitle());
         updateAllFields(curr_event);
+
+
     }
 
     private void updateAllFields(EventModel curr_event) {
