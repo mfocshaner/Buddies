@@ -1,7 +1,6 @@
 package com.huji.foodtricks.buddies;
 
 import com.goodiebag.horizontalpicker.HorizontalPicker;
-import com.huji.foodtricks.buddies.Models.GroupModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,14 +10,12 @@ import java.util.List;
  */
 public class EventParametersProvider {
 
-    static ArrayList<HorizontalPicker.PickerItem> getWhoItems(List<String> groupNames){
+    static ArrayList<HorizontalPicker.PickerItem> getWhoItems(List<String> groupNames) {
         ArrayList<HorizontalPicker.PickerItem> items = new ArrayList<>();
         for (String groupName :
                 groupNames) {
             items.add(new HorizontalPicker.TextItem(groupName));
         }
-        items.add(new HorizontalPicker.TextItem("Custom"));
-
         return items;
     }
 

@@ -45,6 +45,7 @@
     <string name="create_new_event_enabled">Create New Event!</string>
     <string name="create_new_event_disabled">Choose Event Details</string>
     <string name="create_group">Create Group!</string>
+    <string name="create_group_button">New Group</string>
 
     <!-- Keys to Extras -->
     <string name="extra_current_user_model">Current User Model Extra</string>
