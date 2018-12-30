@@ -2,9 +2,8 @@ package com.huji.foodtricks.buddies.Models;
 
 import com.huji.foodtricks.buddies.EventAttendanceProvider;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 
 
@@ -14,7 +13,7 @@ import java.util.HashMap;
 @SuppressWarnings("serial") //With this annotation we are going to hide compiler warnings
 public class EventModel implements Serializable {
 
-    public enum state {PAST, UPCOMING, PENDING}
+    public enum state {PAST, UPCOMING, PENDING, DELETED}
 
     private state eventStatus;
     private String title;

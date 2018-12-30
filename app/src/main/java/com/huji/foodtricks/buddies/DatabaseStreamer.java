@@ -16,6 +16,7 @@ import com.huji.foodtricks.buddies.Models.UserModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -42,6 +43,18 @@ interface UsersMapFetchingCompletion {
 
     void onNoUsersFound();
 }
+
+
+/**
+ * Interface for receiving all UserModels
+ */
+
+interface UsersArrayListFetchingCompletion {
+    void onFetchSuccess(HashSet<UserModel> usersMap);
+
+    void onNoUsersFound();
+}
+
 
 /**
  * Interface for passing methods to execute after fetching a list of EventModels.
@@ -302,5 +315,30 @@ public class DatabaseStreamer {
         userModel.addEventId(eventId);
         userModel.addChangedEvent(eventId);
         modifyUser(userModel, userModelId, completion);
+    }
+    public void fetchAllUserModels(UsersArrayListFetchingCompletion completion) {
+        DatabaseReference ref = mDatabase.child("users");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> users = dataSnapshot.getChildren();
+                HashSet<UserModel> userModels = new HashSet<>();
+                for (DataSnapshot user : users) {
+                    UserModel userModel = user.getValue(UserModel.class);
+                    userModels.add(userModel);
+                }
+                if (userModels.size() == 0) {
+                    completion.onNoUsersFound();
+                    return;
+                }
+                completion.onFetchSuccess(userModels);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                completion.onNoUsersFound();
+            }
+        });
+
     }
 }

@@ -12,9 +12,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.huji.foodtricks.buddies.Models.EventModel;
-import com.huji.foodtricks.buddies.Models.UserModel;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -32,10 +32,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class ViewSingleEventActivity extends AppCompatActivity {
 
+    public static final HashSet<Integer> ALL_RSVP_BUTTONS =
+            new HashSet<>(Arrays.asList(R.id.approve_btn, R.id.tentative_btn, R.id.decline_btn));
     static EventModel curr_event;
     private String currentUserID;
     private DatabaseStreamer dbs = new DatabaseStreamer();
     private String curr_event_id;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,15 +49,13 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         curr_event_id = eventCard.getStringExtra(getResources().getString(R.string.extra_current_event_id));
         currentUserID = FirebaseAuth.getInstance().getUid();
 
-        if (curr_event_id == null) {
-            curr_event_id = "ABCDEFG";
-        }
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_single_event);
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(curr_event.getTitle());
         updateAllFields(curr_event);
+
+
     }
 
     private void updateAllFields(EventModel curr_event) {
@@ -70,12 +72,20 @@ public class ViewSingleEventActivity extends AppCompatActivity {
 
         TextView rsvpText = findViewById(R.id.RSVPText);
         modifyAttendersTextView(curr_event.getAttendanceProvider(), rsvpText);
+        modifyRSVPButtons();
+
+        if (!curr_event.isUserOrganizer(currentUserID) || curr_event.getEventStatus() != EventModel.state.PENDING )
+        {
+            FloatingActionButton discart_btn = findViewById(R.id.discard_event);
+            FloatingActionButton approve_btn= findViewById(R.id.approve_event);
+            discart_btn.setVisibility(View.GONE);
+            approve_btn.setVisibility(View.GONE);
+        }
+
     }
 
 
     private void modifyDateTextView(Date time, TextView date_tv) {
-        // TODO : might want to use this format, we need to decide
-        // DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
         DateFormat formatter = new SimpleDateFormat("dd/MM", Locale.getDefault());
         try {
             time = formatter.parse(formatter.format(time));
@@ -107,7 +117,7 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         // setting the string's style:
         int flag = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
         attending.setSpan(new ForegroundColorSpan(Color.GREEN), 0, attending.length(), flag);
-        tentative.setSpan(new ForegroundColorSpan(Color.YELLOW), 0, tentative.length(), flag);
+        tentative.setSpan(new ForegroundColorSpan(Color.parseColor(getString(R.string.ORANGE))), 0, tentative.length(), flag);
         not_attending.setSpan(new ForegroundColorSpan(Color.RED), 0, not_attending.length(), flag);
         not_responsive.setSpan(new ForegroundColorSpan(Color.GRAY), 0, not_responsive.length(), flag);
         SpannableStringBuilder builder = new SpannableStringBuilder(); // to concatenate string together
@@ -119,7 +129,6 @@ public class ViewSingleEventActivity extends AppCompatActivity {
     }
 
     public void onRSVPChangeClick(View view) {
-//        Toast.makeText(ViewSingleEventActivity.this, getString(R.string.change_rsvp_msg_prefix) + .getTitle(), Toast.LENGTH_SHORT).show();
         EventAttendanceProvider attendanceProvider = curr_event.getAttendanceProvider();
         if (currentUserID == null)
             return;
@@ -140,22 +149,55 @@ public class ViewSingleEventActivity extends AppCompatActivity {
                 update_event_updated.show();
                 // we'd maybe want to notify all users that there's something new about this event.
             }
-
         });
-        TextView rsvp_tv = findViewById(R.id.RSVPText);
-        modifyAttendersTextView(curr_event.getAttendanceProvider(), rsvp_tv);
-        //TODO: refactor the following code
-        Set<Integer> allRSVPButtons = new HashSet<>(Arrays.asList(R.id.approve_btn, R.id.tentative_btn, R.id.decline_btn));
-        allRSVPButtons.remove(view.getId()); // remove the selected button from the list of buttons to disable
-        Button selectedButtonView = (Button) view; // just for readability
-        selectedButtonView.setBackgroundColor(getResources().getColor(R.color.selectedRSVPButton));
-        selectedButtonView.setTextColor(Color.WHITE);
-//        setContentView(R.layout.activity_view_single_event);
+        modifyRSVPButtons();
+    }
 
+    private void modifyRSVPButtons() {
+        Set<Integer> allRSVPButtons = new HashSet<>(ALL_RSVP_BUTTONS);
         for (int buttonId : allRSVPButtons) {
             Button currButton = findViewById(buttonId);
-            currButton.setBackgroundColor(Color.WHITE);
-            currButton.setTextColor(Color.BLACK);
+            changeButtonToDisabled(currButton);
         }
+        TextView rsvp_tv = findViewById(R.id.RSVPText);
+        modifyAttendersTextView(curr_event.getAttendanceProvider(), rsvp_tv);
+        EventAttendanceProvider attendanceProvider = curr_event.getAttendanceProvider();
+        EventAttendanceProvider.RSVP status = attendanceProvider.getUserRSVP(currentUserID);
+        if (status == EventAttendanceProvider.RSVP.ATTENDING) {
+            changeButtonToEnabled(findViewById(R.id.approve_btn));
+        }
+        else if (status == EventAttendanceProvider.RSVP.NOT_ATTENDING)
+            changeButtonToEnabled(findViewById(R.id.decline_btn));
+        else if (status == EventAttendanceProvider.RSVP.TENTATIVE)
+            changeButtonToEnabled(findViewById(R.id.tentative_btn));
+    }
+
+    private void changeButtonToEnabled(Button selectedButtonView) {
+        selectedButtonView.setBackgroundColor(getResources().getColor(R.color.selectedRSVPButton));
+        selectedButtonView.setTextColor(Color.WHITE);
+        selectedButtonView.setClickable(false);
+    }
+
+    private void changeButtonToDisabled(Button currButton) {
+        currButton.setBackgroundColor(Color.WHITE);
+        currButton.setTextColor(Color.BLACK);
+        currButton.setClickable(true);
+
+    }
+
+    public void approve_event(View view) {
+        curr_event.setEventStatus(EventModel.state.UPCOMING);
+        dbs.modifyEvent(curr_event, curr_event_id, () -> {
+
+        });
+        updateAllFields(curr_event);
+    }
+
+    public void discard_event(View view) {
+        curr_event.setEventStatus(EventModel.state.DELETED);
+        dbs.modifyEvent(curr_event, curr_event_id, () -> {
+
+        });
+        updateAllFields(curr_event);
     }
 }
