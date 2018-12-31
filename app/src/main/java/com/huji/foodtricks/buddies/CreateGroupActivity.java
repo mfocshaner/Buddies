@@ -7,12 +7,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,12 +48,11 @@ public class CreateGroupActivity extends AppCompatActivity {
     }
 
     private void setupUserList() {
-        final LinearLayout linearLayout = (LinearLayout)findViewById(R.id.linearLayoutForCheckBoxes);
-        final HashMap<String, String> customGroupOfFriends = new HashMap<>();
+        final LinearLayout linearLayout = (LinearLayout)findViewById(R.id.linearLayoutForGroupCheckBoxes);
 
-        getUserNamesFromDB(new UsersMapFetchingCompletion() {
+        getUsersFromDB(new UsersMapFetchingCompletion() {
             @Override
-            public void onFetchSuccess(HashMap<String, String> usersMap) {
+            public void onFetchSuccess(HashMap<String, UserModel> usersMap) {
                 setupCheckboxes(linearLayout, usersMap);
             }
 
@@ -61,24 +63,35 @@ public class CreateGroupActivity extends AppCompatActivity {
         });
     }
 
-    private void getUserNamesFromDB(UsersMapFetchingCompletion completion) {
+    private void getUsersFromDB(UsersMapFetchingCompletion completion) {
         DatabaseStreamer dbs = new DatabaseStreamer();
-        dbs.fetchIdsOfAllUsersInDB(completion);
+        dbs.fetchAllUsersInDBMap(completion);
     }
 
-    private void setupCheckboxes(LinearLayout containingLayout, HashMap<String, String> usersMap) {
+    private void setupCheckboxes(LinearLayout containingLayout, HashMap<String, UserModel> usersMap) {
         usersMap.remove(currentUserID);
         for (String userId : usersMap.keySet()) {
+            final LinearLayout rowLinearLayout = new LinearLayout(this);
+            rowLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
             CheckBox checkBox = new CheckBox(this);
-            checkBox.setText(usersMap.get(userId));
+            checkBox.setText(usersMap.get(userId).getUserName());
             checkBox.setId(userId.hashCode());
-            containingLayout.addView(checkBox);
+            checkBox.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            ImageView checkboxImage = new ImageView(this);
+            GlideApp.with(this)
+                    .load(usersMap.get(userId).getImageUrl())
+                    .override(150, 150)
+                    .into(checkboxImage);
+            rowLinearLayout.addView(checkboxImage);
+            rowLinearLayout.addView(checkBox);
+            rowLinearLayout.setPadding(0, 10, 0, 10);
+            containingLayout.addView(rowLinearLayout);
         }
         setupCreateGroupButton(containingLayout, usersMap);
     }
 
     private void setupCreateGroupButton(LinearLayout containingLayout,
-                                        HashMap<String, String> usersMap) {
+                                        HashMap<String, UserModel> usersMap) {
         Button finalizeSelectionButton = new Button(containingLayout.getContext());
         finalizeSelectionButton.setBackgroundColor(getResources().getColor(R.color.colorEnabledFAB));
         finalizeSelectionButton.setText(R.string.create_group);
@@ -89,7 +102,7 @@ public class CreateGroupActivity extends AppCompatActivity {
                 for (String userId : usersMap.keySet()) {
                     CheckBox checkBox = containingLayout.findViewById(userId.hashCode());
                     if (checkBox.isChecked()) {
-                        invitees.put(userId , usersMap.get(userId));
+                        invitees.put(userId , usersMap.get(userId).getUserName());
                     }
                 }
                 onCreateGroupPressed();

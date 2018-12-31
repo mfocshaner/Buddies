@@ -141,7 +141,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 String selectedGroupName = selected.getText();
 
                 final LinearLayout linearLayout =
-                        (LinearLayout)findViewById(R.id.linearLayoutForCheckBoxes);
+                        (LinearLayout)findViewById(R.id.linearLayoutForEventCheckBoxes);
                 linearLayout.removeAllViews();
 
                 if (selectedGroupName.equals(getResources()
@@ -217,7 +217,7 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 final LinearLayout linearLayout =
-                        (LinearLayout)findViewById(R.id.linearLayoutForCheckBoxes);
+                        (LinearLayout)findViewById(R.id.linearLayoutForEventCheckBoxes);
                 linearLayout.removeAllViews();
 
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -264,7 +264,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 hideSoftKeyboard();
 
                 final LinearLayout linearLayout =
-                        (LinearLayout)findViewById(R.id.linearLayoutForCheckBoxes);
+                        (LinearLayout)findViewById(R.id.linearLayoutForEventCheckBoxes);
                 linearLayout.removeAllViews();
 
                 if (index < 0) {
