@@ -170,6 +170,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         startActivity(exit);
     }
 
+    // todo: Amit to decide whether this is needed
     public void moveEvent(Pair<String, EventModel> event, EventModel.state current_state, EventModel.state new_state) {
         sendEventSwitch(event.first, event.second, action.REMOVE);
         event.second.setEventStatus(new_state);
@@ -182,30 +183,37 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
 
     private void sendEventSwitch(String id, EventModel model, action flag) {
         ViewPagerAdapter adapter = (ViewPagerAdapter) vp.getAdapter();
+        if (adapter == null) {
+            return;
+        }
+        UpcomingEventsTabFragment future = (UpcomingEventsTabFragment) adapter.getItem(0);
+        PlanningEventsTabFragment planning = (PlanningEventsTabFragment) adapter.getItem(1);
+        PastEventsTabFragment past = (PastEventsTabFragment) adapter.getItem(2);
+
         switch (model.getEventStatus()) {
             case UPCOMING:
-                UpcomingEventsTabFragment future = (UpcomingEventsTabFragment) Objects.requireNonNull(adapter).getItem(0);
                 if (flag == action.ADD) {
                     future.addEvents(id, model);
+                    planning.removeEvent(id);
                     return;
                 }
-                future.removeEvent(id, model);
+                future.deleteEvent(id, model);
                 break;
             case PENDING:
-                PlanningEventsTabFragment planning = (PlanningEventsTabFragment) Objects.requireNonNull(adapter).getItem(1);
                 if (flag == action.ADD) {
                     planning.addEvents(id, model);
+                    future.removeEvent(id);
                     return;
                 }
-                planning.removeEvent(id, model);
+                planning.deleteEvent(id, model);
                 break;
             case PAST:
-                PastEventsTabFragment past = (PastEventsTabFragment) Objects.requireNonNull(adapter).getItem(2);
                 if (flag == action.ADD) {
                     past.addEvents(id, model);
+                    future.removeEvent(id);
                     return;
                 }
-                past.removeEvent(id, model);
+                past.deleteEvent(id, model);
                 break;
         }
     }

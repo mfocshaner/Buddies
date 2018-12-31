@@ -20,7 +20,7 @@ import java.util.HashMap;
 
 class PastEventsTabFragment extends Fragment {
 
-    View view;
+    ListView view;
     private EventListAdaptor adapter;
     private final HashMap<String, EventModel> past_events = new HashMap<>();
     private final HashMap<String, EventModel> new_events = new HashMap<>();
@@ -44,9 +44,9 @@ class PastEventsTabFragment extends Fragment {
         return rootView;
     }
 
-
     private void updateEvents() {
         this.adapter.addItems(this.new_events);
+        this.past_events.putAll(new_events);
         this.new_events.clear();
         this.adapter.removeItems(this.events_to_delete);
         this.events_to_delete.clear();
@@ -65,7 +65,12 @@ class PastEventsTabFragment extends Fragment {
     public void addEvents(String id, EventModel event) {
         this.new_events.put(id, event);
     }
-    public void removeEvent(String id, EventModel event) {
+
+    public void removeEvent(String id) {
+        this.past_events.remove(id);
+    }
+
+    public void deleteEvent(String id, EventModel event) {
         this.events_to_delete.put(id, event);
     }
 
