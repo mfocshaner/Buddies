@@ -118,7 +118,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private EventModel createEventFromChoices() {
         EventModel newEvent = new EventModel(eventTitle, date, invitees,
-                currentUserID);
+                currentUserID, currentUser.getImageUrl());
         return newEvent;
     }
 

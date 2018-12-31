@@ -2,16 +2,18 @@ package com.huji.foodtricks.buddies;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.util.Pair;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.huji.foodtricks.buddies.Models.EventModel;
+import com.squareup.picasso.Picasso;
 
+import java.net.URI;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -65,20 +67,27 @@ public class EventListAdaptor extends BaseAdapter {
         final String key = this.keys.get(i);
 
 
-        TextView eventName = (TextView) view.findViewById(R.id.nameTxt);
-        TextView eventDate = (TextView) view.findViewById(R.id.date);
+        TextView eventName = (TextView) view.findViewById(R.id.eventCardName);
+        TextView eventDate = (TextView) view.findViewById(R.id.eventCardDate);
+        ImageView eventImage = view.findViewById(R.id.eventCardImage);
 
         final String name = event.getTitle();
         Calendar dateTime = new GregorianCalendar();
         dateTime.setTime(event.getTime());
         String dateTimeString = MessageFormat.format("{4} {0}/{1} {2}:{3}",
                 dateTime.get(Calendar.DATE),
-                dateTime.get(Calendar.MONTH),
+                dateTime.get(Calendar.MONTH) + 1,
                 dateTime.get(Calendar.HOUR_OF_DAY),
-                dateTime.get(Calendar.MINUTE),
+                String.format(Locale.getDefault(),"%02d",dateTime.get(Calendar.MINUTE)),
                 dateTime.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()));
+
         eventName.setText(name);
         eventDate.setText(dateTimeString);
+        Picasso.with(context)
+                .load(event.getImageUrl())
+                .resize(300, 300)
+                .into(eventImage);
+
 
 
         view.setOnClickListener(new View.OnClickListener() {
