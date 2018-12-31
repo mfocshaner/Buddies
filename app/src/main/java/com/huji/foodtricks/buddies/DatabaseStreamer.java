@@ -90,9 +90,9 @@ interface AddEventToUsersCompletion {
 /**
  * Object used to read/write event and user objects from Firebase.
  */
-public class DatabaseStreamer {
+class DatabaseStreamer {
 
-    private DatabaseReference mDatabase;
+    private final DatabaseReference mDatabase;
 
     public DatabaseStreamer() {
         this.mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -115,36 +115,25 @@ public class DatabaseStreamer {
     public void modifyEvent(EventModel modifiedEventModel, String eventModelId,
                             final EventUpdateCompletion completion) {
         mDatabase.child("events").child(eventModelId).setValue(modifiedEventModel)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        addEventIdToUserIdList(new ArrayList<>(modifiedEventModel.getInvitees().keySet()),
-                                eventModelId, new AddEventToUsersCompletion() {
-                                    @Override
-                                    public void onSuccess() {
-                                        // nothing
-                                    }
-                                });
-                        completion.onUpdateSuccess();
-                    }
+                .addOnSuccessListener(aVoid -> {
+                    addEventIdToUserIdList(new ArrayList<>(modifiedEventModel.getInvitees().keySet()),
+                            eventModelId, () -> {
+                                // nothing
+                            });
+                    completion.onUpdateSuccess();
                 });
     }
 
     public void modifyUser(UserModel modifiedUserModel, String userModelId,
                            final UserUpdateCompletion completion) {
         if (modifiedUserModel.getEventIDs() == null)
-            modifiedUserModel.setEventIDs(new ArrayList<String>());
+            modifiedUserModel.setEventIDs(new ArrayList<>());
         if (modifiedUserModel.getGroups() == null)
-            modifiedUserModel.setGroups(new HashMap<String, GroupModel>());
+            modifiedUserModel.setGroups(new HashMap<>());
         if (modifiedUserModel.getChangedEvents() == null)
-            modifiedUserModel.setChangedEvents(new ArrayList<String>());
+            modifiedUserModel.setChangedEvents(new ArrayList<>());
         mDatabase.child("users").child(userModelId).setValue(modifiedUserModel)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        completion.onUpdateSuccess();
-                    }
-                });
+                .addOnSuccessListener(aVoid -> completion.onUpdateSuccess());
     }
 
 
@@ -197,8 +186,8 @@ public class DatabaseStreamer {
         fetchEventModelsMapForUserId(userAuthenticationId, completion);
     }
 
-    public void fetchEventModelsMapForUserId(String userId,
-                                             final EventMapFetchingCompletion completion) {
+    private void fetchEventModelsMapForUserId(String userId,
+                                              final EventMapFetchingCompletion completion) {
         fetchUserModelById(userId, new UserFetchingCompletion() {
             @Override
             public void onFetchSuccess(UserModel user) {
@@ -283,20 +272,17 @@ public class DatabaseStreamer {
         final int usersCount = userIdList.size();
 
         for (String userId : userIdList) {
-            addEventIdToUserById(userId, eventId, new UserUpdateCompletion() {
-                @Override
-                public void onUpdateSuccess() {
-                    int count = usersUpdatedCount.addAndGet(1);
-                    if (count == usersCount) {
-                        completion.onSuccess();
-                    }
+            addEventIdToUserById(userId, eventId, () -> {
+                int count = usersUpdatedCount.addAndGet(1);
+                if (count == usersCount) {
+                    completion.onSuccess();
                 }
             });
         }
     }
 
-    public void addEventIdToUserById(final String userModelId, final String eventId,
-                                     final UserUpdateCompletion completion) {
+    private void addEventIdToUserById(final String userModelId, final String eventId,
+                                      final UserUpdateCompletion completion) {
         fetchUserModelById(userModelId, new UserFetchingCompletion() {
             @Override
             public void onFetchSuccess(UserModel model) {

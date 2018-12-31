@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Provides parameters for creating new event.
  */
-public class EventParametersProvider {
+class EventParametersProvider {
 
     static ArrayList<HorizontalPicker.PickerItem> getWhoItems(List<String> groupNames) {
         ArrayList<HorizontalPicker.PickerItem> items = new ArrayList<>();

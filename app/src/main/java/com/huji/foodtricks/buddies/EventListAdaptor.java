@@ -20,10 +20,10 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
 
-public class EventListAdaptor extends BaseAdapter {
-    Context context;
-    HashMap<String, EventModel> eventModels;
-    ArrayList<String> keys;
+class EventListAdaptor extends BaseAdapter {
+    private final Context context;
+    private final HashMap<String, EventModel> eventModels;
+    private final ArrayList<String> keys;
 
     public EventListAdaptor(Context context, HashMap<String, EventModel> eventModels) {
         this.context = context;
@@ -89,18 +89,15 @@ public class EventListAdaptor extends BaseAdapter {
 
 
 
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Context context = view.getContext();
-                Intent viewEventIntent = new Intent(context, ViewSingleEventActivity.class);
-                viewEventIntent.putExtra(context.getResources()
-                        .getString(R.string.extra_current_event_model), event);
-                viewEventIntent.putExtra(context.getResources()
-                        .getString(R.string.extra_current_event_id), key);
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context);
-                context.startActivity(viewEventIntent, options.toBundle());
-            }
+        view.setOnClickListener(view1 -> {
+            Context context = view1.getContext();
+            Intent viewEventIntent = new Intent(context, ViewSingleEventActivity.class);
+            viewEventIntent.putExtra(context.getResources()
+                    .getString(R.string.extra_current_event_model), event);
+            viewEventIntent.putExtra(context.getResources()
+                    .getString(R.string.extra_current_event_id), key);
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context);
+            context.startActivity(viewEventIntent, options.toBundle());
         });
 
         return view;

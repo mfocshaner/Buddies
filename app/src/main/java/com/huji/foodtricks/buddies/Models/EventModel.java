@@ -26,7 +26,7 @@ public class EventModel implements Serializable {
     private EventAttendanceProvider attendanceProvider;
 
     public EventModel() {
-        attendanceProvider = new EventAttendanceProvider(new HashMap<String, String>());
+        attendanceProvider = new EventAttendanceProvider(new HashMap<>());
     }
 
     public EventModel(String title, Date time, HashMap<String, String> invitees, String organizerUID, String imageUrl) {

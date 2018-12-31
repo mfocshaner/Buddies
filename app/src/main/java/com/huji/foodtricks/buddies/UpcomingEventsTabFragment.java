@@ -1,6 +1,5 @@
 package com.huji.foodtricks.buddies;
 
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,18 +15,16 @@ import android.widget.ListView;
 
 import com.huji.foodtricks.buddies.Models.EventModel;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-public class UpcomingEventsTabFragment extends Fragment {
+class UpcomingEventsTabFragment extends Fragment {
 
     View view;
-    EventListAdaptor adapter;
-    HashMap<String, EventModel> future_events = new HashMap<>();
-    HashMap<String, EventModel> new_events = new HashMap<>();
-    HashMap<String, EventModel> events_to_delete = new HashMap<>();
+    private EventListAdaptor adapter;
+    private final HashMap<String, EventModel> future_events = new HashMap<>();
+    private final HashMap<String, EventModel> new_events = new HashMap<>();
+    private final HashMap<String, EventModel> events_to_delete = new HashMap<>();
 
     @Nullable
     @Override
@@ -42,12 +39,9 @@ public class UpcomingEventsTabFragment extends Fragment {
         lv.setAdapter(adapter);
         updateEvents();
         final SwipeRefreshLayout pullToRefresh = rootView.findViewById(R.id.swipe_refresh_future);
-        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                updateEvents();
-                pullToRefresh.setRefreshing(false);
-            }
+        pullToRefresh.setOnRefreshListener(() -> {
+            updateEvents();
+            pullToRefresh.setRefreshing(false);
         });
 
         return rootView;
@@ -64,7 +58,7 @@ public class UpcomingEventsTabFragment extends Fragment {
 
     private HashMap<String, EventModel> getUpcomingEvents() {
 
-        EventModel event1 = new EventModel("brunch at Zunni's", new GregorianCalendar(2018, 11, 25, 10, 0).getTime(), new HashMap<String, String>(), "Amit", "https://lh5.googleusercontent.com/-IL-Nkaz5E1s/AAAAAAAAAAI/AAAAAAAAABA/hQWtV0XNRrw/s96-c/photo.jpg");
+        EventModel event1 = new EventModel("brunch at Zunni's", new GregorianCalendar(2018, 11, 25, 10, 0).getTime(), new HashMap<>(), "Amit", "https://lh5.googleusercontent.com/-IL-Nkaz5E1s/AAAAAAAAAAI/AAAAAAAAABA/hQWtV0XNRrw/s96-c/photo.jpg");
 
         this.future_events.put("dsfodsf34324", event1);
 

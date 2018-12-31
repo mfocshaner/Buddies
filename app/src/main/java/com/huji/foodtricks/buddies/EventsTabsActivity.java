@@ -22,6 +22,7 @@ import com.huji.foodtricks.buddies.Models.UserModel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -32,8 +33,8 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
 
     public static final String EXTRA_CURRENT_USER = "currentUser";
     public static final String EXTRA_CURRENT_UID = "currentUserID";
-    ViewPager vp;
-    TabLayout tabLayout;
+    private ViewPager vp;
+    private TabLayout tabLayout;
     private UserModel currentUser;
     private String currentUserID;
     private ProgressBar spinner;
@@ -41,8 +42,8 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     private enum action {ADD, REMOVE}
 
 
-    final DatabaseStreamer streamer = new DatabaseStreamer();
-    DatabaseReference DBref;
+    private final DatabaseStreamer streamer = new DatabaseStreamer();
+    private DatabaseReference DBref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,12 +90,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
                     });
                 }
                 currentUser.clearChangedEvents();
-                streamer.modifyUser(currentUser, currentUserID, new UserUpdateCompletion() {
-                    @Override
-                    public void onUpdateSuccess() {
-                        return;
-                    }
-                });
+                streamer.modifyUser(currentUser, currentUserID, () -> {});
             }
 
             @Override
@@ -140,7 +136,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         tabLayout = findViewById(R.id.mTab_ID);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(vp);
-        tabLayout.setOnTabSelectedListener(this);
+        tabLayout.addOnTabSelectedListener(this);
         tabLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary, getTheme()));
         tabLayout.setTabTextColors(ColorStateList.valueOf(Color.WHITE));
         tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
@@ -149,19 +145,16 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     private void setupNewEventFAB() {
         FloatingActionButton fab = findViewById(R.id.eventCreationActivityButton);
         fab.setSize(FloatingActionButton.SIZE_NORMAL);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent newEventIntent = new Intent(view.getContext(), CreateEventActivity.class);
-                newEventIntent.putExtra(getResources().getString(R.string.extra_current_user_model),
-                        currentUser);
-                newEventIntent.putExtra(getResources().getString(R.string.extra_current_user_id),
-                        currentUserID);
+        fab.setOnClickListener(view -> {
+            Intent newEventIntent = new Intent(view.getContext(), CreateEventActivity.class);
+            newEventIntent.putExtra(getResources().getString(R.string.extra_current_user_model),
+                    currentUser);
+            newEventIntent.putExtra(getResources().getString(R.string.extra_current_user_id),
+                    currentUserID);
 
-                EventsTabsActivity context= EventsTabsActivity.this;
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(context);
-                startActivity(newEventIntent, options.toBundle());
-            }
+            EventsTabsActivity context= EventsTabsActivity.this;
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(context);
+            startActivity(newEventIntent, options.toBundle());
         });
     }
 
@@ -177,25 +170,18 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     public void moveEvent(Pair<String, EventModel> event, EventModel.state current_state, EventModel.state new_state) {
         sendEventSwitch(event.first, event.second, action.REMOVE);
         event.second.setEventStatus(new_state);
-        this.streamer.modifyEvent(event.second, event.first, new EventUpdateCompletion() {
-            @Override
-            public void onUpdateSuccess() {
-            }
+        this.streamer.modifyEvent(event.second, event.first, () -> {
         });
         sendEventSwitch(event.first, event.second, action.ADD);
 
     }
 
-    /**
-     * @param id
-     * @param model
-     * @param flag  false- remove event, true- add event
-     */
+
     private void sendEventSwitch(String id, EventModel model, action flag) {
         ViewPagerAdapter adapter = (ViewPagerAdapter) vp.getAdapter();
         switch (model.getEventStatus()) {
             case UPCOMING:
-                UpcomingEventsTabFragment future = (UpcomingEventsTabFragment) adapter.getItem(0);
+                UpcomingEventsTabFragment future = (UpcomingEventsTabFragment) Objects.requireNonNull(adapter).getItem(0);
                 if (flag == action.ADD) {
                     future.addEvents(id, model);
                     return;
@@ -203,7 +189,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
                 future.removeEvent(id, model);
                 break;
             case PENDING:
-                PlanningEventsTabFragment planning = (PlanningEventsTabFragment) adapter.getItem(1);
+                PlanningEventsTabFragment planning = (PlanningEventsTabFragment) Objects.requireNonNull(adapter).getItem(1);
                 if (flag == action.ADD) {
                     planning.addEvents(id, model);
                     return;
@@ -211,7 +197,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
                 planning.removeEvent(id, model);
                 break;
             case PAST:
-                PastEventsTabFragment past = (PastEventsTabFragment) adapter.getItem(2);
+                PastEventsTabFragment past = (PastEventsTabFragment) Objects.requireNonNull(adapter).getItem(2);
                 if (flag == action.ADD) {
                     past.addEvents(id, model);
                     return;
