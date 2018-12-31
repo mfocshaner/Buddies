@@ -1,5 +1,7 @@
 package com.huji.foodtricks.buddies;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -96,8 +98,8 @@ public class EventListAdaptor extends BaseAdapter {
                         .getString(R.string.extra_current_event_model), event);
                 viewEventIntent.putExtra(context.getResources()
                         .getString(R.string.extra_current_event_id), key);
-
-                context.startActivity(viewEventIntent);
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context);
+                context.startActivity(viewEventIntent, options.toBundle());
             }
         });
 

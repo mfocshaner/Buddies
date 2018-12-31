@@ -6,6 +6,7 @@
         <item name="colorPrimaryDark">@color/blue_grey_900</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="viewInflaterClass">androidx.appcompat.app.AppCompatViewInflater</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
     <!-- Activity with no Title -->
@@ -18,6 +19,21 @@
     <style name="ThemeOverlay.MyDarkButton" parent="ThemeOverlay.AppCompat.Dark">
         <item name="colorButtonNormal">@color/blue_grey_500</item>
         <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="ExplodingOnTransition" parent="AppTheme">
+        <!-- enable window content transitions -->
+        <item name="android:windowActivityTransitions">true</item>
+
+        <!-- specify enter and exit transitions -->
+        <item name="android:windowEnterTransition">@android:transition/explode</item>
+        <item name="android:windowExitTransition">@android:transition/explode</item>
+
+        <!--&lt;!&ndash; specify shared element transitions -->
+        <item name="android:windowSharedElementEnterTransition">
+            @transition/change_image_transform</item>
+        <item name="android:windowSharedElementExitTransition">
+            @transition/change_image_transform</item>-->
     </style>
 
 

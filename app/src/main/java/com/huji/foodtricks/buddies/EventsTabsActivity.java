@@ -1,24 +1,16 @@
 package com.huji.foodtricks.buddies;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
-
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager.widget.ViewPager;
-
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
-
-
 import android.widget.ProgressBar;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,6 +22,10 @@ import com.huji.foodtricks.buddies.Models.UserModel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
 
 
 public class EventsTabsActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener, ViewPager.OnPageChangeListener {
@@ -161,7 +157,10 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
                         currentUser);
                 newEventIntent.putExtra(getResources().getString(R.string.extra_current_user_id),
                         currentUserID);
-                startActivity(newEventIntent);
+
+                EventsTabsActivity context= EventsTabsActivity.this;
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(context);
+                startActivity(newEventIntent, options.toBundle());
             }
         });
     }
