@@ -89,5 +89,11 @@
     <string name="error_loading_user_rsvp_text">\"Error loading RSVP\"</string>
     <string name="ORANGE">#ffa500</string>
     <string name="event_title_hint">Enter event title</string>
+    <string name="event_image_desc">The event\'s image</string>
+    <string name="choose_group_name_hint">Enter group name</string>
+    <string name="confirmation_button_text">Yes</string>
+    <string name="rejection_button_text">No</string>
+    <string name="unconfirmed_button_text">Maybe</string>
+    <string name="sign_out_button_text">Sign Out</string>
 
 </resources>

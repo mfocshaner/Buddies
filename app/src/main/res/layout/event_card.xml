@@ -3,9 +3,6 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="150dp"
-    android:layout_marginLeft="@dimen/mtrl_card_spacing"
-    android:layout_marginTop="@dimen/mtrl_card_spacing"
-    android:layout_marginRight="@dimen/mtrl_card_spacing"
     card_view:cardCornerRadius="5dp"
     card_view:cardElevation="5dp">
 
@@ -19,7 +16,8 @@
             android:id="@+id/eventCardImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp" />
+            android:padding="10dp"
+            android:contentDescription="@string/event_image_desc" />
 
         <LinearLayout
             android:layout_width="wrap_content"

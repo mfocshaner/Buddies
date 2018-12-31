@@ -24,7 +24,7 @@
 
         android:inputType="textCapWords"
         android:imeOptions="actionDone"
-        android:hint="Enter group name" />
+        android:hint="@string/choose_group_name_hint" />
 
     <LinearLayout
         android:id="@+id/linearLayoutForGroupCheckBoxes"

@@ -99,7 +99,7 @@
                 android:layout_margin="5dp"
                 android:onClick="onRSVPChangeClick"
                 android:singleLine="true"
-                android:text="Yes" />
+                android:text="@string/confirmation_button_text" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/decline_btn"
@@ -109,7 +109,7 @@
                 android:layout_margin="5dp"
                 android:onClick="onRSVPChangeClick"
                 android:singleLine="true"
-                android:text="No" />
+                android:text="@string/rejection_button_text" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/tentative_btn"
@@ -120,7 +120,7 @@
                 android:onClick="onRSVPChangeClick"
                 android:padding="3dp"
                 android:singleLine="true"
-                android:text="Maybe" />
+                android:text="@string/unconfirmed_button_text" />
 
         </com.google.android.material.bottomappbar.BottomAppBar>
 
