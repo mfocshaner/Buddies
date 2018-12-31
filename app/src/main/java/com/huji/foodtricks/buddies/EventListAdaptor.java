@@ -2,7 +2,6 @@ package com.huji.foodtricks.buddies;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.huji.foodtricks.buddies.Models.EventModel;
-import com.squareup.picasso.Picasso;
 
-import java.net.URI;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -83,9 +80,9 @@ public class EventListAdaptor extends BaseAdapter {
 
         eventName.setText(name);
         eventDate.setText(dateTimeString);
-        Picasso.with(context)
+        GlideApp.with(context)
                 .load(event.getImageUrl())
-                .resize(300, 300)
+                .override(300, 300)
                 .into(eventImage);
 
 
