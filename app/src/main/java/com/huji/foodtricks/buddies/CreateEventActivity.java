@@ -58,31 +58,11 @@ public class CreateEventActivity extends AppCompatActivity {
                 .getSerializableExtra(getResources().getString(R.string.extra_current_user_model));
         currentUserID = newEventIntent
                 .getStringExtra(getResources().getString(R.string.extra_current_user_id));
-
-        // TODO: not needed after we get actual user data
-        setupDummyGroups();
-
+        
         setupWhoHorizontalPicker();
         setupWhatTextInput();
         setupWhenPicker();
     }
-
-    private void setupDummyGroups() {
-        HashMap<String, String> firstGroup = new HashMap<>();
-        firstGroup.put("fakeId1", "Amit the cool");
-        firstGroup.put("fakeId2", "Ido the sweet");
-        firstGroup.put("fakeId3", "Matan the busy");
-        firstGroup.put("fakeId4", "Michael the humble");
-        currentUser.addGroup("cool guys", firstGroup);
-        HashMap<String, String> secondGroup = new HashMap<>();
-        secondGroup.put("fakeId1", "Amit Silber");
-        secondGroup.put("fakeId2", "Ido Savion");
-        secondGroup.put("fakeId3", "Matan Harsat");
-        secondGroup.put("fakeId4", "Michael the Awesome");
-        currentUser.addGroup("friendly guys", secondGroup);
-    }
-
-
 
     private void chooseGroup(String groupName) {
         GroupModel chosenGroup = currentUser.getGroupForName(groupName);
@@ -196,7 +176,7 @@ public class CreateEventActivity extends AppCompatActivity {
         userGroupNames.add(0, userGroupNames.get(chosenIndex));
         userGroupNames.remove(chosenIndex+1);
         userGroupNames.add(0, getResources().getString(R.string.create_group_button));
-        hPicker.setItems(EventParametersProvider.getWhoItems(userGroupNames), chosenIndex);
+        hPicker.setItems(EventParametersProvider.getWhoItems(userGroupNames), 1);
         hPicker.setChangeListener(listener);
     }
 
@@ -357,8 +337,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
         viewEventIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
-        Intent intent = new Intent(CreateEventActivity.this, ViewSingleEventActivity.class);
-        startActivity(intent, options.toBundle());
+        startActivity(viewEventIntent, options.toBundle());
         this.finish();
     }
 }
