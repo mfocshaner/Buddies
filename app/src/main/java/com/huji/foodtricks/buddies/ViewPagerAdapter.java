@@ -6,8 +6,8 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import java.util.ArrayList;
 
-public class ViewPagerAdapter extends FragmentPagerAdapter {
-    private ArrayList<Fragment> fragments = new ArrayList<Fragment>();
+class ViewPagerAdapter extends FragmentPagerAdapter {
+    private final ArrayList<Fragment> fragments = new ArrayList<>();
 
 
     public ViewPagerAdapter(FragmentManager fm) {
@@ -31,7 +31,6 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        String title = fragments.get(position).toString();
-        return title;
+        return fragments.get(position).toString();
     }
 }

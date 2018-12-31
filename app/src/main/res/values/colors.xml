@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="blue_grey_500">#607D8B</color>
-    <color name="blue_grey_600">#546E7A</color>
     <color name="blue_grey_700">#455A64</color>
     <color name="blue_grey_800">#37474f</color>
     <color name="blue_grey_900">#263238</color>
     <color name="colorPrimary">@color/blue_grey_800</color>
-    <color name="colorPrimaryDark">@color/blue_grey_900</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorForSelection">#0a1AB4</color>
     <color name="colorEnabledFAB">#00c853</color>

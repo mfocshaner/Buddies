@@ -32,11 +32,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class ViewSingleEventActivity extends AppCompatActivity {
 
-    public static final HashSet<Integer> ALL_RSVP_BUTTONS =
+    private static final HashSet<Integer> ALL_RSVP_BUTTONS =
             new HashSet<>(Arrays.asList(R.id.approve_btn, R.id.tentative_btn, R.id.decline_btn));
-    static EventModel curr_event;
+    private static EventModel curr_event;
     private String currentUserID;
-    private DatabaseStreamer dbs = new DatabaseStreamer();
+    private final DatabaseStreamer dbs = new DatabaseStreamer();
     private String curr_event_id;
 
 
@@ -86,11 +86,12 @@ public class ViewSingleEventActivity extends AppCompatActivity {
 
 
     private void modifyDateTextView(Date time, TextView date_tv) {
+        // TODO: use a Calendar to parse date and hour elements instead, and then catching will be unneeded
         DateFormat formatter = new SimpleDateFormat("dd/MM", Locale.getDefault());
         try {
             time = formatter.parse(formatter.format(time));
         } catch (ParseException e) {
-            date_tv.setText("Invalid date");
+            date_tv.setText(R.string.invalid_date_error_text);
         }
         date_tv.setText(formatter.format(time));
 
@@ -103,7 +104,7 @@ public class ViewSingleEventActivity extends AppCompatActivity {
     }
 
 
-    public void modifyAttendersTextView(EventAttendanceProvider eventAttendanceProvider, TextView tv) {
+    private void modifyAttendersTextView(EventAttendanceProvider eventAttendanceProvider, TextView tv) {
         SpannableString attending = new SpannableString(
 
                 String.join("\n", curr_event.getAttendanceProvider().getAttending().values()) );
@@ -141,14 +142,11 @@ public class ViewSingleEventActivity extends AppCompatActivity {
             attendanceProvider.markNotAttending(currentUserID);
         }
         curr_event.setAttendanceProvider(attendanceProvider);
-        dbs.modifyEvent(curr_event, curr_event_id, new EventUpdateCompletion() {
-            @Override
-            public void onUpdateSuccess() {
-                Toast update_event_updated = Toast.makeText(getApplicationContext(),
-                        "Update completed", Toast.LENGTH_SHORT);
-                update_event_updated.show();
-                // we'd maybe want to notify all users that there's something new about this event.
-            }
+        dbs.modifyEvent(curr_event, curr_event_id, () -> {
+            Toast update_event_updated = Toast.makeText(getApplicationContext(),
+                    "Update completed", Toast.LENGTH_SHORT);
+            update_event_updated.show();
+            // we'd maybe want to notify all users that there's something new about this event.
         });
         modifyRSVPButtons();
     }
@@ -173,7 +171,7 @@ public class ViewSingleEventActivity extends AppCompatActivity {
     }
 
     private void changeButtonToEnabled(Button selectedButtonView) {
-        selectedButtonView.setBackgroundColor(getResources().getColor(R.color.selectedRSVPButton));
+        selectedButtonView.setBackgroundColor(getResources().getColor(R.color.selectedRSVPButton, getTheme()));
         selectedButtonView.setTextColor(Color.WHITE);
         selectedButtonView.setClickable(false);
     }

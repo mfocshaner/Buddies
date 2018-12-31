@@ -15,12 +15,6 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <!-- Dark Buttons -->
-    <style name="ThemeOverlay.MyDarkButton" parent="ThemeOverlay.AppCompat.Dark">
-        <item name="colorButtonNormal">@color/blue_grey_500</item>
-        <item name="android:textColor">@android:color/white</item>
-    </style>
-
     <style name="ExplodingOnTransition" parent="AppTheme">
         <!-- enable window content transitions -->
         <item name="android:windowActivityTransitions">true</item>

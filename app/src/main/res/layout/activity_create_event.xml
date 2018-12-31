@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/create_event_activity_layout"
     android:clickable="true"
     android:focusableInTouchMode="true"
     android:layout_width="match_parent"
@@ -159,7 +158,7 @@
 
         android:inputType="textCapWords"
         android:imeOptions="actionDone"
-        android:hint="Enter event title" />
+        android:hint="@string/event_title_hint" />
 
     <LinearLayout
         android:id="@+id/linearLayoutForEventCheckBoxes"

@@ -25,6 +25,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.huji.foodtricks.buddies.Models.UserModel;
 
+import java.util.Objects;
+
 /**
  * Activity to demonstrate basic retrieval of the Google user's ID, email address, and basic
  * profile.
@@ -38,7 +40,7 @@ public class SignInActivity extends AppCompatActivity implements
 
     private GoogleSignInClient mGoogleSignInClient;
 
-    private DatabaseStreamer dbs = new DatabaseStreamer();
+    private final DatabaseStreamer dbs = new DatabaseStreamer();
 
     private UserModel userModel;
     private String userID;
@@ -92,7 +94,7 @@ public class SignInActivity extends AppCompatActivity implements
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(account);
+                firebaseAuthWithGoogle(Objects.requireNonNull(account));
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
@@ -108,23 +110,20 @@ public class SignInActivity extends AppCompatActivity implements
 
         final AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser currentUser = mAuth.getCurrentUser();
-                            onboardUser(currentUser);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Snackbar.make(findViewById(R.id.main_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
-                            updateUI(null);
-                        }
-
-                        hideProgressDialog();
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "signInWithCredential:success");
+                        FirebaseUser currentUser = mAuth.getCurrentUser();
+                        onboardUser(currentUser);
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "signInWithCredential:failure", task.getException());
+                        Snackbar.make(findViewById(R.id.main_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+                        updateUI(null);
                     }
+
+                    hideProgressDialog();
                 });
     }
 
@@ -140,12 +139,7 @@ public class SignInActivity extends AppCompatActivity implements
 
         // Google sign out
         mGoogleSignInClient.signOut().addOnCompleteListener(this,
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        updateUI(null);
-                    }
-                });
+                task -> updateUI(null));
     }
 
 
@@ -155,12 +149,7 @@ public class SignInActivity extends AppCompatActivity implements
 
         // Google revoke access
         mGoogleSignInClient.revokeAccess().addOnCompleteListener(this,
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        updateUI(null);
-                    }
-                });
+                task -> updateUI(null));
     }
 
     private void updateUI(FirebaseUser currentUser) {
@@ -184,9 +173,9 @@ public class SignInActivity extends AppCompatActivity implements
     }
 
     @VisibleForTesting
-    public ProgressDialog mProgressDialog;
+    private ProgressDialog mProgressDialog;
 
-    public void showProgressDialog() {
+    private void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
             mProgressDialog.setMessage(getString(R.string.loading));
@@ -196,7 +185,7 @@ public class SignInActivity extends AppCompatActivity implements
         mProgressDialog.show();
     }
 
-    public void hideProgressDialog() {
+    private void hideProgressDialog() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
@@ -216,10 +205,7 @@ public class SignInActivity extends AppCompatActivity implements
                 // Update user's name and photo from google
                 model.setUserName(currentUser.getDisplayName());
                 model.setImageUrl(String.valueOf(currentUser.getPhotoUrl()));
-                dbs.modifyUser(model, userID, new UserUpdateCompletion() {
-                    @Override
-                    public void onUpdateSuccess() {
-                    }
+                dbs.modifyUser(model, userID, () -> {
                 });
                 userModel = model;
                 updateUI(currentUser);

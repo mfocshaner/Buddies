@@ -17,7 +17,7 @@ public class EventAttendanceProvider implements Serializable {
     private HashMap<String, String> tentatives;
     private HashMap<String, String> nonResponsive;
 
-    public enum RSVP {ATTENDING, NOT_ATTENDING, TENTATIVE, NON_RESPONSIVE};
+    public enum RSVP {ATTENDING, NOT_ATTENDING, TENTATIVE, NON_RESPONSIVE}
 
     public RSVP getUserRSVP(String userId) {
         if (attending.containsKey(userId)) {
@@ -36,19 +36,19 @@ public class EventAttendanceProvider implements Serializable {
     }
 
     public EventAttendanceProvider() {
-        this.invitees = new HashMap<String, String>();
-        this.nonResponsive = new HashMap<String, String>();
-        this.attending = new HashMap<String, String>();
-        this.notAttending = new HashMap<String, String>();
-        this.tentatives = new HashMap<String, String>();
+        this.invitees = new HashMap<>();
+        this.nonResponsive = new HashMap<>();
+        this.attending = new HashMap<>();
+        this.notAttending = new HashMap<>();
+        this.tentatives = new HashMap<>();
     }
 
     public EventAttendanceProvider(HashMap<String, String> invitees) {
         this.invitees = invitees; // reference ?
         this.nonResponsive = new HashMap<>(invitees);
-        this.attending = new HashMap<String, String>();
-        this.notAttending = new HashMap<String, String>();
-        this.tentatives = new HashMap<String, String>();
+        this.attending = new HashMap<>();
+        this.notAttending = new HashMap<>();
+        this.tentatives = new HashMap<>();
     }
 
     public void markAttending(String userID) {
