@@ -14,12 +14,10 @@ import android.widget.ListView;
 
 import com.huji.foodtricks.buddies.Models.EventModel;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-public class PendingEventsTabFragment extends Fragment {
+public class PlanningEventsTabFragment extends Fragment {
 
     ListView view;
     EventListAdaptor adapter;
@@ -31,13 +29,13 @@ public class PendingEventsTabFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.pending_events, container, false);
+        View rootView = inflater.inflate(R.layout.planning_events, container, false);
 
-        this.view = (ListView) rootView.findViewById(R.id.list_view_pending);
+        this.view = (ListView) rootView.findViewById(R.id.list_view_planning);
         this.adapter = new EventListAdaptor(this.getActivity(), getPendingEvents());
         this.view.setAdapter(adapter);
         updateEvents();
-        final SwipeRefreshLayout pullToRefresh = rootView.findViewById(R.id.swipe_refresh_pending);
+        final SwipeRefreshLayout pullToRefresh = rootView.findViewById(R.id.swipe_refresh_planning);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -61,7 +59,7 @@ public class PendingEventsTabFragment extends Fragment {
 
     private HashMap<String, EventModel> getPendingEvents() {
 
-        EventModel event = new EventModel("pending", new GregorianCalendar(2018, 10, 12, 12, 30).getTime(), new HashMap<String, String>(), "Amit", "https://lh5.googleusercontent.com/-IL-Nkaz5E1s/AAAAAAAAAAI/AAAAAAAAABA/hQWtV0XNRrw/s96-c/photo.jpg");
+        EventModel event = new EventModel("planning", new GregorianCalendar(2018, 10, 12, 12, 30).getTime(), new HashMap<String, String>(), "Amit", "https://lh5.googleusercontent.com/-IL-Nkaz5E1s/AAAAAAAAAAI/AAAAAAAAABA/hQWtV0XNRrw/s96-c/photo.jpg");
         pending_events.put("afkaflkaflkma13", event);
         return pending_events;
     }
@@ -76,6 +74,6 @@ public class PendingEventsTabFragment extends Fragment {
 
     @Override
     public String toString() {
-        return "In planning";
+        return "planning";
     }
 }
