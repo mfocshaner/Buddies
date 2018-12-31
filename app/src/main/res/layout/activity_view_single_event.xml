@@ -149,8 +149,8 @@
                 android:gravity="end"
                 android:onClick="discard_event"
                 app:backgroundTint="@color/design_default_color_error"
-                app:layout_constraintStart_toStartOf="@+id/approve_event"
-                app:layout_constraintTop_toBottomOf="@+id/approve_event"
+                app:layout_constraintStart_toStartOf="@id/approve_event"
+                app:layout_constraintTop_toBottomOf="@id/approve_event"
                 app:srcCompat="@drawable/decline_icon" />
 
 

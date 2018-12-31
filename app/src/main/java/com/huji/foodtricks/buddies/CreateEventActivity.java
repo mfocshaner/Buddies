@@ -127,7 +127,7 @@ public class CreateEventActivity extends AppCompatActivity {
     ///////////
 
     private void setupWhoHorizontalPicker() {
-        final HorizontalPicker hPicker = (HorizontalPicker) findViewById(R.id.whoHPicker);
+        final HorizontalPicker hPicker = findViewById(R.id.whoHPicker);
 
         ArrayList<String> userGroupNames = new ArrayList<>(currentUser.getGroups().keySet());
         userGroupNames.add(0, getResources().getString(R.string.create_group_button));
@@ -141,7 +141,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 String selectedGroupName = selected.getText();
 
                 final LinearLayout linearLayout =
-                        (LinearLayout)findViewById(R.id.linearLayoutForEventCheckBoxes);
+                        findViewById(R.id.linearLayoutForEventCheckBoxes);
                 linearLayout.removeAllViews();
 
                 if (selectedGroupName.equals(getResources()
@@ -195,7 +195,7 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private void updateWhoPicker(String chosenGroup) {
-        final HorizontalPicker hPicker = (HorizontalPicker) findViewById(R.id.whoHPicker);
+        final HorizontalPicker hPicker = findViewById(R.id.whoHPicker);
         HorizontalPicker.OnSelectionChangeListener listener = hPicker.getChangeListener();
         hPicker.setChangeListener(null);
         ArrayList<String> userGroupNames = new ArrayList<>(currentUser.getGroups().keySet());
@@ -212,12 +212,12 @@ public class CreateEventActivity extends AppCompatActivity {
     ////////////
 
     private void setupWhatTextInput() {
-        EditText editText = (EditText) findViewById(R.id.editText);
+        EditText editText = findViewById(R.id.editText);
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 final LinearLayout linearLayout =
-                        (LinearLayout)findViewById(R.id.linearLayoutForEventCheckBoxes);
+                        findViewById(R.id.linearLayoutForEventCheckBoxes);
                 linearLayout.removeAllViews();
 
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -253,7 +253,7 @@ public class CreateEventActivity extends AppCompatActivity {
     ////////////
 
     private void setupWhenPicker() {
-        HorizontalPicker hPicker = (HorizontalPicker) findViewById(R.id.whenHPicker);
+        HorizontalPicker hPicker = findViewById(R.id.whenHPicker);
 
         hPicker.setItems(EventParametersProvider.getWhenItems());
 
@@ -264,7 +264,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 hideSoftKeyboard();
 
                 final LinearLayout linearLayout =
-                        (LinearLayout)findViewById(R.id.linearLayoutForEventCheckBoxes);
+                        findViewById(R.id.linearLayoutForEventCheckBoxes);
                 linearLayout.removeAllViews();
 
                 if (index < 0) {
@@ -325,7 +325,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
 
     private void changeTitleOfCustomDate(Calendar chosenDateTime) {
-        HorizontalPicker whenHPicker = (HorizontalPicker) findViewById(R.id.whenHPicker);
+        HorizontalPicker whenHPicker = findViewById(R.id.whenHPicker);
         List<HorizontalPicker.PickerItem> oldItems = whenHPicker.getItems();
         oldItems.remove(2);
 

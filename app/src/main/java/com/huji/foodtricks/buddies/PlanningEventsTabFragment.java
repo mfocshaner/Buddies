@@ -31,7 +31,7 @@ public class PlanningEventsTabFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.planning_events, container, false);
 
-        this.view = (ListView) rootView.findViewById(R.id.list_view_planning);
+        this.view = rootView.findViewById(R.id.list_view_planning);
         this.adapter = new EventListAdaptor(this.getActivity(), getPendingEvents());
         this.view.setAdapter(adapter);
         updateEvents();

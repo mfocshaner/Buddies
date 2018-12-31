@@ -48,7 +48,7 @@ public class CreateGroupActivity extends AppCompatActivity {
     }
 
     private void setupUserList() {
-        final LinearLayout linearLayout = (LinearLayout)findViewById(R.id.linearLayoutForGroupCheckBoxes);
+        final LinearLayout linearLayout = findViewById(R.id.linearLayoutForGroupCheckBoxes);
 
         getUsersFromDB(new UsersMapFetchingCompletion() {
             @Override
@@ -114,7 +114,7 @@ public class CreateGroupActivity extends AppCompatActivity {
 
     private void onCreateGroupPressed() {
         hideSoftKeyboard();
-        if (!tryToSaveGroupNameFromInput((TextView)findViewById(R.id.editText))) {
+        if (!tryToSaveGroupNameFromInput(findViewById(R.id.editText))) {
             return;
         }
         Intent finishCreatingGroupIntent = new Intent();
@@ -135,7 +135,7 @@ public class CreateGroupActivity extends AppCompatActivity {
     ////////////////
 
     private void setupGroupNameInput() {
-        EditText editText = (EditText) findViewById(R.id.editText);
+        EditText editText = findViewById(R.id.editText);
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {

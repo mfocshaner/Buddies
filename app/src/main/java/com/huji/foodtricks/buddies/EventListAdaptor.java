@@ -64,8 +64,8 @@ public class EventListAdaptor extends BaseAdapter {
         final String key = this.keys.get(i);
 
 
-        TextView eventName = (TextView) view.findViewById(R.id.eventCardName);
-        TextView eventDate = (TextView) view.findViewById(R.id.eventCardDate);
+        TextView eventName = view.findViewById(R.id.eventCardName);
+        TextView eventDate = view.findViewById(R.id.eventCardDate);
         ImageView eventImage = view.findViewById(R.id.eventCardImage);
 
         final String name = event.getTitle();

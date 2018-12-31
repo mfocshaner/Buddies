@@ -33,7 +33,7 @@ public class PastEventsTabFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.past_events, container, false);
 
-        ListView lv = (ListView) rootView.findViewById(R.id.list_view_past);
+        ListView lv = rootView.findViewById(R.id.list_view_past);
         this.adapter = new EventListAdaptor(this.getActivity(), getPastEvents());
         lv.setAdapter(this.adapter);
         updateEvents();

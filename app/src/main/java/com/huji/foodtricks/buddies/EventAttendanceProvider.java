@@ -17,7 +17,7 @@ public class EventAttendanceProvider implements Serializable {
     private HashMap<String, String> tentatives;
     private HashMap<String, String> nonResponsive;
 
-    public enum RSVP {ATTENDING, NOT_ATTENDING, TENTATIVE, NON_RESPONSIVE};
+    public enum RSVP {ATTENDING, NOT_ATTENDING, TENTATIVE, NON_RESPONSIVE}
 
     public RSVP getUserRSVP(String userId) {
         if (attending.containsKey(userId)) {

@@ -57,11 +57,11 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         getCurrentUser();
         setDbListener();
         setContentView(R.layout.fragment_events_tabs);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
         setupNewEventFAB();
-        vp = (ViewPager) findViewById(R.id.mViewpager_ID);
+        vp = findViewById(R.id.mViewpager_ID);
         this.addPages();
         this.setupNewTabLayout();
         this.firstEntry();
@@ -108,7 +108,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         });
 
         setContentView(R.layout.fragment_events_tabs);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
 
@@ -141,7 +141,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     }
 
     private void setupNewTabLayout() {
-        tabLayout = (TabLayout) findViewById(R.id.mTab_ID);
+        tabLayout = findViewById(R.id.mTab_ID);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(vp);
         tabLayout.setOnTabSelectedListener(this);
@@ -151,7 +151,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     }
 
     private void setupNewEventFAB() {
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.eventCreationActivityButton);
+        FloatingActionButton fab = findViewById(R.id.eventCreationActivityButton);
         fab.setSize(FloatingActionButton.SIZE_NORMAL);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

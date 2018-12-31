@@ -37,7 +37,7 @@ public class UpcomingEventsTabFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.upcoming_events, container, false);
 
-        ListView lv = (ListView) rootView.findViewById(R.id.list_view_upcoming);
+        ListView lv = rootView.findViewById(R.id.list_view_upcoming);
         this.adapter = new EventListAdaptor(this.getActivity(), getUpcomingEvents());
         lv.setAdapter(adapter);
         updateEvents();

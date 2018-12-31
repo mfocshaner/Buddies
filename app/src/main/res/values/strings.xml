@@ -88,5 +88,6 @@
     <string name="rsvp_bottom_bar_question">Going?</string>
     <string name="error_loading_user_rsvp_text">\"Error loading RSVP\"</string>
     <string name="ORANGE">#ffa500</string>
+    <string name="event_title_hint">Enter event title</string>
 
 </resources>
