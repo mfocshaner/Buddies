@@ -203,6 +203,8 @@ public class DatabaseStreamer {
             @Override
             public void onFetchSuccess(UserModel user) {
                 ArrayList<String> eventIds = user.getEventIDs();
+                if (eventIds == null)
+                    eventIds = new ArrayList<>();
                 eventIds.removeAll(Collections.singleton(null));
                 fetchEventModelsForEventIdsList(eventIds, completion);
             }
