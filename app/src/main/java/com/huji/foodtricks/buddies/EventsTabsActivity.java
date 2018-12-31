@@ -71,11 +71,16 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         DBref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                DataSnapshot changedEvents = dataSnapshot.child("changedEvents");
-                if (changedEvents.getValue() == null) {
+                UserModel updateUserModel = dataSnapshot.getValue(UserModel.class);
+                if (updateUserModel == null) {
                     return;
                 }
-                ArrayList<String> newEvents = (ArrayList<String>) changedEvents.getValue();
+                currentUser = updateUserModel;
+                if (currentUser.getChangedEvents() == null ||
+                        currentUser.getChangedEvents().size() == 0) {
+                    return;
+                }
+                ArrayList<String> newEvents = currentUser.getChangedEvents();
                 for (final String eventId : newEvents) {
                     streamer.fetchEventModelById(eventId, new EventFetchingCompletion() {
                         @Override
@@ -89,8 +94,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
                         }
                     });
                 }
-                currentUser.clearChangedEvents();
-                streamer.modifyUser(currentUser, currentUserID, () -> {});
+                streamer.clearUsersChangedEvents(currentUserID);
             }
 
             @Override
@@ -157,7 +161,6 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
             startActivity(newEventIntent, options.toBundle());
         });
     }
-
 
     @Override
     public void onBackPressed() {
