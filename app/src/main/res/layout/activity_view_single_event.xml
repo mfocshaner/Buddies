@@ -70,7 +70,6 @@
         <!-- Other components and views -->
 
         <com.google.android.material.bottomappbar.BottomAppBar
-            android:id="@+id/bottomAppBar"
             style="@style/Widget.MaterialComponents.BottomAppBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -138,7 +137,7 @@
                 android:onClick="approve_event"
 
                 app:backgroundTint="@color/colorEnabledFAB"
-                app:srcCompat="@drawable/approve_event_icon" />
+                app:srcCompat="@drawable/ic_send_black_24dp" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/discard_event"
@@ -151,7 +150,7 @@
                 app:backgroundTint="@color/design_default_color_error"
                 app:layout_constraintStart_toStartOf="@id/approve_event"
                 app:layout_constraintTop_toBottomOf="@id/approve_event"
-                app:srcCompat="@drawable/decline_icon" />
+                app:srcCompat="@drawable/ic_clear_black_24dp" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

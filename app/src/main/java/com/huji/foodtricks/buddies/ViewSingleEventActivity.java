@@ -86,11 +86,12 @@ public class ViewSingleEventActivity extends AppCompatActivity {
 
 
     private void modifyDateTextView(Date time, TextView date_tv) {
+        // TODO: use a Calendar to parse date and hour elements instead, and then catching will be unneeded
         DateFormat formatter = new SimpleDateFormat("dd/MM", Locale.getDefault());
         try {
             time = formatter.parse(formatter.format(time));
         } catch (ParseException e) {
-            date_tv.setText("Invalid date");
+            date_tv.setText(R.string.invalid_date_error_text);
         }
         date_tv.setText(formatter.format(time));
 

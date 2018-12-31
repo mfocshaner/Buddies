@@ -12,13 +12,12 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:allowBackup="true"
         android:icon="@mipmap/buddies_icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="GoogleAppIndexingWarning"
+        android:fullBackupContent="@xml/backup_descriptor">
         <activity
             android:name=".SignInActivity"
             android:label="@string/app_name"
@@ -32,9 +31,9 @@
         <activity
             android:name=".EventsTabsActivity"
             android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
-        <activity android:name=".ViewSingleEventActivity"></activity>
-        <activity android:name=".CreateEventActivity"></activity>
-        <activity android:name=".CreateGroupActivity"></activity>
+        <activity android:name=".ViewSingleEventActivity" />
+        <activity android:name=".CreateEventActivity" />
+        <activity android:name=".CreateGroupActivity" />
     </application>
 
 </manifest>
