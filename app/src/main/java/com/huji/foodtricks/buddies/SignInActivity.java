@@ -61,7 +61,7 @@ public class SignInActivity extends AppCompatActivity implements
         mAuth = FirebaseAuth.getInstance();
 
         // Currently signs out automatically until sign out button is implemented
-        signOut();
+//        signOut();
 
         setContentView(R.layout.activity_signin);
 
@@ -78,7 +78,8 @@ public class SignInActivity extends AppCompatActivity implements
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        onboardUser(currentUser);
+        if (currentUser != null)
+            onboardUser(currentUser);
     }
 
     @Override
