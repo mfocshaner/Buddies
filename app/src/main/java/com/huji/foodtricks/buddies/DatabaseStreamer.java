@@ -39,7 +39,7 @@ interface UserFetchingCompletion {
  * Interface for passing methods to execute after fetching a map of user ids and names.
  */
 interface UsersMapFetchingCompletion {
-    void onFetchSuccess(HashMap<String, String> usersMap);
+    void onFetchSuccess(HashMap<String, UserModel> usersMap);
 
     void onNoUsersFound();
 }
@@ -247,16 +247,16 @@ public class DatabaseStreamer {
         }
     }
 
-    public void fetchIdsOfAllUsersInDB(UsersMapFetchingCompletion completion) {
+    public void fetchAllUsersInDBMap(UsersMapFetchingCompletion completion) {
         DatabaseReference ref = mDatabase.child("users");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Iterable<DataSnapshot> users = dataSnapshot.getChildren();
-                HashMap<String, String> usersMap = new HashMap<>();
+                HashMap<String, UserModel> usersMap = new HashMap<>();
                 for (DataSnapshot user : users) {
                     UserModel userModel = user.getValue(UserModel.class);
-                    usersMap.put(user.getKey(), userModel.getUserName());
+                    usersMap.put(user.getKey(), userModel);
                 }
                 if (usersMap.size() == 0) {
                     completion.onNoUsersFound();

@@ -46,10 +46,6 @@ public class SignInActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_signin);
-
-        // Button listeners
-        findViewById(R.id.signInButton).setOnClickListener(this);
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -67,6 +63,10 @@ public class SignInActivity extends AppCompatActivity implements
         // Currently signs out automatically until sign out button is implemented
         signOut();
 
+        setContentView(R.layout.activity_signin);
+
+        // Button listeners
+        findViewById(R.id.signInButton).setOnClickListener(this);
         // Set the dimensions of the sign-in button.
         SignInButton signInButton = findViewById(R.id.signInButton);
         signInButton.setSize(SignInButton.SIZE_WIDE);
@@ -78,7 +78,8 @@ public class SignInActivity extends AppCompatActivity implements
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
+        if (currentUser != null)
+            onboardUser(currentUser);
     }
 
     @Override
@@ -114,7 +115,6 @@ public class SignInActivity extends AppCompatActivity implements
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser currentUser = mAuth.getCurrentUser();
-                            userID = currentUser.getUid();
                             onboardUser(currentUser);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -209,6 +209,7 @@ public class SignInActivity extends AppCompatActivity implements
     }
 
     private void onboardUser(final FirebaseUser currentUser) {
+        userID = currentUser.getUid();
         dbs.fetchUserModelById(userID, new UserFetchingCompletion() {
             @Override
             public void onFetchSuccess(UserModel model) {

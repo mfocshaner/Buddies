@@ -74,7 +74,7 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         modifyAttendersTextView(curr_event.getAttendanceProvider(), rsvpText);
         modifyRSVPButtons();
 
-        if (!curr_event.isUserOrganizer(currentUserID) || curr_event.getEventStatus() != EventModel.state.PENDING )
+        if (!curr_event.isUserOrganizer(currentUserID) || curr_event.getEventStatus() != EventModel.state.PENDING)
         {
             FloatingActionButton discart_btn = findViewById(R.id.discard_event);
             FloatingActionButton approve_btn= findViewById(R.id.approve_event);

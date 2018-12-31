@@ -12,32 +12,32 @@
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/editText"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:ems="17"
         android:singleLine="true"
-        android:lineHeight="18dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
 
         android:inputType="textCapWords"
         android:imeOptions="actionDone"
-        android:hint="enter group name" />
+        android:hint="Enter group name" />
 
     <LinearLayout
-        android:id="@+id/linearLayoutForCheckBoxes"
+        android:id="@+id/linearLayoutForGroupCheckBoxes"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="28dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="32dp"
+        android:divider="?android:listDivider"
         android:orientation="vertical"
+        android:showDividers="middle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText">
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/editText" />
 </androidx.constraintlayout.widget.ConstraintLayout>

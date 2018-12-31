@@ -159,10 +159,10 @@
 
         android:inputType="textCapWords"
         android:imeOptions="actionDone"
-        android:hint="enter event title" />
+        android:hint="Enter event title" />
 
     <LinearLayout
-        android:id="@+id/linearLayoutForCheckBoxes"
+        android:id="@+id/linearLayoutForEventCheckBoxes"
         android:layout_width="368dp"
         android:layout_height="281dp"
         android:layout_marginStart="8dp"

@@ -7,22 +7,16 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.fragment.app.Fragment;
-
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 
 
-import android.view.View;
-import android.view.Menu;
 import android.widget.ProgressBar;
 
 import com.google.firebase.database.DataSnapshot;
@@ -30,7 +24,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.huji.foodtricks.buddies.Models.EventModel;
 import com.huji.foodtricks.buddies.Models.UserModel;
 
@@ -210,21 +203,21 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
                 }
                 future.removeEvent(id, model);
                 break;
+            case PENDING:
+                PlanningEventsTabFragment planning = (PlanningEventsTabFragment) adapter.getItem(1);
+                if (flag == action.ADD) {
+                    planning.addEvents(id, model);
+                    return;
+                }
+                planning.removeEvent(id, model);
+                break;
             case PAST:
-                PastEventsTabFragment past = (PastEventsTabFragment) adapter.getItem(1);
+                PastEventsTabFragment past = (PastEventsTabFragment) adapter.getItem(2);
                 if (flag == action.ADD) {
                     past.addEvents(id, model);
                     return;
                 }
                 past.removeEvent(id, model);
-                break;
-            case PENDING:
-                PendingEventsTabFragment pending = (PendingEventsTabFragment) adapter.getItem(2);
-                if (flag == action.ADD) {
-                    pending.addEvents(id, model);
-                    return;
-                }
-                pending.removeEvent(id, model);
                 break;
         }
     }
@@ -232,8 +225,8 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     private void addPages() {
         ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(this.getSupportFragmentManager());
         pagerAdapter.addFragment(new UpcomingEventsTabFragment());
+        pagerAdapter.addFragment(new PlanningEventsTabFragment());
         pagerAdapter.addFragment(new PastEventsTabFragment());
-        pagerAdapter.addFragment(new PendingEventsTabFragment());
 
         vp.setAdapter(pagerAdapter);
     }
