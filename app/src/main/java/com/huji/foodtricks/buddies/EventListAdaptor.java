@@ -2,18 +2,21 @@ package com.huji.foodtricks.buddies;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.huji.foodtricks.buddies.Models.EventModel;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class EventListAdaptor extends BaseAdapter {
     Context context;
@@ -61,13 +64,27 @@ public class EventListAdaptor extends BaseAdapter {
         final String key = this.keys.get(i);
 
 
-        TextView eventName = (TextView) view.findViewById(R.id.nameTxt);
-        TextView eventDate = (TextView) view.findViewById(R.id.date);
+        TextView eventName = (TextView) view.findViewById(R.id.eventCardName);
+        TextView eventDate = (TextView) view.findViewById(R.id.eventCardDate);
+        ImageView eventImage = view.findViewById(R.id.eventCardImage);
 
         final String name = event.getTitle();
-        String time = event.getTime().toString();
+        Calendar dateTime = new GregorianCalendar();
+        dateTime.setTime(event.getTime());
+        String dateTimeString = MessageFormat.format("{4} {0}/{1} {2}:{3}",
+                dateTime.get(Calendar.DATE),
+                dateTime.get(Calendar.MONTH) + 1,
+                dateTime.get(Calendar.HOUR_OF_DAY),
+                String.format(Locale.getDefault(),"%02d",dateTime.get(Calendar.MINUTE)),
+                dateTime.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()));
+
         eventName.setText(name);
-        eventDate.setText(time);
+        eventDate.setText(dateTimeString);
+        GlideApp.with(context)
+                .load(event.getImageUrl())
+                .override(300, 300)
+                .into(eventImage);
+
 
 
         view.setOnClickListener(new View.OnClickListener() {

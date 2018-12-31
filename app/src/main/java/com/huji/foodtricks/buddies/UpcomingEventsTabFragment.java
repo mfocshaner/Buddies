@@ -18,6 +18,7 @@ import com.huji.foodtricks.buddies.Models.EventModel;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 public class UpcomingEventsTabFragment extends Fragment {
@@ -63,7 +64,7 @@ public class UpcomingEventsTabFragment extends Fragment {
 
     private HashMap<String, EventModel> getUpcomingEvents() {
 
-        EventModel event1 = new EventModel("brunch at Zunni's", new Date(2018, 11, 25, 10, 0), new HashMap<String, String>(), "Amit");
+        EventModel event1 = new EventModel("brunch at Zunni's", new GregorianCalendar(2018, 11, 25, 10, 0).getTime(), new HashMap<String, String>(), "Amit", "https://lh5.googleusercontent.com/-IL-Nkaz5E1s/AAAAAAAAAAI/AAAAAAAAABA/hQWtV0XNRrw/s96-c/photo.jpg");
 
         this.future_events.put("dsfodsf34324", event1);
 

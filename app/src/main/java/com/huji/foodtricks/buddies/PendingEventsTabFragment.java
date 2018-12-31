@@ -16,6 +16,7 @@ import com.huji.foodtricks.buddies.Models.EventModel;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 public class PendingEventsTabFragment extends Fragment {
@@ -60,7 +61,7 @@ public class PendingEventsTabFragment extends Fragment {
 
     private HashMap<String, EventModel> getPendingEvents() {
 
-        EventModel event = new EventModel("pending", new Date(2018, 12, 12, 12, 30), new HashMap<String, String>(), "Amit");
+        EventModel event = new EventModel("pending", new GregorianCalendar(2018, 10, 12, 12, 30).getTime(), new HashMap<String, String>(), "Amit", "https://lh5.googleusercontent.com/-IL-Nkaz5E1s/AAAAAAAAAAI/AAAAAAAAABA/hQWtV0XNRrw/s96-c/photo.jpg");
         pending_events.put("afkaflkaflkma13", event);
         return pending_events;
     }

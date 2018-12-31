@@ -65,6 +65,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         setDbListener();
         setContentView(R.layout.fragment_events_tabs);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
         setupNewEventFAB();
         vp = (ViewPager) findViewById(R.id.mViewpager_ID);
@@ -158,6 +159,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
 
     private void setupNewEventFAB() {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.eventCreationActivityButton);
+        fab.setSize(FloatingActionButton.SIZE_NORMAL);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

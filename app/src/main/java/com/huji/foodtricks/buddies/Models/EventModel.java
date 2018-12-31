@@ -19,6 +19,7 @@ public class EventModel implements Serializable {
     private String title;
     private Date time;
     private String organizerUID;
+    private String imageUrl;
 
     private HashMap<String, String> invitees;
 
@@ -28,12 +29,13 @@ public class EventModel implements Serializable {
         attendanceProvider = new EventAttendanceProvider(new HashMap<String, String>());
     }
 
-    public EventModel(String title, Date time, HashMap<String, String> invitees, String organizerUID) {
+    public EventModel(String title, Date time, HashMap<String, String> invitees, String organizerUID, String imageUrl) {
         this.title = title;
         this.time = time;
         eventStatus = state.PENDING;
         this.invitees = new HashMap<>(invitees);
         this.organizerUID = organizerUID;
+        this.imageUrl = imageUrl;
 
         attendanceProvider = new EventAttendanceProvider(invitees);
     }
@@ -68,6 +70,14 @@ public class EventModel implements Serializable {
 
     public void setOrganizerUID(String organizerUID) {
         this.organizerUID = organizerUID;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public HashMap<String, String> getInvitees() {
