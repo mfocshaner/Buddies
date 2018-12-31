@@ -13,19 +13,14 @@
         android:layout_height="wrap_content"
         android:stretchColumns="3"
         tools:context=".ListViewWithImageAndText">
-
         <TableRow>
-
-
             <TextView
                 android:id="@+id/what_text"
                 android:gravity="start"
                 android:padding="3dip"
                 android:textSize="20sp" />
         </TableRow>
-
         <TableRow>
-
             <TextView
                 android:id="@+id/date_textView"
                 android:gravity="start"

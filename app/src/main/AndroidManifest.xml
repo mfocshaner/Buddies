@@ -31,7 +31,9 @@
         <activity
             android:name=".EventsTabsActivity"
             android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
-        <activity android:name=".ViewSingleEventActivity" />
+        <activity
+            android:name=".ViewSingleEventActivity"
+            android:theme="@style/ExplodingOnTransition" />
         <activity android:name=".CreateEventActivity" />
         <activity android:name=".CreateGroupActivity" />
     </application>

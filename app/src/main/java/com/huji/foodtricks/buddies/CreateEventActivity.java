@@ -1,6 +1,7 @@
 package com.huji.foodtricks.buddies;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -375,7 +376,9 @@ public class CreateEventActivity extends AppCompatActivity {
                 createdEventID);
 
         viewEventIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(viewEventIntent);
+        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
+        Intent intent = new Intent(CreateEventActivity.this, ViewSingleEventActivity.class);
+        startActivity(intent, options.toBundle());
         this.finish();
     }
 }
