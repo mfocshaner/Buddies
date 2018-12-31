@@ -176,7 +176,7 @@ public class CreateEventActivity extends AppCompatActivity {
         userGroupNames.add(0, userGroupNames.get(chosenIndex));
         userGroupNames.remove(chosenIndex+1);
         userGroupNames.add(0, getResources().getString(R.string.create_group_button));
-        hPicker.setItems(EventParametersProvider.getWhoItems(userGroupNames), chosenIndex);
+        hPicker.setItems(EventParametersProvider.getWhoItems(userGroupNames), 1);
         hPicker.setChangeListener(listener);
     }
 
