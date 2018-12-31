@@ -357,8 +357,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
         viewEventIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
-        Intent intent = new Intent(CreateEventActivity.this, ViewSingleEventActivity.class);
-        startActivity(intent, options.toBundle());
+        startActivity(viewEventIntent, options.toBundle());
         this.finish();
     }
 }
