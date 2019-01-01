@@ -47,6 +47,7 @@ class PlanningEventsTabFragment extends Fragment {
 
     private void updateEvents() {
         this.adapter.addItems(this.new_events);
+        this.pending_events.putAll(new_events);
         this.new_events.clear();
         this.adapter.removeItems(this.events_to_delete);
         this.events_to_delete.clear();
@@ -65,7 +66,11 @@ class PlanningEventsTabFragment extends Fragment {
         this.new_events.put(id, event);
     }
 
-    public void removeEvent(String id, EventModel event) {
+    public void removeEvent(String id) {
+        this.pending_events.remove(id);
+    }
+
+    public void deleteEvent(String id, EventModel event) {
         this.events_to_delete.put(id, event);
     }
 

@@ -136,6 +136,25 @@ class DatabaseStreamer {
                 .addOnSuccessListener(aVoid -> completion.onUpdateSuccess());
     }
 
+    public void clearUsersChangedEvents(String userId) {
+        fetchUserModelById(userId, new UserFetchingCompletion() {
+            @Override
+            public void onFetchSuccess(UserModel model) {
+                model.clearChangedEvents();
+                modifyUser(model, userId, new UserUpdateCompletion() {
+                    @Override
+                    public void onUpdateSuccess() {
+                        // nothing
+                    }
+                });
+            }
+
+            @Override
+            public void onNoUserFound() {
+                // nothing
+            }
+        });
+    }
 
     /// Fetching
 
