@@ -23,6 +23,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.FirebaseDatabase;
 import com.huji.foodtricks.buddies.Models.UserModel;
 
 import java.util.Objects;
@@ -59,11 +60,9 @@ public class SignInActivity extends AppCompatActivity implements
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
 
+
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-
-        // Currently signs out automatically until sign out button is implemented
-        signOut();
 
         setContentView(R.layout.activity_signin);
 

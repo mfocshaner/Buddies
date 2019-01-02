@@ -65,7 +65,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     }
 
     private void setDbListener() {
-        final FirebaseDatabase DB = FirebaseDatabase.getInstance();
+        final FirebaseDatabase DB = FirebaseDB.getDatabase();
 
         DBref = DB.getReference("users" + "/" + this.currentUserID);
         DBref.addValueEventListener(new ValueEventListener() {
