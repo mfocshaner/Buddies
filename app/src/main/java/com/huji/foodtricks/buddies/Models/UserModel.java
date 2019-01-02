@@ -58,6 +58,9 @@ public class UserModel implements Serializable {
     }
 
     public HashMap<String, GroupModel> getGroups() {
+        if (groups == null){
+            groups = new HashMap<>();
+        }
         return groups;
     }
 
