@@ -132,16 +132,6 @@ public class SignInActivity extends AppCompatActivity implements
     }
 
 
-    private void signOut() {
-        // Firebase sign out
-        mAuth.signOut();
-
-        // Google sign out
-        mGoogleSignInClient.signOut().addOnCompleteListener(this,
-                task -> updateUI(null));
-    }
-
-
     private void revokeAccess() {
         // Firebase sign out
         mAuth.signOut();
@@ -217,6 +207,14 @@ public class SignInActivity extends AppCompatActivity implements
                 updateUI(currentUser);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent exit = new Intent(Intent.ACTION_MAIN);
+        exit.addCategory(Intent.CATEGORY_HOME);
+        exit.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(exit);
     }
 
 

@@ -8,11 +8,18 @@ import android.os.Bundle;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,6 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
@@ -39,14 +47,13 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     private TabLayout tabLayout;
     private UserModel currentUser;
     private String currentUserID;
-    private ProgressBar spinner;
 
-    private enum action {ADD, REMOVE}
 
+    private enum action {ADD, REMOVE;}
 
     private final DatabaseStreamer streamer = new DatabaseStreamer();
-    private DatabaseReference DBref;
 
+    private DatabaseReference DBref;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -173,6 +180,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     }
 
     // todo: Amit to decide whether this is needed
+
     public void moveEvent(Pair<String, EventModel> event, EventModel.state current_state, EventModel.state new_state) {
         sendEventSwitch(event.first, event.second, action.REMOVE);
         event.second.setEventStatus(new_state);
@@ -181,7 +189,6 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         sendEventSwitch(event.first, event.second, action.ADD);
 
     }
-
 
     private void sendEventSwitch(String id, EventModel model, action flag) {
         ViewPagerAdapter adapter = (ViewPagerAdapter) vp.getAdapter();
@@ -264,4 +271,40 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         inflater.inflate(R.menu.events_tabs_menu, menu);
         return true;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.signoutButton:
+                signOut();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+    private void signOut() {
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+        // Firebase sign out
+        mAuth.signOut();
+
+        // Google sign out
+        mGoogleSignInClient.signOut().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Intent signoutIntent = new Intent(EventsTabsActivity.this, SignInActivity.class);
+                startActivity(signoutIntent);
+            }
+        });
+    }
+
 }
