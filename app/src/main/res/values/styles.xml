@@ -7,6 +7,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="viewInflaterClass">androidx.appcompat.app.AppCompatViewInflater</item>
         <item name="android:windowContentTransitions">true</item>
+        <item name="android:textColorSecondary">@android:color/white</item>
     </style>
 
     <!-- Activity with no Title -->
