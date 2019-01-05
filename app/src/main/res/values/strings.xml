@@ -18,12 +18,16 @@
     <string name="create_new_event_disabled">Choose Event Details</string>
     <string name="create_group">Create Group!</string>
     <string name="create_group_button">New Group</string>
+    <string name="when_tonight_button">Tonight</string>
+    <string name="when_tomorrow_button">Tomorrow</string>
+    <string name="when_custom_button">⏰</string>
 
     <!-- Keys to Extras -->
     <string name="extra_current_user_model">Current User Model Extra</string>
     <string name="extra_current_user_id">Current User ID Extra</string>
     <string name="extra_current_event_model">Current Event Model Extra</string>
     <string name="extra_current_event_id">Current Event ID Extra</string>
+    <string name="extra_custom_group">Custom Group</string>
 
     <!-- Content Description for images -->
 
@@ -31,7 +35,7 @@
 
     <!-- Activity Names and Descriptions -->
 
-    <string name="app_description">Hanging out with friends was never easier</string>
+    <string name="app_description">Hanging out with friends has never been easier!</string>
     <string name="friends_hanging">Friends Hanging</string>
     <string name="rsvp_bottom_bar_question">Going?</string>
     <string name="error_loading_user_rsvp_text">\"Error loading RSVP\"</string>
