@@ -172,7 +172,14 @@ public class CreateEventActivity extends AppCompatActivity {
         invitees = groupModel.getUsers();
     }
 
-    private void createCustomGroup() {
+
+
+    ///////////////////
+    // CUSTOM GROUPS //
+    ///////////////////
+
+
+    public void createCustomGroup(View view) {
         Intent createCustomGroup = new Intent(this, CreateGroupActivity.class);
         createCustomGroup.putExtra(getResources().getString(R.string.extra_current_user_model),
                 currentUser);
@@ -187,21 +194,25 @@ public class CreateEventActivity extends AppCompatActivity {
         if (requestCode == CREATE_NEW_GROUP_REQUEST) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                HashMap<String, String> customInvitees =
-                        (HashMap<String, String>)resultIntent.getSerializableExtra("Custom Group");
-                String groupName = resultIntent.getStringExtra("Group Name");
+                GroupModel newGroup = (GroupModel)resultIntent.getSerializableExtra(
+                                getResources().getString(R.string.extra_custom_group));
                 // create group for user in DB and on screen
-                this.invitees = customInvitees;
-                updateUserInDBWithNewGroup(groupName, customInvitees);
+                this.invitees = newGroup.getUsers();
+                updateUserInDBWithNewGroup(newGroup);
             }
         }
     }
 
-    private void updateUserInDBWithNewGroup(String groupName, HashMap<String, String> inviteesMap) {
-        currentUser.addGroup(groupName, inviteesMap);
-        dbs.modifyUser(currentUser, currentUserID, () -> updateWhoPicker(groupName));
+    private void updateUserInDBWithNewGroup(GroupModel groupToAdd) {
+        currentUser.addGroup(groupToAdd);
+        dbs.modifyUser(currentUser, currentUserID, ()
+                -> updateGroupsListWithCustomGroup(groupToAdd));
     }
 
+    private void updateGroupsListWithCustomGroup(GroupModel groupToAdd) {
+        LinearLayout groupsLinearLayout = findViewById(R.id.who_linear_layout);
+        View groupCardView = setupGroupCard(groupsLinearLayout, groupToAdd);
+        groupCardClicked(groupsLinearLayout, groupCardView, groupToAdd);
     }
 
     ////////////
