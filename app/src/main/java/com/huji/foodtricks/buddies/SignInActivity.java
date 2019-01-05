@@ -27,6 +27,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.huji.foodtricks.buddies.Models.UserModel;
 
 import java.util.Objects;
+import java.util.Calendar;
+import java.util.HashMap;
 
 /**
  * Activity to demonstrate basic retrieval of the Google user's ID, email address, and basic

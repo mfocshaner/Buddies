@@ -16,7 +16,33 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme" />
+            app:popupTheme="@style/AppTheme">
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="end"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/email" />
+
+            <com.nex3z.notificationbadge.NotificationBadge
+                android:id="@+id/badge"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_alignTop="@id/icon"
+                android:layout_gravity="end"
+                android:layout_marginStart="-16dp"
+                android:layout_marginTop="-8dp"
+                android:layout_toEndOf="@id/icon"
+                app:badgeBackground="@drawable/notification_badge"
+                app:maxTextLength="2" />
+
+        </androidx.appcompat.widget.Toolbar>
+
 
         <com.google.android.material.tabs.TabLayout
 
@@ -37,13 +63,6 @@
         android:src="@drawable/ic_event_white_24dp"
         app:tint="@android:color/white"
         app:backgroundTint="@color/colorAccent" />
-
-    <!--ProgressBar
-    android:id="@+id/progressBar1"
-    style="?android:attr/progressBarStyleLarge"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_centerHorizontal="true" /-->
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/mViewpager_ID"

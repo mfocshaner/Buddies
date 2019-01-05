@@ -22,6 +22,7 @@ import com.nex3z.notificationbadge.NotificationBadge;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -43,6 +44,10 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     private enum action {ADD, REMOVE;}
 
     private final DatabaseStreamer streamer = new DatabaseStreamer();
+    private DatabaseReference DBref;
+    private HashMap<String, EventModel> pastEvent = new HashMap<>();
+    HashMap<String, EventModel> planingEvents = new HashMap<>();
+    HashMap<String, EventModel> upcomingEvents = new HashMap<>();
 
     private DatabaseReference DBref;
     @Override
@@ -60,9 +65,8 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         setSupportActionBar(toolbar);
         setupNewEventFAB();
         vp = findViewById(R.id.mViewpager_ID);
-        this.addPages();
-        this.setupNewTabLayout();
         this.firstEntry();
+        this.setupNewTabLayout();
     }
 
     private void setDbListener() {
@@ -114,18 +118,38 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     }
 
     private void firstEntry() {
+
         this.streamer.fetchEventModelsMapForCurrentUser(new EventMapFetchingCompletion() {
             @Override
             public void onFetchSuccess(HashMap<String, EventModel> modelList) {
-                for (Map.Entry<String, EventModel> entry : modelList.entrySet()) {
-                    sendEventSwitch(entry.getKey(), entry.getValue(), action.ADD);
-                }
+                sortEvents(modelList);
+                addPages();
             }
+
 
             @Override
             public void onNoEventsFound() {
             }
         });
+    }
+
+    private void sortEvents(HashMap<String, EventModel> fetchedEvents) {
+        for (Map.Entry<String, EventModel> entry : fetchedEvents.entrySet()) {
+            String id = entry.getKey();
+            EventModel event = entry.getValue();
+            switch (event.getEventStatus()) {
+                case UPCOMING:
+                    this.upcomingEvents.put(id, event);
+                    break;
+                case PAST:
+                    this.pastEvent.put(id, event);
+                    break;
+                case PENDING:
+                    this.planingEvents.put(id, event);
+                    break;
+            }
+        }
+
     }
 
     private void getCurrentUser() {
@@ -156,7 +180,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
             newEventIntent.putExtra(getResources().getString(R.string.extra_current_user_id),
                     currentUserID);
 
-            EventsTabsActivity context= EventsTabsActivity.this;
+            EventsTabsActivity context = EventsTabsActivity.this;
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(context);
             startActivity(newEventIntent, options.toBundle());
         });
@@ -178,7 +202,6 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     }
 
     // todo: Amit to decide whether this is needed
-
     public void moveEvent(Pair<String, EventModel> event, EventModel.state current_state, EventModel.state new_state) {
         event.second.setEventStatus(new_state);
         sendEventSwitch(event.first, event.second, action.REMOVE);
@@ -234,10 +257,23 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         pagerAdapter.addFragment(new PlanningEventsTabFragment());
         pagerAdapter.addFragment(new PastEventsTabFragment());
 
+        Bundle argsUpcoming = new Bundle();
+        argsUpcoming.putSerializable("events", this.upcomingEvents);
+        pagerAdapter.getItem(0).setArguments(argsUpcoming);
+
+        Bundle argsPlaning = new Bundle();
+        argsPlaning.putSerializable("events", this.planingEvents);
+        pagerAdapter.getItem(1).setArguments(argsPlaning);
+
+        Bundle argsPast = new Bundle();
+        argsPast.putSerializable("events", this.pastEvent);
+        pagerAdapter.getItem(2).setArguments(argsPast);
+
         vp.setAdapter(pagerAdapter);
     }
 
     public void onTabSelected(TabLayout.Tab tab) {
+        // TODO: update current fragment from DB
         vp.setCurrentItem(tab.getPosition());
     }
 
