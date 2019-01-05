@@ -6,9 +6,9 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Pair;
-import android.view.View;
-import android.widget.ProgressBar;
-
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
@@ -18,12 +18,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.huji.foodtricks.buddies.Models.EventModel;
 import com.huji.foodtricks.buddies.Models.UserModel;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
@@ -37,14 +34,13 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     private TabLayout tabLayout;
     private UserModel currentUser;
     private String currentUserID;
-    private ProgressBar spinner;
 
-    private enum action {ADD, REMOVE}
 
+    private enum action {ADD, REMOVE;}
 
     private final DatabaseStreamer streamer = new DatabaseStreamer();
-    private DatabaseReference DBref;
 
+    private DatabaseReference DBref;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +61,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     }
 
     private void setDbListener() {
-        final FirebaseDatabase DB = FirebaseDatabase.getInstance();
+        final FirebaseDatabase DB = FirebaseDB.getDatabase();
 
         DBref = DB.getReference("users" + "/" + this.currentUserID);
         DBref.addValueEventListener(new ValueEventListener() {
@@ -171,6 +167,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     }
 
     // todo: Amit to decide whether this is needed
+
     public void moveEvent(Pair<String, EventModel> event, EventModel.state current_state, EventModel.state new_state) {
         sendEventSwitch(event.first, event.second, action.REMOVE);
         event.second.setEventStatus(new_state);
@@ -179,7 +176,6 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         sendEventSwitch(event.first, event.second, action.ADD);
 
     }
-
 
     private void sendEventSwitch(String id, EventModel model, action flag) {
         ViewPagerAdapter adapter = (ViewPagerAdapter) vp.getAdapter();
@@ -255,4 +251,24 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     public void onPageScrollStateChanged(int i) {
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.events_tabs_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.signoutButton:
+                setResult(SignInActivity.RC_SIGN_OUT);
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 }

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.request.RequestOptions;
+import com.goodiebag.horizontalpicker.HorizontalPicker;
+import com.google.android.material.resources.TextAppearance;
 import com.huji.foodtricks.buddies.Models.UserModel;
+
+import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -58,7 +64,7 @@ public class CreateGroupActivity extends AppCompatActivity {
 
             @Override
             public void onNoUsersFound() {
-                // show that there are no users?
+                // TODO: show that there are no users?
             }
         });
     }
@@ -73,14 +79,17 @@ public class CreateGroupActivity extends AppCompatActivity {
         for (String userId : usersMap.keySet()) {
             final LinearLayout rowLinearLayout = new LinearLayout(this);
             rowLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
+            rowLinearLayout.setVerticalGravity(Gravity.CENTER);
             CheckBox checkBox = new CheckBox(this);
             checkBox.setText(Objects.requireNonNull(usersMap.get(userId)).getUserName());
+            checkBox.setTextSize(20);
             checkBox.setId(userId.hashCode());
             checkBox.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             ImageView checkboxImage = new ImageView(this);
             GlideApp.with(this)
                     .load(Objects.requireNonNull(usersMap.get(userId)).getImageUrl())
-                    .override(150, 150)
+                    .override(200, 200)
+                    .apply(RequestOptions.circleCropTransform())
                     .into(checkboxImage);
             rowLinearLayout.addView(checkboxImage);
             rowLinearLayout.addView(checkBox);
@@ -100,7 +109,7 @@ public class CreateGroupActivity extends AppCompatActivity {
             for (String userId : usersMap.keySet()) {
                 CheckBox checkBox = containingLayout.findViewById(userId.hashCode());
                 if (checkBox.isChecked()) {
-                    invitees.put(userId , usersMap.get(userId).getUserName());
+                    invitees.put(userId , Objects.requireNonNull(usersMap.get(userId)).getUserName());
                 }
             }
             onCreateGroupPressed();

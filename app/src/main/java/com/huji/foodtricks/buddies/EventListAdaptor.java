@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.request.RequestOptions;
 import com.huji.foodtricks.buddies.Models.EventModel;
 
 import java.text.MessageFormat;
@@ -84,6 +85,7 @@ class EventListAdaptor extends BaseAdapter {
         eventDate.setText(dateTimeString);
         GlideApp.with(context)
                 .load(event.getImageUrl())
+                .apply(RequestOptions.circleCropTransform())
                 .override(300, 300)
                 .into(eventImage);
 

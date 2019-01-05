@@ -43,5 +43,6 @@
     <string name="rejection_button_text">No</string>
     <string name="unconfirmed_button_text">Maybe</string>
     <string name="invalid_date_error_text">Invalid date</string>
+    <string name="signout_button">Signout</string>
 
 </resources>

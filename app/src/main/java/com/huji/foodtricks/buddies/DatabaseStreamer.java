@@ -95,7 +95,7 @@ class DatabaseStreamer {
     private final DatabaseReference mDatabase;
 
     public DatabaseStreamer() {
-        this.mDatabase = FirebaseDatabase.getInstance().getReference();
+        this.mDatabase = FirebaseDB.getDatabase().getReference();
     }
 
     /// Writing
