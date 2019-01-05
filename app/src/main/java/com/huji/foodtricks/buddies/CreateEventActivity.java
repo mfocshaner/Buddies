@@ -351,7 +351,12 @@ public class CreateEventActivity extends AppCompatActivity {
         customTimeButton.setText(dateTime);
     }
 
+    //////////////////
+    // CREATE EVENT //
+    //////////////////
+
     public void createNewEventButtonClicked(View view) {
+        invitees.put(currentUserID, currentUser.getUserName());
         final EventModel createdEvent = createEventFromChoices();
         final String createdEventID = dbs.writeNewEventModel(createdEvent);
 

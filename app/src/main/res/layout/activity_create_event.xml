@@ -94,6 +94,9 @@
         app:layout_constraintStart_toEndOf="@+id/tomorrowButton"
         app:layout_constraintTop_toBottomOf="@+id/whatTextInput"/>
 
+    <!-- ======== -->
+    <!-- = WHERE = -->
+    <!-- ======== -->
 
 
     <!-- ======== -->
