@@ -18,6 +18,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.huji.foodtricks.buddies.Models.EventModel;
 import com.huji.foodtricks.buddies.Models.UserModel;
+import com.nex3z.notificationbadge.NotificationBadge;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +36,8 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     private TabLayout tabLayout;
     private UserModel currentUser;
     private String currentUserID;
+    private NotificationBadge nBadge;
+    private int count = 0;
 
 
     private enum action {ADD, REMOVE;}
@@ -52,6 +56,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         setContentView(R.layout.fragment_events_tabs);
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
+        this.nBadge = (NotificationBadge) findViewById(R.id.badge);
         setSupportActionBar(toolbar);
         setupNewEventFAB();
         vp = findViewById(R.id.mViewpager_ID);
@@ -82,6 +87,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
                         @Override
                         public void onFetchSuccess(EventModel model) {
                             sendEventSwitch(eventId, model, action.ADD);
+                            EventsTabsActivity.this.nBadge.setNumber(++count);
                         }
 
                         @Override
@@ -108,7 +114,6 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     }
 
     private void firstEntry() {
-        //this.spinner.setVisibility(View.VISIBLE);
         this.streamer.fetchEventModelsMapForCurrentUser(new EventMapFetchingCompletion() {
             @Override
             public void onFetchSuccess(HashMap<String, EventModel> modelList) {
@@ -121,7 +126,6 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
             public void onNoEventsFound() {
             }
         });
-        //this.spinner.setVisibility(View.GONE);
     }
 
     private void getCurrentUser() {
@@ -158,6 +162,13 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         });
     }
 
+    public void reduceCount(int amount) {
+        this.count -= amount;
+        this.nBadge.setNumber(this.count);
+
+    }
+
+
     @Override
     public void onBackPressed() {
         Intent exit = new Intent(Intent.ACTION_MAIN);
@@ -169,9 +180,12 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     // todo: Amit to decide whether this is needed
 
     public void moveEvent(Pair<String, EventModel> event, EventModel.state current_state, EventModel.state new_state) {
-        sendEventSwitch(event.first, event.second, action.REMOVE);
         event.second.setEventStatus(new_state);
-        this.streamer.modifyEvent(event.second, event.first, () -> {
+        sendEventSwitch(event.first, event.second, action.REMOVE);
+        this.streamer.modifyEvent(event.second, event.first, new EventUpdateCompletion() {
+            @Override
+            public void onUpdateSuccess() {
+            }
         });
         sendEventSwitch(event.first, event.second, action.ADD);
 
