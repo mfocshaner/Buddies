@@ -265,39 +265,44 @@ public class CreateEventActivity extends AppCompatActivity {
     /// WHEN ///
     ////////////
 
-    private void setupWhenPicker() {
-        HorizontalPicker hPicker = findViewById(R.id.whenHPicker);
+    public void dateChosen(View view) {
+        if (view.getId() != R.id.tomorrowButton && view.getId() != R.id.tonightButton) {
+            return;
+        }
+        hideSoftKeyboard();
+        Calendar today = Calendar.getInstance();
+        today.set(Calendar.HOUR_OF_DAY, 20);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
 
-        hPicker.setItems(EventParametersProvider.getWhenItems());
+        if (view.getId() == R.id.tomorrowButton) {
+            today.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        chooseTime(today.getTime());
+        shouldEnableCreateEventButton();
+        chooseButtonAndUnchooseRest(view);
+    }
 
-        HorizontalPicker.OnSelectionChangeListener listener =
-                (picker, index) -> {
-                    hideSoftKeyboard();
+    private void chooseButtonAndUnchooseRest(View view){
+        unchooseAllDateButtons();
+        view.setEnabled(false);
+    }
 
-                    final LinearLayout linearLayout =
-                            findViewById(R.id.linearLayoutForEventCheckBoxes);
-                    linearLayout.removeAllViews();
+    private void unchooseAllDateButtons(){
+        Button tonightButton = findViewById(R.id.tonightButton);
+        Button tomorrowButton = findViewById(R.id.tomorrowButton);
+        Button customTimeButton = findViewById(R.id.customTimeButton);
+        tonightButton.setEnabled(true);
+        tomorrowButton.setEnabled(true);
+        customTimeButton.setEnabled(true);
+        customTimeButton.setText("⏰");
+    }
 
-                    if (index < 0) {
-                        return;
-                    }
-                    if (index == 0 || index == 1) { // tonight/tomorrow
-                        Calendar today = Calendar.getInstance();
-                        today.set(Calendar.HOUR_OF_DAY, 20);
-                        today.set(Calendar.MINUTE, 0);
-                        today.set(Calendar.SECOND, 0);
-
-                        if (index == 1) { // tomorrow
-                            today.add(Calendar.DAY_OF_MONTH, 1);
-                        }
-                        chooseTime(today.getTime());
-                    } else {
-                        showDateTimePicker();
-                    }
-                    shouldEnableCreateEventButton();
-                };
-
-        hPicker.setChangeListener(listener);
+    public void customDateClicked(View view){
+        hideSoftKeyboard();
+        unchooseAllDateButtons();
+        showDateTimePicker();
+        shouldEnableCreateEventButton();
     }
 
     private void showDateTimePicker() {
@@ -335,23 +340,15 @@ public class CreateEventActivity extends AppCompatActivity {
 
 
     private void changeTitleOfCustomDate(Calendar chosenDateTime) {
-        HorizontalPicker whenHPicker = findViewById(R.id.whenHPicker);
-        List<HorizontalPicker.PickerItem> oldItems = whenHPicker.getItems();
-        oldItems.remove(2);
-
         String dateTime = MessageFormat.format("{4}\n{0}/{1} {2}:{3}",
                 chosenDateTime.get(Calendar.DATE),
                 chosenDateTime.get(Calendar.MONTH),
                 chosenDateTime.get(Calendar.HOUR_OF_DAY),
                 chosenDateTime.get(Calendar.MINUTE),
                 chosenDateTime.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()));
-        oldItems.add(new HorizontalPicker.TextItem(dateTime));
 
-        HorizontalPicker.OnSelectionChangeListener listener = whenHPicker.getChangeListener();
-        whenHPicker.setChangeListener(null); // disable so the onSelect function isn't called
-        whenHPicker.setItems(oldItems, 2);
-        whenHPicker.setChangeListener(listener);
-
+        Button customTimeButton = (Button)findViewById(R.id.customTimeButton);
+        customTimeButton.setText(dateTime);
     }
 
     public void createNewEventButtonClicked(View view) {
