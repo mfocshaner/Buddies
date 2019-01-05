@@ -121,8 +121,8 @@ public class CreateGroupActivity extends AppCompatActivity {
             return;
         }
         Intent finishCreatingGroupIntent = new Intent();
-        finishCreatingGroupIntent.putExtra("Custom Group", invitees);
-        finishCreatingGroupIntent.putExtra("Group Name", groupName);
+        GroupModel newGroup = new GroupModel(groupName, invitees);
+        finishCreatingGroupIntent.putExtra(getResources().getString(R.string.extra_custom_group), newGroup);
         setResult(Activity.RESULT_OK, finishCreatingGroupIntent);
         finish();
     }
