@@ -38,6 +38,7 @@ public class SignInActivity extends AppCompatActivity implements
 
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
+    protected static final int RC_SIGN_OUT = 9002;
 
     private GoogleSignInClient mGoogleSignInClient;
 
@@ -86,20 +87,23 @@ public class SignInActivity extends AppCompatActivity implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+            case RC_SIGN_IN:
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                try {
+                    // Google Sign In was successful, authenticate with Firebase
+                    GoogleSignInAccount account = task.getResult(ApiException.class);
+                    firebaseAuthWithGoogle(Objects.requireNonNull(account));
+                } catch (ApiException e) {
+                    // Google Sign In failed, update UI appropriately
+                    Log.w(TAG, "Google sign in failed", e);
 
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(Objects.requireNonNull(account));
-            } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
-                Log.w(TAG, "Google sign in failed", e);
-
-                updateUI(null);
-            }
+                    updateUI(null);
+                }
+                break;
+            case RC_SIGN_OUT:
+                signOut();
         }
     }
 
@@ -132,6 +136,16 @@ public class SignInActivity extends AppCompatActivity implements
     }
 
 
+    private void signOut() {
+        // Firebase sign out
+        mAuth.signOut();
+
+        // Google sign out
+        mGoogleSignInClient.signOut().addOnCompleteListener(this,
+                task -> updateUI(null));
+    }
+
+
     private void revokeAccess() {
         // Firebase sign out
         mAuth.signOut();
@@ -147,7 +161,7 @@ public class SignInActivity extends AppCompatActivity implements
             Intent signedInIntent = new Intent(this, EventsTabsActivity.class);
             signedInIntent.putExtra(getResources().getString(R.string.extra_current_user_model), userModel);
             signedInIntent.putExtra(getResources().getString(R.string.extra_current_user_id), userID);
-            startActivity(signedInIntent);
+            startActivityForResult(signedInIntent, RC_SIGN_OUT);
         }
     }
 
