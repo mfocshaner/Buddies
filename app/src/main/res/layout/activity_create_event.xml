@@ -144,11 +144,8 @@
         android:layout_marginBottom="8dp"
         android:clickable="true"
         android:onClick="createNewEventButtonClicked"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
         android:text="@string/create_new_event_disabled"
+        android:textSize="18dp"
         android:textColor="@android:color/black"
         />
 
@@ -180,11 +177,15 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:orientation="vertical"
+        android:background="@color/colorDisabledCreateNewEventButton"
+        app:cornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/WhenHorizontalScrollView">
     </LinearLayout>
 
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

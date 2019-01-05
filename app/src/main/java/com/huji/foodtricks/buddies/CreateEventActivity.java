@@ -70,16 +70,20 @@ public class CreateEventActivity extends AppCompatActivity {
     private void disableCreateEventButton(){
         Button createEventButton = findViewById(R.id.createEventButton);
         createEventButton.setEnabled(false);
+        createEventButton.setBackgroundColor(getColor(R.color.colorDisabledCreateNewEventButton));
+        createEventButton.setText(R.string.create_new_event_disabled);
+        createEventButton.setTypeface(null, Typeface.NORMAL);
         createEventButton.setAlpha(0.4f);
     }
 
     private void enableCreateEventButton(){
         Button createEventButton = findViewById(R.id.createEventButton);
         createEventButton.setEnabled(true);
-        createEventButton.setBackgroundTintList(this.getBaseContext().getResources()
-                .getColorStateList(R.color.colorEnabledFAB, getTheme()));
+        createEventButton.setBackgroundColor(getColor(R.color.colorEnabledCreateNewEventButton));
         createEventButton.setAlpha(1f);
         createEventButton.setText(R.string.create_new_event_enabled);
+        createEventButton.setTypeface(null, Typeface.BOLD);
+        createEventButton.setTextColor(getColor(R.color.mdtp_white));
     }
 
     private void shouldEnableCreateEventButton(){
@@ -220,16 +224,10 @@ public class CreateEventActivity extends AppCompatActivity {
     ////////////
 
     private void setupWhatTextInput() {
-        EditText editText = findViewById(R.id.editText);
+        EditText editText = findViewById(R.id.whatTextInput);
         editText.setOnEditorActionListener((v, actionId, event) -> {
-            final LinearLayout linearLayout =
-                    findViewById(R.id.linearLayoutForEventCheckBoxes);
-            linearLayout.removeAllViews();
-
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                String userText = v.getText().toString();
-                chooseTitle(userText);
-                shouldEnableCreateEventButton();
+                tryToGetTitleFromInput(editText);
                 v.clearFocus();
             }
             return false;
@@ -237,13 +235,26 @@ public class CreateEventActivity extends AppCompatActivity {
         editText.setOnFocusChangeListener((view, hasFocus) -> {
             if (!hasFocus) {
                 hideSoftKeyboard();
-                chooseTitle(editText.getText().toString());
+                tryToGetTitleFromInput(editText);
             }
         });
     }
 
+    private void tryToGetTitleFromInput(EditText editTextView){
+        String userText = editTextView.getText().toString();
+        if (userText.replace(" ", "").equals("")){
+            eventTitle = "";
+            editTextView.setText("");
+            disableCreateEventButton();
+            Toast.makeText(this, "Event name can't be empty!", Toast.LENGTH_LONG).show();
+            return;
+        }
+        chooseTitle(userText);
+        shouldEnableCreateEventButton();
+    }
+
     private void hideSoftKeyboard() {
-        EditText editText = findViewById(R.id.editText);
+        EditText editText = findViewById(R.id.whatTextInput);
         InputMethodManager inputMethodManager =
                 (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         Objects.requireNonNull(inputMethodManager).hideSoftInputFromWindow(editText.getWindowToken(), 0);
