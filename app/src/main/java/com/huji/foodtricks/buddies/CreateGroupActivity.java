@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -20,11 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.request.RequestOptions;
-import com.goodiebag.horizontalpicker.HorizontalPicker;
-import com.google.android.material.resources.TextAppearance;
+import com.huji.foodtricks.buddies.Models.GroupModel;
 import com.huji.foodtricks.buddies.Models.UserModel;
-
-import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -102,8 +98,10 @@ public class CreateGroupActivity extends AppCompatActivity {
     private void setupCreateGroupButton(LinearLayout containingLayout,
                                         HashMap<String, UserModel> usersMap) {
         Button finalizeSelectionButton = new Button(containingLayout.getContext());
-        finalizeSelectionButton.setBackgroundColor(getResources().getColor(R.color.colorEnabledFAB, getTheme()));
+        finalizeSelectionButton
+                .setBackgroundColor(getColor(R.color.colorEnabledCreateNewEventButton));
         finalizeSelectionButton.setText(R.string.create_group);
+        finalizeSelectionButton.setTextColor(getColor(R.color.mdtp_white));
         finalizeSelectionButton.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         finalizeSelectionButton.setOnClickListener(v -> {
             for (String userId : usersMap.keySet()) {
@@ -115,12 +113,11 @@ public class CreateGroupActivity extends AppCompatActivity {
             onCreateGroupPressed();
         });
         containingLayout.addView(finalizeSelectionButton);
-
     }
 
     private void onCreateGroupPressed() {
         hideSoftKeyboard();
-        if (!tryToSaveGroupNameFromInput(findViewById(R.id.editText))) {
+        if (!tryToSaveGroupNameFromInput(findViewById(R.id.whatTextInput))) {
             return;
         }
         Intent finishCreatingGroupIntent = new Intent();
@@ -141,7 +138,7 @@ public class CreateGroupActivity extends AppCompatActivity {
     ////////////////
 
     private void setupGroupNameInput() {
-        EditText editText = findViewById(R.id.editText);
+        EditText editText = findViewById(R.id.whatTextInput);
         editText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 v.clearFocus();
@@ -164,9 +161,10 @@ public class CreateGroupActivity extends AppCompatActivity {
                     "Group name already Taken!", Toast.LENGTH_LONG);
             groupNameTakenToast.show();
             return false;
-        } else if (groupName.equals("")) {
+        } else if (groupName.replace(" ", "").equals("")) {
             Toast groupNameEmptyToast = Toast.makeText(getApplicationContext(),
                     "Must choose group name!", Toast.LENGTH_LONG);
+            textView.setText("");
             groupNameEmptyToast.show();
             return false;
         }
@@ -174,7 +172,7 @@ public class CreateGroupActivity extends AppCompatActivity {
     }
 
     private void hideSoftKeyboard() {
-        EditText editText = findViewById(R.id.editText);
+        EditText editText = findViewById(R.id.whatTextInput);
         InputMethodManager inputMethodManager =
                 (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         Objects.requireNonNull(inputMethodManager).hideSoftInputFromWindow(editText.getWindowToken(), 0);
