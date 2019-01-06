@@ -6,7 +6,12 @@
     <color name="colorPrimary">@color/blue_grey_800</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorForSelection">#0a1AB4</color>
+    <color name="colorDisabledCreateNewEventButton">#919191</color>
+    <color name="colorEnabledCreateNewEventButton">#154529</color>
     <color name="colorEnabledFAB">#00c853</color>
-    <color name="selectedRSVPButton">#03A9F4</color>
+    <color name="selectedRSVPButton">#03a9f4</color>
+    <color name="groupTitle">#0a4e31</color>
+    <color name="selectedGroupCard">#879692</color>
+    <color name="cardStroke">#9aaba6</color>
     <color name="card">#d0e0fd</color>
 </resources>

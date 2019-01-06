@@ -92,13 +92,12 @@ public class UserModel implements Serializable {
         groups.remove(groupName);
     }
 
-    public void addGroup(String groupName, HashMap<String, String> groupMembersMap) {
+    public void addGroup(GroupModel groupModel) {
         if (groups == null) {
             groups = new HashMap<>();
         }
-        if (!groups.containsKey(groupName)) {
-            GroupModel newGroup = new GroupModel(groupName, groupMembersMap);
-            groups.put(groupName, newGroup);
+        if (!groups.containsKey(groupModel.getGroupName())) {
+            groups.put(groupModel.getGroupName(), groupModel);
         }
     }
 

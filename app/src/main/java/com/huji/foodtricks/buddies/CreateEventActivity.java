@@ -3,17 +3,21 @@ package com.huji.foodtricks.buddies;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.goodiebag.horizontalpicker.HorizontalPicker;
+import com.bumptech.glide.request.RequestOptions;
 import com.huji.foodtricks.buddies.Models.EventModel;
 import com.huji.foodtricks.buddies.Models.GroupModel;
 import com.huji.foodtricks.buddies.Models.UserModel;
@@ -26,7 +30,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -43,6 +46,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private Date date;
     private GregorianCalendar calendar = new GregorianCalendar();
     private String eventTitle;
+    private String chosenGroupName;
     private HashMap<String, String> invitees;
 
     private static final int CREATE_NEW_GROUP_REQUEST = 1;
@@ -58,30 +62,28 @@ public class CreateEventActivity extends AppCompatActivity {
                 .getSerializableExtra(getResources().getString(R.string.extra_current_user_model));
         currentUserID = newEventIntent
                 .getStringExtra(getResources().getString(R.string.extra_current_user_id));
-        
-        setupWhoHorizontalPicker();
-        setupWhatTextInput();
-        setupWhenPicker();
-    }
 
-    private void chooseGroup(String groupName) {
-        GroupModel chosenGroup = currentUser.getGroupForName(groupName);
-        invitees = chosenGroup.getUsers();
+        setupGroupSelection();
+        setupWhatTextInput();
     }
 
     private void disableCreateEventButton(){
         Button createEventButton = findViewById(R.id.createEventButton);
         createEventButton.setEnabled(false);
+        createEventButton.setBackgroundColor(getColor(R.color.colorDisabledCreateNewEventButton));
+        createEventButton.setText(R.string.create_new_event_disabled);
+        createEventButton.setTypeface(null, Typeface.NORMAL);
         createEventButton.setAlpha(0.4f);
     }
 
     private void enableCreateEventButton(){
         Button createEventButton = findViewById(R.id.createEventButton);
         createEventButton.setEnabled(true);
-        createEventButton.setBackgroundTintList(this.getBaseContext().getResources()
-                .getColorStateList(R.color.colorEnabledFAB, getTheme()));
+        createEventButton.setBackgroundColor(getColor(R.color.colorEnabledCreateNewEventButton));
         createEventButton.setAlpha(1f);
         createEventButton.setText(R.string.create_new_event_enabled);
+        createEventButton.setTypeface(null, Typeface.BOLD);
+        createEventButton.setTextColor(getColor(R.color.mdtp_white));
     }
 
     private void shouldEnableCreateEventButton(){
@@ -103,41 +105,85 @@ public class CreateEventActivity extends AppCompatActivity {
         return new EventModel(eventTitle, date, invitees, currentUserID, currentUser.getImageUrl());
     }
 
-    ///////////
-    /// WHO ///
-    ///////////
+    ///////////////////////
+    /// GROUP SELECTION ///
+    ///////////////////////
 
-    private void setupWhoHorizontalPicker() {
-        final HorizontalPicker hPicker = findViewById(R.id.whoHPicker);
-
-        ArrayList<String> userGroupNames = new ArrayList<>(currentUser.getGroups().keySet());
-        userGroupNames.add(0, getResources().getString(R.string.create_group_button));
-        hPicker.setItems(EventParametersProvider.getWhoItems(userGroupNames));
-
-        HorizontalPicker.OnSelectionChangeListener listener = (picker, index) -> {
-            hideSoftKeyboard();
-            HorizontalPicker.PickerItem selected = picker.getSelectedItem();
-            String selectedGroupName = selected.getText();
-
-            final LinearLayout linearLayout =
-                    findViewById(R.id.linearLayoutForEventCheckBoxes);
-            linearLayout.removeAllViews();
-
-            if (selectedGroupName.equals(getResources()
-                    .getString(R.string.create_group_button))) {
-                invitees = null;
-                disableCreateEventButton();
-                createCustomGroup();
-            } else {
-                chooseGroup(selectedGroupName);
-            }
-            shouldEnableCreateEventButton();
-        };
-
-        hPicker.setChangeListener(listener);
+    public void setupGroupSelection() {
+        LinearLayout groupsLinearLayout = findViewById(R.id.who_linear_layout);
+        for (GroupModel groupModel : currentUser.getGroups().values()) {
+            setupGroupCard(groupsLinearLayout, groupModel);
+        }
     }
 
-    private void createCustomGroup() {
+    private View setupGroupCard(ViewGroup containingLayout, GroupModel groupModel) {
+        View groupCardView = LayoutInflater.from(this).inflate(R.layout.group_card,
+                containingLayout, false);
+        groupCardView.setId(groupModel.getGroupName().hashCode());
+        containingLayout.addView(groupCardView, 0);
+
+        TextView groupNameTextView = groupCardView.findViewById(R.id.groupName);
+        groupNameTextView.setText(groupModel.getGroupName());
+
+        TextView groupMembersTextView = groupCardView.findViewById(R.id.groupMembers);
+        groupMembersTextView.setText(getGroupMembersFirstNames(groupModel));
+
+        ImageView eventImage = groupCardView.findViewById(R.id.groupCardImage);
+        GlideApp.with(this).load(currentUser.getImageUrl()) // should be group image
+                .override(170, 170)
+                .apply(RequestOptions.circleCropTransform())
+                .into(eventImage);
+
+        groupCardView.setOnClickListener(view -> {
+            hideSoftKeyboard();
+            groupCardClicked(containingLayout, groupCardView, groupModel);
+        });
+        return groupCardView;
+    }
+
+    private String getGroupMembersFirstNames(GroupModel groupModel){
+        HashMap<String, String> usersMap = groupModel.getUsers();
+        usersMap.remove(currentUserID);
+        ArrayList<String> userNames = new ArrayList<>(usersMap.values());
+
+        ArrayList<String> firstNames = new ArrayList<>();
+        for (String userName : userNames) {
+            firstNames.add(userName.split(" ")[0]);
+        }
+        firstNames.add("You");
+        return String.join(", ", firstNames);
+    }
+
+    private void groupCardClicked(ViewGroup containingLayout, View groupCardView,
+                                  GroupModel groupModel) {
+        unchooseChosenGroupCard(containingLayout);
+        saveGroupChoice(groupModel);
+        groupCardView.findViewById(R.id.group_card_linear_layout)
+                .setBackgroundColor(getResources().getColor(R.color.selectedGroupCard));
+        shouldEnableCreateEventButton();
+    }
+
+    private void unchooseChosenGroupCard(ViewGroup cardsContainer){
+        if (chosenGroupName != null) {
+            View groupCardView = cardsContainer.findViewById(chosenGroupName.hashCode());
+            groupCardView.findViewById(R.id.group_card_linear_layout)
+                    .setBackgroundColor(getResources().getColor(R.color.mdtp_white));
+        }
+    }
+
+    private void saveGroupChoice(GroupModel groupModel) {
+        chosenGroupName = groupModel.getGroupName();
+        invitees = groupModel.getUsers();
+    }
+
+
+
+    ///////////////////
+    // CUSTOM GROUPS //
+    ///////////////////
+
+
+    public void createCustomGroup(View view) {
         Intent createCustomGroup = new Intent(this, CreateGroupActivity.class);
         createCustomGroup.putExtra(getResources().getString(R.string.extra_current_user_model),
                 currentUser);
@@ -152,32 +198,25 @@ public class CreateEventActivity extends AppCompatActivity {
         if (requestCode == CREATE_NEW_GROUP_REQUEST) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                HashMap<String, String> customInvitees =
-                        (HashMap<String, String>)resultIntent.getSerializableExtra("Custom Group");
-                String groupName = resultIntent.getStringExtra("Group Name");
+                GroupModel newGroup = (GroupModel)resultIntent.getSerializableExtra(
+                                getResources().getString(R.string.extra_custom_group));
                 // create group for user in DB and on screen
-                this.invitees = customInvitees;
-                updateUserInDBWithNewGroup(groupName, customInvitees);
+                this.invitees = newGroup.getUsers();
+                updateUserInDBWithNewGroup(newGroup);
             }
         }
     }
 
-    private void updateUserInDBWithNewGroup(String groupName, HashMap<String, String> inviteesMap) {
-        currentUser.addGroup(groupName, inviteesMap);
-        dbs.modifyUser(currentUser, currentUserID, () -> updateWhoPicker(groupName));
+    private void updateUserInDBWithNewGroup(GroupModel groupToAdd) {
+        currentUser.addGroup(groupToAdd);
+        dbs.modifyUser(currentUser, currentUserID, ()
+                -> updateGroupsListWithCustomGroup(groupToAdd));
     }
 
-    private void updateWhoPicker(String chosenGroup) {
-        final HorizontalPicker hPicker = findViewById(R.id.whoHPicker);
-        HorizontalPicker.OnSelectionChangeListener listener = hPicker.getChangeListener();
-        hPicker.setChangeListener(null);
-        ArrayList<String> userGroupNames = new ArrayList<>(currentUser.getGroups().keySet());
-        int chosenIndex = userGroupNames.indexOf(chosenGroup);
-        userGroupNames.add(0, userGroupNames.get(chosenIndex));
-        userGroupNames.remove(chosenIndex+1);
-        userGroupNames.add(0, getResources().getString(R.string.create_group_button));
-        hPicker.setItems(EventParametersProvider.getWhoItems(userGroupNames), 1);
-        hPicker.setChangeListener(listener);
+    private void updateGroupsListWithCustomGroup(GroupModel groupToAdd) {
+        LinearLayout groupsLinearLayout = findViewById(R.id.who_linear_layout);
+        View groupCardView = setupGroupCard(groupsLinearLayout, groupToAdd);
+        groupCardClicked(groupsLinearLayout, groupCardView, groupToAdd);
     }
 
     ////////////
@@ -185,16 +224,10 @@ public class CreateEventActivity extends AppCompatActivity {
     ////////////
 
     private void setupWhatTextInput() {
-        EditText editText = findViewById(R.id.editText);
+        EditText editText = findViewById(R.id.whatTextInput);
         editText.setOnEditorActionListener((v, actionId, event) -> {
-            final LinearLayout linearLayout =
-                    findViewById(R.id.linearLayoutForEventCheckBoxes);
-            linearLayout.removeAllViews();
-
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                String userText = v.getText().toString();
-                chooseTitle(userText);
-                shouldEnableCreateEventButton();
+                tryToGetTitleFromInput(editText);
                 v.clearFocus();
             }
             return false;
@@ -202,13 +235,26 @@ public class CreateEventActivity extends AppCompatActivity {
         editText.setOnFocusChangeListener((view, hasFocus) -> {
             if (!hasFocus) {
                 hideSoftKeyboard();
-                chooseTitle(editText.getText().toString());
+                tryToGetTitleFromInput(editText);
             }
         });
     }
 
+    private void tryToGetTitleFromInput(EditText editTextView){
+        String userText = editTextView.getText().toString();
+        if (userText.replace(" ", "").equals("")){
+            eventTitle = "";
+            editTextView.setText("");
+            disableCreateEventButton();
+            Toast.makeText(this, "Event name can't be empty!", Toast.LENGTH_LONG).show();
+            return;
+        }
+        chooseTitle(userText);
+        shouldEnableCreateEventButton();
+    }
+
     private void hideSoftKeyboard() {
-        EditText editText = findViewById(R.id.editText);
+        EditText editText = findViewById(R.id.whatTextInput);
         InputMethodManager inputMethodManager =
                 (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         Objects.requireNonNull(inputMethodManager).hideSoftInputFromWindow(editText.getWindowToken(), 0);
@@ -219,39 +265,44 @@ public class CreateEventActivity extends AppCompatActivity {
     /// WHEN ///
     ////////////
 
-    private void setupWhenPicker() {
-        HorizontalPicker hPicker = findViewById(R.id.whenHPicker);
+    public void dateChosen(View view) {
+        if (view.getId() != R.id.tomorrowButton && view.getId() != R.id.tonightButton) {
+            return;
+        }
+        hideSoftKeyboard();
+        Calendar today = Calendar.getInstance();
+        today.set(Calendar.HOUR_OF_DAY, 20);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
 
-        hPicker.setItems(EventParametersProvider.getWhenItems());
+        if (view.getId() == R.id.tomorrowButton) {
+            today.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        chooseTime(today.getTime());
+        shouldEnableCreateEventButton();
+        chooseButtonAndUnchooseRest(view);
+    }
 
-        HorizontalPicker.OnSelectionChangeListener listener =
-                (picker, index) -> {
-                    hideSoftKeyboard();
+    private void chooseButtonAndUnchooseRest(View view){
+        unchooseAllDateButtons();
+        view.setEnabled(false);
+    }
 
-                    final LinearLayout linearLayout =
-                            findViewById(R.id.linearLayoutForEventCheckBoxes);
-                    linearLayout.removeAllViews();
+    private void unchooseAllDateButtons(){
+        Button tonightButton = findViewById(R.id.tonightButton);
+        Button tomorrowButton = findViewById(R.id.tomorrowButton);
+        Button customTimeButton = findViewById(R.id.customTimeButton);
+        tonightButton.setEnabled(true);
+        tomorrowButton.setEnabled(true);
+        customTimeButton.setEnabled(true);
+        customTimeButton.setText("⏰");
+    }
 
-                    if (index < 0) {
-                        return;
-                    }
-                    if (index == 0 || index == 1) { // tonight/tomorrow
-                        Calendar today = Calendar.getInstance();
-                        today.set(Calendar.HOUR_OF_DAY, 20);
-                        today.set(Calendar.MINUTE, 0);
-                        today.set(Calendar.SECOND, 0);
-
-                        if (index == 1) { // tomorrow
-                            today.add(Calendar.DAY_OF_MONTH, 1);
-                        }
-                        chooseTime(today.getTime());
-                    } else {
-                        showDateTimePicker();
-                    }
-                    shouldEnableCreateEventButton();
-                };
-
-        hPicker.setChangeListener(listener);
+    public void customDateClicked(View view){
+        hideSoftKeyboard();
+        unchooseAllDateButtons();
+        showDateTimePicker();
+        shouldEnableCreateEventButton();
     }
 
     private void showDateTimePicker() {
@@ -289,26 +340,23 @@ public class CreateEventActivity extends AppCompatActivity {
 
 
     private void changeTitleOfCustomDate(Calendar chosenDateTime) {
-        HorizontalPicker whenHPicker = findViewById(R.id.whenHPicker);
-        List<HorizontalPicker.PickerItem> oldItems = whenHPicker.getItems();
-        oldItems.remove(2);
-
         String dateTime = MessageFormat.format("{4}\n{0}/{1} {2}:{3}",
                 chosenDateTime.get(Calendar.DATE),
                 chosenDateTime.get(Calendar.MONTH),
                 chosenDateTime.get(Calendar.HOUR_OF_DAY),
                 chosenDateTime.get(Calendar.MINUTE),
                 chosenDateTime.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()));
-        oldItems.add(new HorizontalPicker.TextItem(dateTime));
 
-        HorizontalPicker.OnSelectionChangeListener listener = whenHPicker.getChangeListener();
-        whenHPicker.setChangeListener(null); // disable so the onSelect function isn't called
-        whenHPicker.setItems(oldItems, 2);
-        whenHPicker.setChangeListener(listener);
-
+        Button customTimeButton = (Button)findViewById(R.id.customTimeButton);
+        customTimeButton.setText(dateTime);
     }
 
+    //////////////////
+    // CREATE EVENT //
+    //////////////////
+
     public void createNewEventButtonClicked(View view) {
+        invitees.put(currentUserID, currentUser.getUserName());
         final EventModel createdEvent = createEventFromChoices();
         final String createdEventID = dbs.writeNewEventModel(createdEvent);
 
