@@ -49,4 +49,18 @@
     <string name="invalid_date_error_text">Invalid date</string>
     <string name="signout_button">Signout</string>
 
+    <string-array name="date_spinner_options">
+        <item>Today</item>
+        <item>Tomorrow</item>
+        <item>Pick a date…</item>
+    </string-array>
+    <string-array name="time_spinner_options">
+        <item>Morning</item>
+        <item>Afternoon</item>
+        <item>Evening</item>
+        <item>Evening</item>
+        <item>Night</item>
+        <item>Pick a time…</item>
+    </string-array>
+
 </resources>
