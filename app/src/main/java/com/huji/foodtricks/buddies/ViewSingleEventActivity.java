@@ -3,18 +3,19 @@ package com.huji.foodtricks.buddies;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.huji.foodtricks.buddies.Models.EventModel;
+import com.huji.foodtricks.buddies.Models.UserModel;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -22,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Formatter;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Objects;
@@ -69,16 +71,17 @@ public class ViewSingleEventActivity extends AppCompatActivity {
 
         TextView hour_tv = findViewById(R.id.hour_textView);
         modifyHourTextView(curr_event.getTime(), hour_tv);
+        setupUserList();
 
-        TextView rsvpText = findViewById(R.id.RSVPText);
-        modifyAttendersTextView(curr_event.getAttendanceProvider(), rsvpText);
+//        TextView rsvpText = findViewById(R.id.RSVPText);
+//        modifyAttendersTextView(curr_event.getAttendanceProvider(), rsvpText);
         modifyRSVPButtons();
 
         if (!curr_event.isUserOrganizer(currentUserID) || curr_event.getEventStatus() != EventModel.state.PENDING)
         {
-            FloatingActionButton discart_btn = findViewById(R.id.discard_event);
+            FloatingActionButton discard_btn = findViewById(R.id.discard_event);
             FloatingActionButton approve_btn= findViewById(R.id.approve_event);
-            discart_btn.setVisibility(View.GONE);
+            discard_btn.setVisibility(View.GONE);
             approve_btn.setVisibility(View.GONE);
         }
 
@@ -104,31 +107,6 @@ public class ViewSingleEventActivity extends AppCompatActivity {
     }
 
 
-    private void modifyAttendersTextView(EventAttendanceProvider eventAttendanceProvider, TextView tv) {
-        SpannableString attending = new SpannableString(
-
-                String.join("\n", curr_event.getAttendanceProvider().getAttending().values()) );
-        SpannableString tentative = new SpannableString(
-                String.join("\n", curr_event.getAttendanceProvider().getTentatives().values()));
-        SpannableString not_attending = new SpannableString(
-                String.join("\n", curr_event.getAttendanceProvider().getNotAttending().values()));
-        SpannableString not_responsive = new SpannableString(
-                String.join("\n", curr_event.getAttendanceProvider().getNonResponsive().values()));
-
-        // setting the string's style:
-        int flag = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
-        attending.setSpan(new ForegroundColorSpan(Color.GREEN), 0, attending.length(), flag);
-        tentative.setSpan(new ForegroundColorSpan(Color.parseColor(getString(R.string.ORANGE))), 0, tentative.length(), flag);
-        not_attending.setSpan(new ForegroundColorSpan(Color.RED), 0, not_attending.length(), flag);
-        not_responsive.setSpan(new ForegroundColorSpan(Color.GRAY), 0, not_responsive.length(), flag);
-        SpannableStringBuilder builder = new SpannableStringBuilder(); // to concatenate string together
-        builder.append(attending);
-        builder.append(attending.toString().equals("") ? tentative:"\n" + tentative);
-        builder.append(tentative.toString().equals("") ? not_attending:"\n" + not_attending);
-        builder.append(not_attending.toString().equals("") ? not_responsive: "\n" + not_responsive);
-        tv.setText(builder);
-    }
-
     public void onRSVPChangeClick(View view) {
         EventAttendanceProvider attendanceProvider = curr_event.getAttendanceProvider();
         if (currentUserID == null)
@@ -151,14 +129,79 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         modifyRSVPButtons();
     }
 
+    private void setupRSVPList(LinearLayout containingLayout, HashMap<String, UserModel> usersMap) {
+        for (String userId : usersMap.keySet()) {
+            if (curr_event.getAttendanceProvider().getInvitees().containsKey(userId)) {
+                final LinearLayout rowLinearLayout = new LinearLayout(this);
+                rowLinearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                rowLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
+//            rowLinearLayout.setVerticalGravity(Gravity.START);
+                TextView userNameTextView = new TextView(this);
+                UserModel userModel = usersMap.get(userId);
+                userNameTextView.setText(Objects.requireNonNull(userModel).getUserName());
+                userNameTextView.setTextSize(20);
+                userNameTextView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                int btnRSVP = getUserRSVPButton(userId);
+                ImageView rsvpImage = new ImageView(this);
+                rsvpImage.setImageResource(btnRSVP);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                rsvpImage.setLayoutParams(layoutParams);
+                ImageView userImage = new ImageView(this);
+                GlideApp.with(this)
+                        .load(Objects.requireNonNull(userModel).getImageUrl())
+                        .override(100, 100)
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(userImage);
+                rowLinearLayout.addView(userImage);
+                rowLinearLayout.addView(userNameTextView);
+                rowLinearLayout.addView(rsvpImage);
+                rowLinearLayout.setPadding(10, 10, 10, 20);
+                containingLayout.addView(rowLinearLayout);
+            }
+        }
+    }
+
+    private int getUserRSVPButton(String userId) {
+        EventAttendanceProvider.RSVP rsvpAnswer = curr_event.getAttendanceProvider().getUserRSVP(userId);
+        switch (rsvpAnswer)
+        {
+            case ATTENDING:
+                return R.drawable.going_rsvp_list_icon;
+            case NOT_ATTENDING:
+                return R.drawable.not_going_rsvp_list_icon;
+        }
+        return R.drawable.maybe_rsvp_list_icon;
+    }
+
+    private void setupUserList() {
+        final LinearLayout linearLayout = findViewById(R.id.linearLayoutForUserRSVP);
+
+        getUsersFromDB(new UsersMapFetchingCompletion() {
+            @Override
+            public void onFetchSuccess(HashMap<String, UserModel> usersMap) {
+                setupRSVPList(linearLayout, usersMap);
+            }
+
+            @Override
+            public void onNoUsersFound() {
+                // TODO: show that there are no users?
+            }
+        });
+    }
+
+    private void getUsersFromDB(UsersMapFetchingCompletion completion) {
+        DatabaseStreamer dbs = new DatabaseStreamer();
+        dbs.fetchAllUsersInDBMap(completion);
+    }
+
     private void modifyRSVPButtons() {
         Set<Integer> allRSVPButtons = new HashSet<>(ALL_RSVP_BUTTONS);
         for (int buttonId : allRSVPButtons) {
             Button currButton = findViewById(buttonId);
             changeButtonToDisabled(currButton);
         }
-        TextView rsvp_tv = findViewById(R.id.RSVPText);
-        modifyAttendersTextView(curr_event.getAttendanceProvider(), rsvp_tv);
+//        TextView rsvp_tv = findViewById(R.id.RSVPText);
+//        modifyAttendersTextView(curr_event.getAttendanceProvider(), rsvp_tv);
         EventAttendanceProvider attendanceProvider = curr_event.getAttendanceProvider();
         EventAttendanceProvider.RSVP status = attendanceProvider.getUserRSVP(currentUserID);
         if (status == EventAttendanceProvider.RSVP.ATTENDING) {

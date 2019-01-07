@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
@@ -8,8 +9,10 @@
     android:padding="16dp"
     tools:context=".ViewSingleEventActivity">
 
+
     <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
+        android:id="@+id/eventDetailsTable"
         android:layout_height="wrap_content"
         android:stretchColumns="3"
         tools:context=".ListViewWithImageAndText">
@@ -39,23 +42,18 @@
                 android:textSize="24sp" />
         </TableRow>
 
-        <TableRow>
-
-            <TextView
-                android:id="@+id/RSVPText"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="start"
-                android:padding="3dip"
-                android:text="@string/error_loading_user_rsvp_text"
-                android:textSize="23sp" />
-
-
-        </TableRow>
-
-
     </TableLayout>
 
+    <LinearLayout
+        android:id="@+id/linearLayoutForUserRSVP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        android:divider="?android:listDivider"
+        android:orientation="vertical"
+        android:showDividers="middle"
+        app:layout_constraintTop_toBottomOf="@+id/eventDetailsTable"
+        tools:layout_editor_absoluteX="24dp" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -130,7 +128,6 @@
                 android:layout_gravity="top|end"
                 android:clickable="true"
                 android:onClick="approve_event"
-
                 app:backgroundTint="@color/colorEnabledFAB"
                 app:srcCompat="@drawable/ic_send_black_24dp" />
 
@@ -154,4 +151,4 @@
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
