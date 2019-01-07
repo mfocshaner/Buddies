@@ -30,6 +30,9 @@ public class GroupModel implements Serializable {
     }
 
     public HashMap<String, String> getUsers() {
+        if (users == null) {
+            return new HashMap<>();
+        }
         return users;
     }
 
