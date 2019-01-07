@@ -3,7 +3,7 @@
     <string name="who_title">Who?</string>
     <string name="what_title">What?</string>
     <string name="when_title">When?</string>
-    <!-- Strings related to login -->
+    <!-- strings related to login -->
 
 
     <string name="title_text">Buddies</string>
@@ -49,18 +49,27 @@
     <string name="invalid_date_error_text">Invalid date</string>
     <string name="signout_button">Signout</string>
 
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="pick_date">Pick a date…</string>
+    <string name="morning">Morning - 08:00</string>
+    <string name="afternoon">Afternoon - 13:00</string>
+    <string name="evening">Evening - 18:00</string>
+    <string name="night">Night - 21:00</string>
+    <string name="pick_time">Pick a time…</string>
+    <string name="create_group_text">CREATE GROUP</string>
+    <string name="choose_group_text">Choose Group</string>
+
     <string-array name="date_spinner_options">
-        <item>Today</item>
-        <item>Tomorrow</item>
-        <item>Pick a date…</item>
+        <item>@string/today</item>
+        <item>@string/tomorrow</item>
+        <item>@string/pick_date</item>
     </string-array>
     <string-array name="time_spinner_options">
-        <item>Morning</item>
-        <item>Afternoon</item>
-        <item>Evening</item>
-        <item>Evening</item>
-        <item>Night</item>
-        <item>Pick a time…</item>
+        <item>@string/morning</item>
+        <item>@string/afternoon</item>
+        <item>@string/evening</item>
+        <item>@string/night</item>
+        <item>@string/pick_time</item>
     </string-array>
-
 </resources>

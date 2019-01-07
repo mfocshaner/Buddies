@@ -39,60 +39,83 @@
     <!-- = WHEN = -->
     <!-- ======== -->
 
-    <TextView
-        android:id="@+id/when_textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:fontFamily="sans-serif"
-        android:text="@string/when_title"
-        android:textAllCaps="true"
-        android:textSize="20sp"
-        android:textStyle="bold"
+    <!--<TextView-->
+        <!--android:id="@+id/when_textView"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:fontFamily="sans-serif"-->
+        <!--android:text="@string/when_title"-->
+        <!--android:textAllCaps="true"-->
+        <!--android:textSize="20sp"-->
+        <!--android:textStyle="bold"-->
 
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/whatTextInput" />
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintHorizontal_bias="0.0"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/whatTextInput" />-->
 
-    <Button
-        android:id="@+id/tonightButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:onClick="dateChosen"
-        android:text="@string/when_tonight_button"
-        app:layout_constraintStart_toEndOf="@+id/when_textView"
-        app:layout_constraintTop_toBottomOf="@+id/whatTextInput" />
+    <!--<Button-->
+        <!--android:id="@+id/tonightButton"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:onClick="dateChosen"-->
+        <!--android:text="@string/when_tonight_button"-->
+        <!--app:layout_constraintStart_toEndOf="@+id/when_textView"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/whatTextInput" />-->
 
-    <Button
-        android:id="@+id/tomorrowButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:onClick="dateChosen"
-        android:text="@string/when_tomorrow_button"
-        app:layout_constraintStart_toEndOf="@+id/tonightButton"
-        app:layout_constraintTop_toBottomOf="@+id/whatTextInput" />
+    <!--<Button-->
+        <!--android:id="@+id/tomorrowButton"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:onClick="dateChosen"-->
+        <!--android:text="@string/when_tomorrow_button"-->
+        <!--app:layout_constraintStart_toEndOf="@+id/tonightButton"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/whatTextInput" />-->
 
-    <Button
-        android:id="@+id/customTimeButton"
-        android:layout_width="0dp"
+    <!--<Button-->
+        <!--android:id="@+id/customTimeButton"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="4dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:onClick="customDateClicked"-->
+        <!--android:text="@string/when_custom_button"-->
+        <!--android:textSize="23sp"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintHorizontal_bias="0.0"-->
+        <!--app:layout_constraintStart_toEndOf="@+id/tomorrowButton"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/whatTextInput"/>-->
+
+    <Spinner
+        android:id="@+id/date_spinner"
+        android:spinnerMode="dropdown"
+        android:dropDownWidth="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:onClick="customDateClicked"
-        android:text="@string/when_custom_button"
-        android:textSize="23sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/tomorrowButton"
-        app:layout_constraintTop_toBottomOf="@+id/whatTextInput"/>
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="5dp"
+        android:background="@drawable/spinner_background"
+        android:entries="@array/date_spinner_options"
+        app:layout_constraintTop_toBottomOf="@id/whatTextInput"/>
+
+    <Spinner
+        android:id="@+id/time_spinner"
+        android:spinnerMode="dropdown"
+        android:dropDownWidth="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="5dp"
+        android:background="@drawable/spinner_background"
+        app:layout_constraintTop_toBottomOf="@id/date_spinner"/>
 
     <!-- ======== -->
     <!-- = WHERE = -->
@@ -104,19 +127,15 @@
     <!-- ======== -->
 
     <TextView
-        android:id="@+id/who_textView"
+        android:id="@+id/choose_group_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
-        android:fontFamily="sans-serif"
-        android:text="@string/who_title"
-        android:textAllCaps="true"
-        android:textSize="20sp"
-        android:textStyle="bold"
-
+        android:layout_marginTop="4dp"
+        android:text="@string/choose_group_text"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        android:textColor="@color/mdtp_light_gray"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/when_textView" />
+        app:layout_constraintTop_toBottomOf="@+id/time_spinner" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -125,7 +144,7 @@
         android:layout_marginBottom="2dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@id/createEventButton"
-        app:layout_constraintTop_toBottomOf="@id/who_textView">
+        app:layout_constraintTop_toBottomOf="@id/choose_group_textView">
 
         <LinearLayout
             android:id="@+id/who_linear_layout"
@@ -136,16 +155,16 @@
     </ScrollView>
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/create_group_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:onClick="createCustomGroup"
-        android:text="CREATE GROUP"
+        android:text="@string/create_group_text"
         android:textAppearance="@style/Base.TextAppearance.MaterialComponents.Subtitle2"
         android:textColor="@color/mdtp_accent_color_dark"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/customTimeButton" />
+        app:layout_constraintTop_toBottomOf="@+id/time_spinner" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/createEventButton"
