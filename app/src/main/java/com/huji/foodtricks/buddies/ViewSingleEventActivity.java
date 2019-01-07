@@ -3,6 +3,7 @@ package com.huji.foodtricks.buddies;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -62,8 +63,6 @@ public class ViewSingleEventActivity extends AppCompatActivity {
 
     private void updateAllFields(EventModel curr_event) {
 
-        TextView what_tv = findViewById(R.id.what_text);
-        what_tv.setText(curr_event.getTitle());
 
         TextView date_tv = findViewById(R.id.date_textView);
         date_tv.setText(curr_event.getTime().toString());
@@ -72,9 +71,6 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         TextView hour_tv = findViewById(R.id.hour_textView);
         modifyHourTextView(curr_event.getTime(), hour_tv);
         setupUserList();
-
-//        TextView rsvpText = findViewById(R.id.RSVPText);
-//        modifyAttendersTextView(curr_event.getAttendanceProvider(), rsvpText);
         modifyRSVPButtons();
 
         if (!curr_event.isUserOrganizer(currentUserID) || curr_event.getEventStatus() != EventModel.state.PENDING)
@@ -130,12 +126,13 @@ public class ViewSingleEventActivity extends AppCompatActivity {
     }
 
     private void setupRSVPList(LinearLayout containingLayout, HashMap<String, UserModel> usersMap) {
+        if(containingLayout.getChildCount() > 0) {
+            containingLayout.removeAllViews();
+        }
         for (String userId : usersMap.keySet()) {
             if (curr_event.getAttendanceProvider().getInvitees().containsKey(userId)) {
                 final LinearLayout rowLinearLayout = new LinearLayout(this);
                 rowLinearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                rowLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
-//            rowLinearLayout.setVerticalGravity(Gravity.START);
                 TextView userNameTextView = new TextView(this);
                 UserModel userModel = usersMap.get(userId);
                 userNameTextView.setText(Objects.requireNonNull(userModel).getUserName());
@@ -144,7 +141,7 @@ public class ViewSingleEventActivity extends AppCompatActivity {
                 int btnRSVP = getUserRSVPButton(userId);
                 ImageView rsvpImage = new ImageView(this);
                 rsvpImage.setImageResource(btnRSVP);
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.END);
                 rsvpImage.setLayoutParams(layoutParams);
                 ImageView userImage = new ImageView(this);
                 GlideApp.with(this)
@@ -195,6 +192,7 @@ public class ViewSingleEventActivity extends AppCompatActivity {
     }
 
     private void modifyRSVPButtons() {
+        setupUserList();
         Set<Integer> allRSVPButtons = new HashSet<>(ALL_RSVP_BUTTONS);
         for (int buttonId : allRSVPButtons) {
             Button currButton = findViewById(buttonId);

@@ -16,20 +16,14 @@
         android:layout_height="wrap_content"
         android:stretchColumns="3"
         tools:context=".ListViewWithImageAndText">
-        <TableRow>
-            <TextView
-                android:id="@+id/what_text"
-                android:gravity="start"
-                android:padding="3dip"
-                android:textSize="20sp" />
-        </TableRow>
+
         <TableRow>
             <TextView
                 android:id="@+id/date_textView"
                 android:gravity="start"
                 android:padding="3dip"
                 android:textAlignment="textStart"
-                android:textSize="24sp" />
+                android:textSize="20sp" />
         </TableRow>
 
         <TableRow>
@@ -39,7 +33,7 @@
                 android:gravity="start"
                 android:padding="3dip"
                 android:textAlignment="textStart"
-                android:textSize="24sp" />
+                android:textSize="20sp" />
         </TableRow>
 
     </TableLayout>
@@ -48,12 +42,13 @@
         android:id="@+id/linearLayoutForUserRSVP"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        android:divider="?android:listDivider"
         android:orientation="vertical"
-        android:showDividers="middle"
-        app:layout_constraintTop_toBottomOf="@+id/eventDetailsTable"
-        tools:layout_editor_absoluteX="24dp" />
+        android:paddingTop="30dp"
+        android:paddingBottom="30dp"
+
+        android:baselineAligned="false"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/eventDetailsTable" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
