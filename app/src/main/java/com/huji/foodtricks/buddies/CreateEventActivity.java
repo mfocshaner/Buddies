@@ -287,16 +287,16 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 onDateSelected(parent, view, position, id);
+                parent.setSelection(0);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
         Spinner timeSpinner = findViewById(R.id.time_spinner);
         final String[] timeOptions = getResources().getStringArray(R.array.time_spinner_options);
-        ArrayAdapterWithTitle timeAdapter = new ArrayAdapterWithTitle(this, timeOptions);
+        timeAdapter = new ArrayAdapterWithTitle(this, timeOptions);
         timeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         timeSpinner.setAdapter(timeAdapter);
         setTimeSpinnerText();
@@ -304,6 +304,7 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 onTimeSelected(parent, view, position, id);
+                parent.setSelection(0);
             }
 
             @Override
@@ -388,12 +389,14 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
         calendar.set(year, monthOfYear, dayOfMonth);
+        setDateSpinnerText();
     }
 
 
     private void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         calendar.set(Calendar.MINUTE, minute);
+        setTimeSpinnerText();
     }
 
 
@@ -406,10 +409,10 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private void setTimeSpinnerText() {
-        String timeText = MessageFormat.format("{0}:{1}",
+        String timeText = String.format(Locale.getDefault(), "%02d:%02d",
                 calendar.get(Calendar.HOUR_OF_DAY),
                 calendar.get(Calendar.MINUTE));
-        dateAdapter.setCustomText(timeText);
+        timeAdapter.setCustomText(timeText);
     }
 
     public void onDateSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -423,6 +426,7 @@ public class CreateEventActivity extends AppCompatActivity {
         else {
             calendar.set(Calendar.DATE, Calendar.getInstance().get(Calendar.DATE) + 1);
         }
+        setDateSpinnerText();
     }
 
     public void onTimeSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -435,6 +439,7 @@ public class CreateEventActivity extends AppCompatActivity {
             calendar.set(Calendar.HOUR_OF_DAY,spinnerValues[position]);
             calendar.set(Calendar.MINUTE, 0);
         }
+        setTimeSpinnerText();
     }
 
     //////////////////
