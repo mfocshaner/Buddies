@@ -29,6 +29,7 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -49,6 +50,9 @@ public class CreateEventActivity extends AppCompatActivity {
     private String eventTitle;
     private String chosenGroupName;
     private HashMap<String, String> invitees;
+
+    private ArrayAdapterWithTitle dateAdapter;
+    private ArrayAdapterWithTitle timeAdapter;
 
     private static final int CREATE_NEW_GROUP_REQUEST = 1;
 
@@ -274,10 +278,11 @@ public class CreateEventActivity extends AppCompatActivity {
     private void setupDateAndTime() {
         initializeCalendar();
         Spinner dateSpinner = findViewById(R.id.date_spinner);
-        ArrayAdapter<CharSequence> dateAdapter = ArrayAdapter.createFromResource(this,
-                R.array.date_spinner_options, R.layout.support_simple_spinner_dropdown_item);
+        final String[] datesOptions = getResources().getStringArray(R.array.date_spinner_options);
+        dateAdapter = new ArrayAdapterWithTitle(this, datesOptions);
         dateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         dateSpinner.setAdapter(dateAdapter);
+        setDateSpinnerText();
         dateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -290,10 +295,11 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
         Spinner timeSpinner = findViewById(R.id.time_spinner);
-        ArrayAdapter<CharSequence> timeAdapter = ArrayAdapter.createFromResource(this,
-                R.array.time_spinner_options, R.layout.support_simple_spinner_dropdown_item);
+        final String[] timeOptions = getResources().getStringArray(R.array.time_spinner_options);
+        ArrayAdapterWithTitle timeAdapter = new ArrayAdapterWithTitle(this, timeOptions);
         timeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         timeSpinner.setAdapter(timeAdapter);
+        setTimeSpinnerText();
         timeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -391,17 +397,20 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
 
-//    private void changeTitleOfCustomDate(Calendar chosenDateTime) {
-//        String dateTime = MessageFormat.format("{4}\n{0}/{1} {2}:{3}",
-//                chosenDateTime.get(Calendar.DATE),
-//                chosenDateTime.get(Calendar.MONTH),
-//                chosenDateTime.get(Calendar.HOUR_OF_DAY),
-//                chosenDateTime.get(Calendar.MINUTE),
-//                chosenDateTime.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()));
-//
-//        Button customTimeButton = (Button)findViewById(R.id.customTimeButton);
-//        customTimeButton.setText(dateTime);
-//    }
+    private void setDateSpinnerText() {
+        String dateText = MessageFormat.format("{0} {1} {2}",
+                calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()),
+                calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()),
+                calendar.get(Calendar.DATE));
+        dateAdapter.setCustomText(dateText);
+    }
+
+    private void setTimeSpinnerText() {
+        String timeText = MessageFormat.format("{0}:{1}",
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE));
+        dateAdapter.setCustomText(timeText);
+    }
 
     public void onDateSelected(AdapterView<?> parent, View view, int position, long id) {
         String name = (String) parent.getItemAtPosition(position);
