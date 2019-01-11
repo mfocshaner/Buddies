@@ -46,7 +46,6 @@
         android:dropDownWidth="wrap_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="15dp"
         android:paddingVertical="5dp"
         android:background="@drawable/spinner_background"
         android:entries="@array/date_spinner_options"
@@ -58,7 +57,6 @@
         android:dropDownWidth="wrap_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="15dp"
         android:paddingVertical="5dp"
         android:background="@drawable/spinner_background"
         app:layout_constraintTop_toBottomOf="@id/date_spinner"/>
