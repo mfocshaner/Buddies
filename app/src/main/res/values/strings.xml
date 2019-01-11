@@ -21,6 +21,8 @@
     <string name="when_tonight_button">Tonight</string>
     <string name="when_tomorrow_button">Tomorrow</string>
     <string name="when_custom_button">⏰</string>
+    <string name="add_comment_dialog">Enter new comment</string>
+    <string name="vote_comment_dialog">Vote for comment</string>
     <string name="votes_text_formatted">👍 %d | 👎 %d</string>
 
     <!-- Keys to Extras -->
