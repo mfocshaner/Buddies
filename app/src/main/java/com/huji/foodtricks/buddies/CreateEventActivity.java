@@ -4,20 +4,26 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.huji.foodtricks.buddies.Models.EventModel;
 import com.huji.foodtricks.buddies.Models.GroupModel;
 import com.huji.foodtricks.buddies.Models.UserModel;
@@ -27,12 +33,13 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class CreateEventActivity extends AppCompatActivity {
@@ -40,14 +47,15 @@ public class CreateEventActivity extends AppCompatActivity {
     private UserModel currentUser;
     private String currentUserID;
     private final DatabaseStreamer dbs = new DatabaseStreamer();
-    private TimePickerDialog tpd;
 
     /// parameters to be passed to new event
-    private Date date;
-    private GregorianCalendar calendar = new GregorianCalendar();
+    private GregorianCalendar calendar;
     private String eventTitle;
     private String chosenGroupName;
     private HashMap<String, String> invitees;
+
+    private ArrayAdapterWithTitle dateAdapter;
+    private ArrayAdapterWithTitle timeAdapter;
 
     private static final int CREATE_NEW_GROUP_REQUEST = 1;
 
@@ -65,6 +73,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
         setupGroupSelection();
         setupWhatTextInput();
+        setupDateAndTime();
     }
 
     private void disableCreateEventButton(){
@@ -87,14 +96,10 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private void shouldEnableCreateEventButton(){
-        if ((date != null) && (eventTitle != null && !eventTitle.equals(""))
-                && (invitees != null)) {
+        if ((eventTitle != null && !eventTitle.equals(""))
+                && invitees != null) {
             enableCreateEventButton();
         }
-    }
-
-    private void chooseTime(Date time) {
-        this.date = time;
     }
 
     private void chooseTitle(String eventTitle) {
@@ -102,12 +107,14 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private EventModel createEventFromChoices() {
-        return new EventModel(eventTitle, date, invitees, currentUserID, currentUser.getImageUrl());
+        return new EventModel(eventTitle, calendar.getTime(), invitees, currentUserID, currentUser.getImageUrl());
     }
+
 
     ///////////////////////
     /// GROUP SELECTION ///
     ///////////////////////
+
 
     public void setupGroupSelection() {
         LinearLayout groupsLinearLayout = findViewById(R.id.who_linear_layout);
@@ -115,6 +122,7 @@ public class CreateEventActivity extends AppCompatActivity {
             setupGroupCard(groupsLinearLayout, groupModel);
         }
     }
+
 
     private View setupGroupCard(ViewGroup containingLayout, GroupModel groupModel) {
         View groupCardView = LayoutInflater.from(this).inflate(R.layout.group_card,
@@ -125,14 +133,8 @@ public class CreateEventActivity extends AppCompatActivity {
         TextView groupNameTextView = groupCardView.findViewById(R.id.groupName);
         groupNameTextView.setText(groupModel.getGroupName());
 
-        TextView groupMembersTextView = groupCardView.findViewById(R.id.groupMembers);
-        groupMembersTextView.setText(getGroupMembersFirstNames(groupModel));
-
-        ImageView eventImage = groupCardView.findViewById(R.id.groupCardImage);
-        GlideApp.with(this).load(currentUser.getImageUrl()) // should be group image
-                .override(170, 170)
-                .apply(RequestOptions.circleCropTransform())
-                .into(eventImage);
+        ChipGroup chipGroup = findViewById(R.id.groupMembers);
+        addGroupMembers(chipGroup, groupModel, containingLayout);
 
         groupCardView.setOnClickListener(view -> {
             hideSoftKeyboard();
@@ -141,17 +143,40 @@ public class CreateEventActivity extends AppCompatActivity {
         return groupCardView;
     }
 
-    private String getGroupMembersFirstNames(GroupModel groupModel){
+
+    private void addGroupMembers(ChipGroup chipGroup, GroupModel groupModel, ViewGroup containingLayout){
         HashMap<String, String> usersMap = groupModel.getUsers();
         usersMap.remove(currentUserID);
-        ArrayList<String> userNames = new ArrayList<>(usersMap.values());
+        for (String userId: usersMap.keySet()){
+            dbs.fetchUserModelById(userId, new UserFetchingCompletion() {
+                @Override
+                public void onFetchSuccess(UserModel user) {
+                    addUserChip(user, chipGroup, containingLayout);
+                }
 
-        ArrayList<String> firstNames = new ArrayList<>();
-        for (String userName : userNames) {
-            firstNames.add(userName.split(" ")[0]);
+                @Override
+                public void onNoUserFound() {
+
+                }
+            });
         }
-        firstNames.add("You");
-        return String.join(", ", firstNames);
+        addUserChip(currentUser, chipGroup, containingLayout);
+    }
+
+    private void addUserChip(UserModel user, ChipGroup chipGroup, ViewGroup containingLayout){
+        Chip chip = new Chip(containingLayout.getContext());
+        chip.setText(user.getUserName().split(" ")[0]);
+        GlideApp.with(getApplicationContext())
+                .load(user.getImageUrl())
+                .override(50, 50)
+                .apply(RequestOptions.circleCropTransform())
+                .into(new SimpleTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                        chip.setChipIcon(resource);
+                    }});
+        chip.setBackgroundColor(getColor(R.color.chipBackground));
+        chipGroup.addView(chip, 0);
     }
 
     private void groupCardClicked(ViewGroup containingLayout, View groupCardView,
@@ -177,7 +202,6 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
 
-
     ///////////////////
     // CUSTOM GROUPS //
     ///////////////////
@@ -191,6 +215,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 currentUserID);
         startActivityForResult(createCustomGroup, CREATE_NEW_GROUP_REQUEST);
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent resultIntent) {
@@ -219,9 +244,11 @@ public class CreateEventActivity extends AppCompatActivity {
         groupCardClicked(groupsLinearLayout, groupCardView, groupToAdd);
     }
 
+
     ////////////
     /// WHAT ///
     ////////////
+
 
     private void setupWhatTextInput() {
         EditText editText = findViewById(R.id.whatTextInput);
@@ -240,6 +267,7 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
+
     private void tryToGetTitleFromInput(EditText editTextView){
         String userText = editTextView.getText().toString();
         if (userText.replace(" ", "").equals("")){
@@ -253,6 +281,7 @@ public class CreateEventActivity extends AppCompatActivity {
         shouldEnableCreateEventButton();
     }
 
+
     private void hideSoftKeyboard() {
         EditText editText = findViewById(R.id.whatTextInput);
         InputMethodManager inputMethodManager =
@@ -265,47 +294,43 @@ public class CreateEventActivity extends AppCompatActivity {
     /// WHEN ///
     ////////////
 
-    public void dateChosen(View view) {
-        if (view.getId() != R.id.tomorrowButton && view.getId() != R.id.tonightButton) {
-            return;
-        }
-        hideSoftKeyboard();
-        Calendar today = Calendar.getInstance();
-        today.set(Calendar.HOUR_OF_DAY, 20);
-        today.set(Calendar.MINUTE, 0);
-        today.set(Calendar.SECOND, 0);
+    private void setupDateAndTime() {
+        calendar = new GregorianCalendar();
+        Spinner dateSpinner = findViewById(R.id.date_spinner);
+        dateAdapter = ArrayAdapterWithTitle.createFromResource(this, R.array.date_spinner_options, android.R.layout.simple_spinner_item);
+        dateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dateSpinner.setAdapter(dateAdapter);
+        setDateSpinnerText();
+        dateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                onDateSelected(parent, view, position, id);
+            }
 
-        if (view.getId() == R.id.tomorrowButton) {
-            today.add(Calendar.DAY_OF_MONTH, 1);
-        }
-        chooseTime(today.getTime());
-        shouldEnableCreateEventButton();
-        chooseButtonAndUnchooseRest(view);
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+        Spinner timeSpinner = findViewById(R.id.time_spinner);
+        timeAdapter = ArrayAdapterWithTitle.createFromResource(this, R.array.time_spinner_options, android.R.layout.simple_spinner_item);
+        timeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        timeSpinner.setAdapter(timeAdapter);
+        setTimeSpinnerText();
+        timeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                onTimeSelected(parent, view, position, id);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
-    private void chooseButtonAndUnchooseRest(View view){
-        unchooseAllDateButtons();
-        view.setEnabled(false);
-    }
 
-    private void unchooseAllDateButtons(){
-        Button tonightButton = findViewById(R.id.tonightButton);
-        Button tomorrowButton = findViewById(R.id.tomorrowButton);
-        Button customTimeButton = findViewById(R.id.customTimeButton);
-        tonightButton.setEnabled(true);
-        tomorrowButton.setEnabled(true);
-        customTimeButton.setEnabled(true);
-        customTimeButton.setText("⏰");
-    }
-
-    public void customDateClicked(View view){
-        hideSoftKeyboard();
-        unchooseAllDateButtons();
-        showDateTimePicker();
-        shouldEnableCreateEventButton();
-    }
-
-    private void showDateTimePicker() {
+    private void showDatePicker() {
         Calendar now = Calendar.getInstance();
         DatePickerDialog dpd = DatePickerDialog.newInstance(
                 this::onDateSet,
@@ -315,40 +340,77 @@ public class CreateEventActivity extends AppCompatActivity {
         );
         dpd.setVersion(DatePickerDialog.Version.VERSION_1);
         dpd.show(getSupportFragmentManager(), "Datepickerdialog");
-        tpd = TimePickerDialog.newInstance(
+    }
+
+
+    private void showTimePicker() {
+        Calendar now = Calendar.getInstance();
+        TimePickerDialog tpd = TimePickerDialog.newInstance(
                 this::onTimeSet,
                 now.get(Calendar.HOUR_OF_DAY),
                 now.get(Calendar.MINUTE),
                 true
         );
         tpd.setTimeInterval(1, 15, 60);
+        tpd.show(getSupportFragmentManager(), "Timepickerdialog");
     }
 
 
     private void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
         calendar.set(year, monthOfYear, dayOfMonth);
-        tpd.show(getSupportFragmentManager(), "Timepickerdialog");
+        setDateSpinnerText();
     }
 
 
     private void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         calendar.set(Calendar.MINUTE, minute);
-        chooseTime(calendar.getTime());
-        changeTitleOfCustomDate(calendar);
+        setTimeSpinnerText();
     }
 
 
-    private void changeTitleOfCustomDate(Calendar chosenDateTime) {
-        String dateTime = MessageFormat.format("{4}\n{0}/{1} {2}:{3}",
-                chosenDateTime.get(Calendar.DATE),
-                chosenDateTime.get(Calendar.MONTH),
-                chosenDateTime.get(Calendar.HOUR_OF_DAY),
-                chosenDateTime.get(Calendar.MINUTE),
-                chosenDateTime.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()));
+    private void setDateSpinnerText() {
+        String dateText = MessageFormat.format("{0} {1} {2}",
+                calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()),
+                calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()),
+                calendar.get(Calendar.DATE));
+        dateAdapter.setCustomText(dateText);
+    }
 
-        Button customTimeButton = (Button)findViewById(R.id.customTimeButton);
-        customTimeButton.setText(dateTime);
+    private void setTimeSpinnerText() {
+        String timeText = String.format(Locale.getDefault(), "%02d:%02d",
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE));
+        timeAdapter.setCustomText(timeText);
+    }
+
+    public void onDateSelected(AdapterView<?> parent, View view, int position, long id) {
+        String name = (String) parent.getItemAtPosition(position);
+        if (name.equals(getString(R.string.pick_date))){
+            showDatePicker();
+            parent.setSelection(dateAdapter.getPlaceHolderPostion());
+        }
+        else if (name.equals(getString(R.string.today))){
+            calendar.set(Calendar.DATE, Calendar.getInstance().get(Calendar.DATE));
+        }
+        else {
+            calendar.set(Calendar.DATE, Calendar.getInstance().get(Calendar.DATE) + 1);
+        }
+        setDateSpinnerText();
+    }
+
+    public void onTimeSelected(AdapterView<?> parent, View view, int position, long id) {
+        String name = (String) parent.getItemAtPosition(position);
+        int[] spinnerValues = getResources().getIntArray(R.array.time_spinner_values);
+        if (name.equals(getString(R.string.pick_time))){
+            showTimePicker();
+            parent.setSelection(dateAdapter.getPlaceHolderPostion());
+        }
+        else {
+            calendar.set(Calendar.HOUR_OF_DAY,spinnerValues[position]);
+            calendar.set(Calendar.MINUTE, 0);
+        }
+        setTimeSpinnerText();
     }
 
     //////////////////

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="morning">8</integer>
+    <integer name="afternoon">13</integer>
+    <integer name="evening">18</integer>
+    <integer name="night">21</integer>
+
+    <integer-array name="time_spinner_values">
+        <item>@integer/morning</item>
+        <item>@integer/afternoon</item>
+        <item>@integer/evening</item>
+        <item>@integer/night</item>
+    </integer-array>
+</resources>
