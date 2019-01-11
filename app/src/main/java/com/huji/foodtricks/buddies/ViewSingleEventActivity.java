@@ -159,8 +159,14 @@ public class ViewSingleEventActivity extends AppCompatActivity implements OnMapR
         mMap.moveCamera(CameraUpdateFactory.newLatLng(seattle));
         mMap.animateCamera( CameraUpdateFactory.zoomTo( 17.0f ) );
     }
-
-
+    
+    public void viewCommentsClicked(View view) {
+        Intent viewCommentsIntent = new Intent(this, ViewCommentsActivity.class);
+        viewCommentsIntent.putExtra(getString(R.string.extra_current_event_model), curr_event);
+        viewCommentsIntent.putExtra(getString(R.string.extra_current_event_id), curr_event_id);
+        viewCommentsIntent.putExtra(getString(R.string.extra_current_user_id), currentUserID);
+        startActivity(viewCommentsIntent);
+    }
 }
 
 
