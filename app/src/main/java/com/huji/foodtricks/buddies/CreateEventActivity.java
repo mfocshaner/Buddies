@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,9 +28,7 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
@@ -276,10 +273,9 @@ public class CreateEventActivity extends AppCompatActivity {
     ////////////
 
     private void setupDateAndTime() {
-        initializeCalendar();
+        calendar = new GregorianCalendar();
         Spinner dateSpinner = findViewById(R.id.date_spinner);
-        final String[] datesOptions = getResources().getStringArray(R.array.date_spinner_options);
-        dateAdapter = new ArrayAdapterWithTitle(this, datesOptions);
+        dateAdapter = ArrayAdapterWithTitle.createFromResource(this, R.array.date_spinner_options, android.R.layout.simple_spinner_item);
         dateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         dateSpinner.setAdapter(dateAdapter);
         setDateSpinnerText();
@@ -287,7 +283,6 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 onDateSelected(parent, view, position, id);
-                parent.setSelection(0);
             }
 
             @Override
@@ -295,8 +290,7 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
         Spinner timeSpinner = findViewById(R.id.time_spinner);
-        final String[] timeOptions = getResources().getStringArray(R.array.time_spinner_options);
-        timeAdapter = new ArrayAdapterWithTitle(this, timeOptions);
+        timeAdapter = ArrayAdapterWithTitle.createFromResource(this, R.array.time_spinner_options, android.R.layout.simple_spinner_item);
         timeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         timeSpinner.setAdapter(timeAdapter);
         setTimeSpinnerText();
@@ -304,7 +298,6 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 onTimeSelected(parent, view, position, id);
-                parent.setSelection(0);
             }
 
             @Override
@@ -314,52 +307,6 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
-    private void initializeCalendar() {
-        calendar = new GregorianCalendar();
-        calendar.set(Calendar.HOUR_OF_DAY, R.integer.evening);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-    }
-
-//    public void dateChosen(View view) {
-//        if (view.getId() != R.id.tomorrowButton && view.getId() != R.id.tonightButton) {
-//            return;
-//        }
-//        hideSoftKeyboard();
-//        Calendar today = Calendar.getInstance();
-//        today.set(Calendar.HOUR_OF_DAY, 20);
-//        today.set(Calendar.MINUTE, 0);
-//        today.set(Calendar.SECOND, 0);
-//
-//        if (view.getId() == R.id.tomorrowButton) {
-//            today.add(Calendar.DAY_OF_MONTH, 1);
-//        }
-//        chooseTime(today.getTime());
-//        shouldEnableCreateEventButton();
-//        chooseButtonAndUnchooseRest(view);
-//    }
-
-//    private void chooseButtonAndUnchooseRest(View view){
-//        unchooseAllDateButtons();
-//        view.setEnabled(false);
-//    }
-//
-//    private void unchooseAllDateButtons(){
-//        Button tonightButton = findViewById(R.id.tonightButton);
-//        Button tomorrowButton = findViewById(R.id.tomorrowButton);
-//        Button customTimeButton = findViewById(R.id.customTimeButton);
-//        tonightButton.setEnabled(true);
-//        tomorrowButton.setEnabled(true);
-//        customTimeButton.setEnabled(true);
-//        customTimeButton.setText("⏰");
-//    }
-//
-//    public void customDateClicked(View view){
-//        hideSoftKeyboard();
-//        unchooseAllDateButtons();
-//        showDateTimePicker();
-//        shouldEnableCreateEventButton();
-//    }
 
     private void showDatePicker() {
         Calendar now = Calendar.getInstance();
@@ -419,6 +366,7 @@ public class CreateEventActivity extends AppCompatActivity {
         String name = (String) parent.getItemAtPosition(position);
         if (name.equals(getString(R.string.pick_date))){
             showDatePicker();
+            parent.setSelection(dateAdapter.getPlaceHolderPostion());
         }
         else if (name.equals(getString(R.string.today))){
             calendar.set(Calendar.DATE, Calendar.getInstance().get(Calendar.DATE));
@@ -434,6 +382,7 @@ public class CreateEventActivity extends AppCompatActivity {
         int[] spinnerValues = getResources().getIntArray(R.array.time_spinner_values);
         if (name.equals(getString(R.string.pick_time))){
             showTimePicker();
+            parent.setSelection(dateAdapter.getPlaceHolderPostion());
         }
         else {
             calendar.set(Calendar.HOUR_OF_DAY,spinnerValues[position]);

@@ -39,60 +39,6 @@
     <!-- = WHEN = -->
     <!-- ======== -->
 
-    <!--<TextView-->
-        <!--android:id="@+id/when_textView"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginStart="8dp"-->
-        <!--android:layout_marginTop="16dp"-->
-        <!--android:layout_marginEnd="8dp"-->
-        <!--android:fontFamily="sans-serif"-->
-        <!--android:text="@string/when_title"-->
-        <!--android:textAllCaps="true"-->
-        <!--android:textSize="20sp"-->
-        <!--android:textStyle="bold"-->
-
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintHorizontal_bias="0.0"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/whatTextInput" />-->
-
-    <!--<Button-->
-        <!--android:id="@+id/tonightButton"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginStart="8dp"-->
-        <!--android:layout_marginTop="8dp"-->
-        <!--android:onClick="dateChosen"-->
-        <!--android:text="@string/when_tonight_button"-->
-        <!--app:layout_constraintStart_toEndOf="@+id/when_textView"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/whatTextInput" />-->
-
-    <!--<Button-->
-        <!--android:id="@+id/tomorrowButton"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginStart="8dp"-->
-        <!--android:layout_marginTop="8dp"-->
-        <!--android:onClick="dateChosen"-->
-        <!--android:text="@string/when_tomorrow_button"-->
-        <!--app:layout_constraintStart_toEndOf="@+id/tonightButton"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/whatTextInput" />-->
-
-    <!--<Button-->
-        <!--android:id="@+id/customTimeButton"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginStart="4dp"-->
-        <!--android:layout_marginTop="8dp"-->
-        <!--android:layout_marginEnd="8dp"-->
-        <!--android:onClick="customDateClicked"-->
-        <!--android:text="@string/when_custom_button"-->
-        <!--android:textSize="23sp"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintHorizontal_bias="0.0"-->
-        <!--app:layout_constraintStart_toEndOf="@+id/tomorrowButton"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/whatTextInput"/>-->
 
     <Spinner
         android:id="@+id/date_spinner"
