@@ -18,41 +18,24 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/groupCardImage"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:padding="5dp" />
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/groupName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:lines="1"
+            android:padding="4dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/groupTitle"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/groupName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:lines="1"
-                android:padding="4dp"
-                android:paddingTop="10dp"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/groupTitle"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/groupMembers"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:lines="2"
-                android:padding="4dp"
-                android:textColor="@color/title_text_color"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        </LinearLayout>
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/groupMembers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            card_view:chipSpacingVertical="5dp"/>
 
     </LinearLayout>
 

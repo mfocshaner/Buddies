@@ -11,7 +11,8 @@
     <color name="colorEnabledFAB">#00c853</color>
     <color name="selectedRSVPButton">#03a9f4</color>
     <color name="groupTitle">#0a4e31</color>
-    <color name="selectedGroupCard">#879692</color>
-    <color name="cardStroke">#9aaba6</color>
+    <color name="selectedGroupCard">#cfdfdc</color>
+    <color name="cardStroke">#a9bcb7</color>
     <color name="card">#d0e0fd</color>
+    <color name="chipBackground">#eaeaea</color>
 </resources>

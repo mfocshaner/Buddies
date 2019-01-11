@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,13 +14,16 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.huji.foodtricks.buddies.Models.EventModel;
 import com.huji.foodtricks.buddies.Models.GroupModel;
 import com.huji.foodtricks.buddies.Models.UserModel;
@@ -34,6 +38,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class CreateEventActivity extends AppCompatActivity {
@@ -127,14 +133,8 @@ public class CreateEventActivity extends AppCompatActivity {
         TextView groupNameTextView = groupCardView.findViewById(R.id.groupName);
         groupNameTextView.setText(groupModel.getGroupName());
 
-        TextView groupMembersTextView = groupCardView.findViewById(R.id.groupMembers);
-        groupMembersTextView.setText(getGroupMembersFirstNames(groupModel));
-
-        ImageView eventImage = groupCardView.findViewById(R.id.groupCardImage);
-        GlideApp.with(this).load(currentUser.getImageUrl()) // should be group image
-                .override(170, 170)
-                .apply(RequestOptions.circleCropTransform())
-                .into(eventImage);
+        ChipGroup chipGroup = findViewById(R.id.groupMembers);
+        addGroupMembers(chipGroup, groupModel, containingLayout);
 
         groupCardView.setOnClickListener(view -> {
             hideSoftKeyboard();
@@ -144,17 +144,39 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
 
-    private String getGroupMembersFirstNames(GroupModel groupModel){
+    private void addGroupMembers(ChipGroup chipGroup, GroupModel groupModel, ViewGroup containingLayout){
         HashMap<String, String> usersMap = groupModel.getUsers();
         usersMap.remove(currentUserID);
-        ArrayList<String> userNames = new ArrayList<>(usersMap.values());
+        for (String userId: usersMap.keySet()){
+            dbs.fetchUserModelById(userId, new UserFetchingCompletion() {
+                @Override
+                public void onFetchSuccess(UserModel user) {
+                    addUserChip(user, chipGroup, containingLayout);
+                }
 
-        ArrayList<String> firstNames = new ArrayList<>();
-        for (String userName : userNames) {
-            firstNames.add(userName.split(" ")[0]);
+                @Override
+                public void onNoUserFound() {
+
+                }
+            });
         }
-        firstNames.add("You");
-        return String.join(", ", firstNames);
+        addUserChip(currentUser, chipGroup, containingLayout);
+    }
+
+    private void addUserChip(UserModel user, ChipGroup chipGroup, ViewGroup containingLayout){
+        Chip chip = new Chip(containingLayout.getContext());
+        chip.setText(user.getUserName().split(" ")[0]);
+        GlideApp.with(getApplicationContext())
+                .load(user.getImageUrl())
+                .override(50, 50)
+                .apply(RequestOptions.circleCropTransform())
+                .into(new SimpleTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                        chip.setChipIcon(resource);
+                    }});
+        chip.setBackgroundColor(getColor(R.color.chipBackground));
+        chipGroup.addView(chip, 0);
     }
 
     private void groupCardClicked(ViewGroup containingLayout, View groupCardView,
