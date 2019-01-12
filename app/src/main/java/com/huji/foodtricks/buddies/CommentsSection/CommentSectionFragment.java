@@ -3,7 +3,9 @@ package com.huji.foodtricks.buddies.CommentsSection;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -88,9 +91,12 @@ public class CommentSectionFragment extends Fragment {
 
 
         final EditText input = new EditText(context);
-        input.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-        input.setPadding(3, 0, 3, 0);
-        input.setSingleLine(false);
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        input.setPadding(25, 5, 25, 5);
+        input.setFilters(new InputFilter[] { new InputFilter.LengthFilter(100)});
+
+        input.setBackgroundTintMode(PorterDuff.Mode.CLEAR);
+
         input.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
         dialogBuilder.setView(input);
 
