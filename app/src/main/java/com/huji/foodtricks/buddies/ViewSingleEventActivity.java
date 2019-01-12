@@ -9,10 +9,16 @@ import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.huji.foodtricks.buddies.Models.EventModel;
 
@@ -30,15 +36,15 @@ import java.util.Set;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-public class ViewSingleEventActivity extends AppCompatActivity {
+public class ViewSingleEventActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+    private GoogleMap mMap;
     private static final HashSet<Integer> ALL_RSVP_BUTTONS =
             new HashSet<>(Arrays.asList(R.id.approve_btn, R.id.tentative_btn, R.id.decline_btn));
     private static EventModel curr_event;
     private String currentUserID;
     private final DatabaseStreamer dbs = new DatabaseStreamer();
     private String curr_event_id;
-
 
 
     @Override
@@ -55,14 +61,22 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setTitle(curr_event.getTitle());
         updateAllFields(curr_event);
 
+        String nameArray[] = {"Ido","Michael"};
+        String infoArray[] = {"SABABA","WHAT"};
+
+        Integer[] imageArray = {R.drawable.temp_droid, R.drawable.temp_droid};
+        RSVPListAdapter rsvp = new RSVPListAdapter(this, nameArray, infoArray, imageArray);
+
+        ListView listView = findViewById(R.id.rsvp_listview);
+        listView.setAdapter(rsvp);
+
+        // there is no error - it is a known issue.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.g_map);
+        mapFragment.getMapAsync(this);
 
     }
 
     private void updateAllFields(EventModel curr_event) {
-
-        TextView what_tv = findViewById(R.id.what_text);
-        what_tv.setText(curr_event.getTitle());
-
         TextView date_tv = findViewById(R.id.date_textView);
         date_tv.setText(curr_event.getTime().toString());
         modifyDateTextView(curr_event.getTime(), date_tv);
@@ -73,15 +87,6 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         TextView rsvpText = findViewById(R.id.RSVPText);
         modifyAttendersTextView(curr_event.getAttendanceProvider(), rsvpText);
         modifyRSVPButtons();
-
-        if (!curr_event.isUserOrganizer(currentUserID) || curr_event.getEventStatus() != EventModel.state.PENDING)
-        {
-            FloatingActionButton discart_btn = findViewById(R.id.discard_event);
-            FloatingActionButton approve_btn= findViewById(R.id.approve_event);
-            discart_btn.setVisibility(View.GONE);
-            approve_btn.setVisibility(View.GONE);
-        }
-
     }
 
 
@@ -107,7 +112,7 @@ public class ViewSingleEventActivity extends AppCompatActivity {
     private void modifyAttendersTextView(EventAttendanceProvider eventAttendanceProvider, TextView tv) {
         SpannableString attending = new SpannableString(
 
-                String.join("\n", curr_event.getAttendanceProvider().getAttending().values()) );
+                String.join("\n", curr_event.getAttendanceProvider().getAttending().values()));
         SpannableString tentative = new SpannableString(
                 String.join("\n", curr_event.getAttendanceProvider().getTentatives().values()));
         SpannableString not_attending = new SpannableString(
@@ -123,9 +128,9 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         not_responsive.setSpan(new ForegroundColorSpan(Color.GRAY), 0, not_responsive.length(), flag);
         SpannableStringBuilder builder = new SpannableStringBuilder(); // to concatenate string together
         builder.append(attending);
-        builder.append(attending.toString().equals("") ? tentative:"\n" + tentative);
-        builder.append(tentative.toString().equals("") ? not_attending:"\n" + not_attending);
-        builder.append(not_attending.toString().equals("") ? not_responsive: "\n" + not_responsive);
+        builder.append(attending.toString().equals("") ? tentative : "\n" + tentative);
+        builder.append(tentative.toString().equals("") ? not_attending : "\n" + not_attending);
+        builder.append(not_attending.toString().equals("") ? not_responsive : "\n" + not_responsive);
         tv.setText(builder);
     }
 
@@ -163,8 +168,7 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         EventAttendanceProvider.RSVP status = attendanceProvider.getUserRSVP(currentUserID);
         if (status == EventAttendanceProvider.RSVP.ATTENDING) {
             changeButtonToEnabled(findViewById(R.id.approve_btn));
-        }
-        else if (status == EventAttendanceProvider.RSVP.NOT_ATTENDING)
+        } else if (status == EventAttendanceProvider.RSVP.NOT_ATTENDING)
             changeButtonToEnabled(findViewById(R.id.decline_btn));
         else if (status == EventAttendanceProvider.RSVP.TENTATIVE)
             changeButtonToEnabled(findViewById(R.id.tentative_btn));
@@ -183,19 +187,18 @@ public class ViewSingleEventActivity extends AppCompatActivity {
 
     }
 
-    public void approve_event(View view) {
-        curr_event.setEventStatus(EventModel.state.UPCOMING);
-        dbs.modifyEvent(curr_event, curr_event_id, () -> {
 
-        });
-        updateAllFields(curr_event);
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        //seattle coordinates
+            LatLng seattle = new LatLng(47.6062095, -122.3320708);
+        mMap.addMarker(new MarkerOptions().position(seattle).title("Seattle"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(seattle));
     }
 
-    public void discard_event(View view) {
-        curr_event.setEventStatus(EventModel.state.DELETED);
-        dbs.modifyEvent(curr_event, curr_event_id, () -> {
 
-        });
-        updateAllFields(curr_event);
-    }
 }
+
+
