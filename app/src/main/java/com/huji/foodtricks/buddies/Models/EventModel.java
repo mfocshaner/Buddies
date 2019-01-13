@@ -13,7 +13,7 @@ import java.util.HashMap;
 @SuppressWarnings("serial") //With this annotation we are going to hide compiler warnings
 public class EventModel implements Serializable {
 
-    public enum state {PAST, UPCOMING, PENDING, DELETED}
+    public enum state {PAST, UPCOMING, PENDING,DELETED}
 
     private state eventStatus;
     private String title;

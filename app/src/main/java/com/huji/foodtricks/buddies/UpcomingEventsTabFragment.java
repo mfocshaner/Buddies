@@ -34,10 +34,10 @@ class UpcomingEventsTabFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.upcoming_events, container, false);
 
+        future_events.putAll((HashMap<String, EventModel>) getArguments().getSerializable("events"));
         ListView lv = rootView.findViewById(R.id.list_view_upcoming);
-        this.adapter = new EventListAdaptor(this.getActivity(), getUpcomingEvents());
+        this.adapter = new EventListAdaptor(this.getActivity(), future_events);
         lv.setAdapter(adapter);
-        updateEvents();
         final SwipeRefreshLayout pullToRefresh = rootView.findViewById(R.id.swipe_refresh_future);
         pullToRefresh.setOnRefreshListener(() -> {
             updateEvents();
@@ -47,22 +47,16 @@ class UpcomingEventsTabFragment extends Fragment {
         return rootView;
     }
 
-    public void updateEvents() {
+
+    private void updateEvents() {
+        EventsTabsActivity currentActivity = (EventsTabsActivity) getActivity();
+        currentActivity.reduceCount(this.new_events.size() + this.events_to_delete.size());
         this.adapter.addItems(this.new_events);
         this.future_events.putAll(new_events);
         this.new_events.clear();
         this.adapter.removeItems(this.events_to_delete);
         this.events_to_delete.clear();
         this.adapter.notifyDataSetChanged();
-    }
-
-    private HashMap<String, EventModel> getUpcomingEvents() {
-
-        EventModel event1 = new EventModel("brunch at Zunni's", new GregorianCalendar(2018, 11, 25, 10, 0).getTime(), new HashMap<>(), "Amit", "https://lh5.googleusercontent.com/-IL-Nkaz5E1s/AAAAAAAAAAI/AAAAAAAAABA/hQWtV0XNRrw/s96-c/photo.jpg");
-
-        this.future_events.put("dsfodsf34324", event1);
-
-        return future_events;
     }
 
     public void addEvents(String id, EventModel event) {
@@ -75,6 +69,13 @@ class UpcomingEventsTabFragment extends Fragment {
 
     public void deleteEvent(String id, EventModel event) {
         this.events_to_delete.put(id, event);
+    }
+
+    public void updatePressed(){
+        if (adapter==null){
+            return;
+        }
+        adapter.removePressedItem();
     }
 
     @Override

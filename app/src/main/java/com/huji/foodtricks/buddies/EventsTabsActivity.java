@@ -9,6 +9,9 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
@@ -18,8 +21,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.huji.foodtricks.buddies.Models.EventModel;
 import com.huji.foodtricks.buddies.Models.UserModel;
+import com.nex3z.notificationbadge.NotificationBadge;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -34,30 +40,38 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     private TabLayout tabLayout;
     private UserModel currentUser;
     private String currentUserID;
+    private NotificationBadge nBadge;
+    private int count = 0;
+    private ProgressBar spinner;
+
 
 
     private enum action {ADD, REMOVE;}
 
     private final DatabaseStreamer streamer = new DatabaseStreamer();
-
     private DatabaseReference DBref;
+    private HashMap<String, EventModel> pastEvent = new HashMap<>();
+    HashMap<String, EventModel> planingEvents = new HashMap<>();
+    HashMap<String, EventModel> upcomingEvents = new HashMap<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //this.spinner =  findViewById(R.id.progressBar1);
-        //this.spinner.setVisibility(View.GONE);
+
 
         getCurrentUser();
         setDbListener();
         setContentView(R.layout.fragment_events_tabs);
+        this.spinner =  findViewById(R.id.progressBar1);
+        this.spinner.setVisibility(View.GONE);
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
+        this.nBadge = (NotificationBadge) findViewById(R.id.badge);
         setSupportActionBar(toolbar);
         setupNewEventFAB();
         vp = findViewById(R.id.mViewpager_ID);
-        this.addPages();
-        this.setupNewTabLayout();
         this.firstEntry();
+        this.setupNewTabLayout();
     }
 
     private void setDbListener() {
@@ -82,6 +96,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
                         @Override
                         public void onFetchSuccess(EventModel model) {
                             sendEventSwitch(eventId, model, action.ADD);
+                            EventsTabsActivity.this.nBadge.setNumber(++count);
                         }
 
                         @Override
@@ -108,20 +123,38 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     }
 
     private void firstEntry() {
-        //this.spinner.setVisibility(View.VISIBLE);
+        this.spinner.setVisibility(View.VISIBLE);
         this.streamer.fetchEventModelsMapForCurrentUser(new EventMapFetchingCompletion() {
             @Override
             public void onFetchSuccess(HashMap<String, EventModel> modelList) {
-                for (Map.Entry<String, EventModel> entry : modelList.entrySet()) {
-                    sendEventSwitch(entry.getKey(), entry.getValue(), action.ADD);
-                }
+                sortEvents(modelList);
+                addPages();
             }
+
 
             @Override
             public void onNoEventsFound() {
             }
         });
-        //this.spinner.setVisibility(View.GONE);
+    }
+
+    private void sortEvents(HashMap<String, EventModel> fetchedEvents) {
+        for (Map.Entry<String, EventModel> entry : fetchedEvents.entrySet()) {
+            String id = entry.getKey();
+            EventModel event = entry.getValue();
+            switch (event.getEventStatus()) {
+                case UPCOMING:
+                    this.upcomingEvents.put(id, event);
+                    break;
+                case PAST:
+                    this.pastEvent.put(id, event);
+                    break;
+                case PENDING:
+                    this.planingEvents.put(id, event);
+                    break;
+            }
+        }
+
     }
 
     private void getCurrentUser() {
@@ -152,11 +185,18 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
             newEventIntent.putExtra(getResources().getString(R.string.extra_current_user_id),
                     currentUserID);
 
-            EventsTabsActivity context= EventsTabsActivity.this;
+            EventsTabsActivity context = EventsTabsActivity.this;
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(context);
             startActivity(newEventIntent, options.toBundle());
         });
     }
+
+    public void reduceCount(int amount) {
+        this.count -= amount;
+        this.nBadge.setNumber(this.count);
+
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -167,11 +207,13 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     }
 
     // todo: Amit to decide whether this is needed
-
     public void moveEvent(Pair<String, EventModel> event, EventModel.state current_state, EventModel.state new_state) {
-        sendEventSwitch(event.first, event.second, action.REMOVE);
         event.second.setEventStatus(new_state);
-        this.streamer.modifyEvent(event.second, event.first, () -> {
+        sendEventSwitch(event.first, event.second, action.REMOVE);
+        this.streamer.modifyEvent(event.second, event.first, new EventUpdateCompletion() {
+            @Override
+            public void onUpdateSuccess() {
+            }
         });
         sendEventSwitch(event.first, event.second, action.ADD);
 
@@ -220,10 +262,25 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         pagerAdapter.addFragment(new PlanningEventsTabFragment());
         pagerAdapter.addFragment(new PastEventsTabFragment());
 
+        Bundle argsUpcoming = new Bundle();
+        argsUpcoming.putSerializable("events", this.upcomingEvents);
+        pagerAdapter.getItem(0).setArguments(argsUpcoming);
+
+        Bundle argsPlaning = new Bundle();
+        argsPlaning.putSerializable("events", this.planingEvents);
+        pagerAdapter.getItem(1).setArguments(argsPlaning);
+
+        Bundle argsPast = new Bundle();
+        argsPast.putSerializable("events", this.pastEvent);
+        pagerAdapter.getItem(2).setArguments(argsPast);
+
         vp.setAdapter(pagerAdapter);
+        this.spinner.setVisibility(View.GONE);
+
     }
 
     public void onTabSelected(TabLayout.Tab tab) {
+        // TODO: update current fragment from DB
         vp.setCurrentItem(tab.getPosition());
     }
 
@@ -269,6 +326,20 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+
+    public void deleteClicked(View view) {
+        ViewPagerAdapter adapter = (ViewPagerAdapter) vp.getAdapter();
+        if (adapter == null) {
+            return;
+        }
+        UpcomingEventsTabFragment future = (UpcomingEventsTabFragment) adapter.getItem(0);
+        future.updatePressed();
+        PlanningEventsTabFragment planning = (PlanningEventsTabFragment) adapter.getItem(1);
+        planning.updatePressed();
+        PastEventsTabFragment past = (PastEventsTabFragment) adapter.getItem(2);
+        past.updatePressed();
     }
 
 }

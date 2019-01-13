@@ -31,10 +31,10 @@ class PlanningEventsTabFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.planning_events, container, false);
 
+        pending_events.putAll((HashMap<String, EventModel>) getArguments().getSerializable("events"));
         this.view = rootView.findViewById(R.id.list_view_planning);
-        this.adapter = new EventListAdaptor(this.getActivity(), getPendingEvents());
+        this.adapter = new EventListAdaptor(this.getActivity(), pending_events);
         this.view.setAdapter(adapter);
-        updateEvents();
         final SwipeRefreshLayout pullToRefresh = rootView.findViewById(R.id.swipe_refresh_planning);
         pullToRefresh.setOnRefreshListener(() -> {
             updateEvents();
@@ -46,6 +46,8 @@ class PlanningEventsTabFragment extends Fragment {
     }
 
     private void updateEvents() {
+        EventsTabsActivity currentActivity = (EventsTabsActivity) getActivity();
+        currentActivity.reduceCount(this.new_events.size() + this.events_to_delete.size());
         this.adapter.addItems(this.new_events);
         this.pending_events.putAll(new_events);
         this.new_events.clear();
@@ -54,13 +56,6 @@ class PlanningEventsTabFragment extends Fragment {
         this.adapter.notifyDataSetChanged();
     }
 
-
-    private HashMap<String, EventModel> getPendingEvents() {
-
-        EventModel event = new EventModel("planning", new GregorianCalendar(2018, 10, 12, 12, 30).getTime(), new HashMap<>(), "Amit", "https://lh5.googleusercontent.com/-IL-Nkaz5E1s/AAAAAAAAAAI/AAAAAAAAABA/hQWtV0XNRrw/s96-c/photo.jpg");
-        pending_events.put("afkaflkaflkma13", event);
-        return pending_events;
-    }
 
     public void addEvents(String id, EventModel event) {
         this.new_events.put(id, event);
@@ -72,6 +67,13 @@ class PlanningEventsTabFragment extends Fragment {
 
     public void deleteEvent(String id, EventModel event) {
         this.events_to_delete.put(id, event);
+    }
+
+    public void updatePressed(){
+        if (adapter==null){
+            return;
+        }
+        adapter.removePressedItem();
     }
 
     @Override
