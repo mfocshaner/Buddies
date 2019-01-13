@@ -18,7 +18,7 @@ import com.huji.foodtricks.buddies.Models.EventModel;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-class UpcomingEventsTabFragment extends Fragment {
+public class UpcomingEventsTabFragment extends Fragment {
 
     ListView view;
     private EventListAdaptor adapter;
@@ -35,7 +35,7 @@ class UpcomingEventsTabFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.upcoming_events, container, false);
 
         ListView lv = rootView.findViewById(R.id.list_view_upcoming);
-        this.adapter = new EventListAdaptor(this.getActivity(), getUpcomingEvents());
+        this.adapter = new EventListAdaptor(this.getActivity());
         lv.setAdapter(adapter);
         updateEvents();
         final SwipeRefreshLayout pullToRefresh = rootView.findViewById(R.id.swipe_refresh_future);
@@ -56,14 +56,6 @@ class UpcomingEventsTabFragment extends Fragment {
         this.adapter.notifyDataSetChanged();
     }
 
-    private HashMap<String, EventModel> getUpcomingEvents() {
-
-        EventModel event1 = new EventModel("brunch at Zunni's", new GregorianCalendar(2018, 11, 25, 10, 0).getTime(), new HashMap<>(), "Amit", "https://lh5.googleusercontent.com/-IL-Nkaz5E1s/AAAAAAAAAAI/AAAAAAAAABA/hQWtV0XNRrw/s96-c/photo.jpg");
-
-        this.future_events.put("dsfodsf34324", event1);
-
-        return future_events;
-    }
 
     public void addEvents(String id, EventModel event) {
         this.new_events.put(id, event);

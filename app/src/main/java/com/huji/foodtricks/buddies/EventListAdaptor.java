@@ -26,9 +26,9 @@ class EventListAdaptor extends BaseAdapter {
     private final HashMap<String, EventModel> eventModels;
     private final ArrayList<String> keys;
 
-    public EventListAdaptor(Context context, HashMap<String, EventModel> eventModels) {
+    public EventListAdaptor(Context context) {
         this.context = context;
-        this.eventModels = eventModels;
+        this.eventModels = new HashMap<>();
         this.keys = new ArrayList<>(eventModels.keySet());
     }
 

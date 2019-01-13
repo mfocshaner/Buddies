@@ -18,7 +18,7 @@ import com.huji.foodtricks.buddies.Models.EventModel;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-class PastEventsTabFragment extends Fragment {
+public class PastEventsTabFragment extends Fragment {
 
     ListView view;
     private EventListAdaptor adapter;
@@ -32,7 +32,7 @@ class PastEventsTabFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.past_events, container, false);
 
         ListView lv = rootView.findViewById(R.id.list_view_past);
-        this.adapter = new EventListAdaptor(this.getActivity(), getPastEvents());
+        this.adapter = new EventListAdaptor(this.getActivity());
         lv.setAdapter(this.adapter);
         updateEvents();
         final SwipeRefreshLayout pullToRefresh = rootView.findViewById(R.id.swipe_refresh_past);
@@ -53,14 +53,6 @@ class PastEventsTabFragment extends Fragment {
         this.adapter.notifyDataSetChanged();
     }
 
-    private HashMap<String, EventModel> getPastEvents() {
-
-        EventModel event = new EventModel("past", new GregorianCalendar(2018, 0, 10, 13, 0).getTime(), new HashMap<>(), "Amit", "https://lh5.googleusercontent.com/-IL-Nkaz5E1s/AAAAAAAAAAI/AAAAAAAAABA/hQWtV0XNRrw/s96-c/photo.jpg");
-
-
-        past_events.put("kfafsamd214u13", event);
-        return past_events;
-    }
 
     public void addEvents(String id, EventModel event) {
         this.new_events.put(id, event);
