@@ -100,8 +100,6 @@ public class ViewSingleEventActivity extends AppCompatActivity implements OnMapR
     }
 
 
-
-
     public void onRSVPChangeClick(View view) {
         EventAttendanceProvider attendanceProvider = curr_event.getAttendanceProvider();
         if (currentUserID == null)

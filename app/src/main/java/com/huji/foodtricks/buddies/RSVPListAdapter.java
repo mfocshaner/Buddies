@@ -33,7 +33,7 @@ public class RSVPListAdapter extends ArrayAdapter {
 
     public RSVPListAdapter(Activity context, String[] nameArrayParam, String[] RSVPArray, UserModel[] userModels) {
 
-        super(context, R.layout.layout, nameArrayParam);
+        super(context, R.layout.rsvp_list_row_layout, nameArrayParam);
 
 
         this.context = context;
@@ -81,16 +81,16 @@ public class RSVPListAdapter extends ArrayAdapter {
                 EventAttendanceProvider.RSVP rsvp = eventAttendanceProvider.getUserRSVP(userId);
                 switch (rsvp) {
                     case ATTENDING:
-                        RSVPs.add("Attending");
+                        RSVPs.add("Going");
                         break;
                     case NOT_ATTENDING:
-                        RSVPs.add("Not attending");
+                        RSVPs.add("Not going");
                         break;
                     case TENTATIVE:
-                        RSVPs.add("Tentative");
+                        RSVPs.add("Maybe");
                         break;
                     case NON_RESPONSIVE:
-                        RSVPs.add("Not responsive");
+                        RSVPs.add("Didn't response");
                         break;
                 }
             }
@@ -104,7 +104,7 @@ public class RSVPListAdapter extends ArrayAdapter {
 
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
-        View rowView = inflater.inflate(R.layout.layout, null, true);
+        View rowView = inflater.inflate(R.layout.rsvp_list_row_layout, null, true);
 
         //this code gets references to objects in the listview_row.xml file
         TextView nameTextField = (TextView) rowView.findViewById(R.id.nameTextViewID);
