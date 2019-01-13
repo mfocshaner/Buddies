@@ -183,25 +183,15 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
             return;
         }
         UpcomingEventsTabFragment future = (UpcomingEventsTabFragment) adapter.getItem(0);
-        PlanningEventsTabFragment planning = (PlanningEventsTabFragment) adapter.getItem(1);
-        PastEventsTabFragment past = (PastEventsTabFragment) adapter.getItem(2);
+        PastEventsTabFragment past = (PastEventsTabFragment) adapter.getItem(1);
 
         switch (model.getEventStatus()) {
             case UPCOMING:
                 if (flag == action.ADD) {
                     future.addEvents(id, model);
-                    planning.removeEvent(id);
                     return;
                 }
                 future.deleteEvent(id, model);
-                break;
-            case PENDING:
-                if (flag == action.ADD) {
-                    planning.addEvents(id, model);
-                    future.removeEvent(id);
-                    return;
-                }
-                planning.deleteEvent(id, model);
                 break;
             case PAST:
                 if (flag == action.ADD) {
@@ -217,7 +207,6 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     private void addPages() {
         ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(this.getSupportFragmentManager());
         pagerAdapter.addFragment(new UpcomingEventsTabFragment());
-        pagerAdapter.addFragment(new PlanningEventsTabFragment());
         pagerAdapter.addFragment(new PastEventsTabFragment());
 
         vp.setAdapter(pagerAdapter);
