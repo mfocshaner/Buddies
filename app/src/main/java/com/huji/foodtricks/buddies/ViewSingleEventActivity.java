@@ -66,7 +66,7 @@ public class ViewSingleEventActivity extends AppCompatActivity implements OnMapR
 
         // there is no error - it is a known issue : https://stackoverflow.com/questions/51179459/supportmapfragment-does-not-support-androidx-fragment
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.g_map);
-        mapFragment.getMapAsync(this);
+        Objects.requireNonNull(mapFragment).getMapAsync(this);
 
     }
 
@@ -83,7 +83,6 @@ public class ViewSingleEventActivity extends AppCompatActivity implements OnMapR
 
 
     private void modifyDateTextView(Date time, TextView date_tv) {
-        // TODO: use a Calendar to parse date and hour elements instead, and then catching will be unneeded
         DateFormat formatter = new SimpleDateFormat("dd/MM", Locale.getDefault());
         try {
             time = formatter.parse(formatter.format(time));
@@ -156,11 +155,11 @@ public class ViewSingleEventActivity extends AppCompatActivity implements OnMapR
         LatLng coordinates;
         if (curr_event.getPlace() == null) {
             coordinates = new LatLng(47.6062095, -122.3320708);
-            mMap.addMarker(new MarkerOptions().position(coordinates).title("Seattle"));
         } else {
             PlaceModel placeModel = curr_event.getPlace();
             coordinates = new LatLng(placeModel.getLatitude(), placeModel.getLongitude());
         }
+        mMap.addMarker(new MarkerOptions().position(coordinates).title("Event Location"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(coordinates));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(17.0f));
 
