@@ -63,7 +63,7 @@ public class ViewSingleEventActivity extends AppCompatActivity implements OnMapR
         updateAllFields(curr_event);
         RSVPListAdapter.setupUserList(this, curr_event.getAttendanceProvider());
 
-        // there is no error - it is a known issue.
+        // there is no error - it is a known issue : https://stackoverflow.com/questions/51179459/supportmapfragment-does-not-support-androidx-fragment
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.g_map);
         mapFragment.getMapAsync(this);
 
@@ -159,6 +159,7 @@ public class ViewSingleEventActivity extends AppCompatActivity implements OnMapR
             LatLng seattle = new LatLng(47.6062095, -122.3320708);
         mMap.addMarker(new MarkerOptions().position(seattle).title("Seattle"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(seattle));
+        mMap.animateCamera( CameraUpdateFactory.zoomTo( 17.0f ) );
     }
 
 
