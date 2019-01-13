@@ -25,6 +25,7 @@ class EventListAdaptor extends BaseAdapter {
     private final Context context;
     private final HashMap<String, EventModel> eventModels;
     private final ArrayList<String> keys;
+    private final HashMap<String, EventModel> pressedToDelete = new HashMap<>();
 
     public EventListAdaptor(Context context, HashMap<String, EventModel> eventModels) {
         this.context = context;
@@ -40,6 +41,16 @@ class EventListAdaptor extends BaseAdapter {
     public void removeItems(HashMap<String, EventModel> events) {
         eventModels.keySet().removeAll(events.keySet());
         this.keys.removeAll(events.keySet());
+    }
+
+    public void removePressedItem() {
+        if (pressedToDelete.isEmpty()) {
+            return;
+        }
+        this.eventModels.keySet().removeAll(pressedToDelete.keySet());
+        this.keys.removeAll(pressedToDelete.keySet());
+        this.pressedToDelete.clear();
+        this.notifyDataSetChanged();
     }
 
     @Override
@@ -70,7 +81,8 @@ class EventListAdaptor extends BaseAdapter {
         TextView eventName = view.findViewById(R.id.eventCardName);
         TextView eventDate = view.findViewById(R.id.eventCardDate);
         ImageView eventImage = view.findViewById(R.id.eventCardImage);
-
+        ImageView deleteButton = view.findViewById(R.id.delete);
+        deleteButton.setVisibility(View.GONE);
         final String name = event.getTitle();
         Calendar dateTime = new GregorianCalendar();
         dateTime.setTime(event.getTime());
@@ -78,7 +90,7 @@ class EventListAdaptor extends BaseAdapter {
                 dateTime.get(Calendar.DATE),
                 dateTime.get(Calendar.MONTH) + 1,
                 dateTime.get(Calendar.HOUR_OF_DAY),
-                String.format(Locale.getDefault(),"%02d",dateTime.get(Calendar.MINUTE)),
+                String.format(Locale.getDefault(), "%02d", dateTime.get(Calendar.MINUTE)),
                 dateTime.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()));
 
         eventName.setText(name);
@@ -90,7 +102,6 @@ class EventListAdaptor extends BaseAdapter {
                 .into(eventImage);
 
 
-
         view.setOnClickListener(view1 -> {
             Context context = view1.getContext();
             Intent viewEventIntent = new Intent(context, ViewSingleEventActivity.class);
@@ -100,6 +111,15 @@ class EventListAdaptor extends BaseAdapter {
                     .getString(R.string.extra_current_event_id), key);
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context);
             context.startActivity(viewEventIntent, options.toBundle());
+        });
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                ImageView deleteButton = v.findViewById(R.id.delete);
+                deleteButton.setVisibility(View.VISIBLE);
+                pressedToDelete.put(key, event);
+                return true;
+            }
         });
 
         return view;

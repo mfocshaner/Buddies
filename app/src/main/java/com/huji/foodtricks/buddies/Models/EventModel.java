@@ -3,6 +3,7 @@ package com.huji.foodtricks.buddies.Models;
 import com.huji.foodtricks.buddies.EventAttendanceProvider;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -13,7 +14,7 @@ import java.util.HashMap;
 @SuppressWarnings("serial") //With this annotation we are going to hide compiler warnings
 public class EventModel implements Serializable {
 
-    public enum state {PAST, UPCOMING, PENDING, DELETED}
+    public enum state {PAST, UPCOMING, PENDING,DELETED}
 
     private state eventStatus;
     private String title;
@@ -24,6 +25,8 @@ public class EventModel implements Serializable {
     private HashMap<String, String> invitees;
 
     private EventAttendanceProvider attendanceProvider;
+
+    private ArrayList<CommentModel> comments;
 
     public EventModel() {
         attendanceProvider = new EventAttendanceProvider(new HashMap<>());
@@ -124,5 +127,24 @@ public class EventModel implements Serializable {
         return this.organizerUID.equals(userID);
     }
 
+    public ArrayList<CommentModel> getComments() {
+        if (comments == null) {
+            comments = new ArrayList<>();
+        }
+        return comments;
+    }
 
+    public void setComments(ArrayList<CommentModel> comments) {
+        if (comments == null) {
+            comments = new ArrayList<>();
+        }
+        this.comments = comments;
+    }
+
+    public void addComment(CommentModel commentModel) {
+        if (comments == null) {
+            comments = new ArrayList<>();
+        }
+        comments.add(commentModel);
+    }
 }
