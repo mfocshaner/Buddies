@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bumptech.glide.request.RequestOptions;
@@ -53,7 +54,10 @@ public class RSVPListAdapter extends ArrayAdapter {
         getUsersFromDB(new UsersRSVPListAdapterCompletion() {
             @Override
             public RSVPListAdapter onFetchSuccess(HashMap<String, UserModel> usersMap) {
-                return buildRSVPListAdapter(context,eventAttendanceProvider, usersMap);
+                RSVPListAdapter rsvpListAdapter = buildRSVPListAdapter(context,eventAttendanceProvider, usersMap);
+                ListView listView = context.findViewById(R.id.rsvp_listview);
+                listView.setAdapter(rsvpListAdapter);
+                return rsvpListAdapter;
             }
 
             @Override
@@ -62,6 +66,7 @@ public class RSVPListAdapter extends ArrayAdapter {
 
             }
         });
+        return null;
     }
 
     public static RSVPListAdapter buildRSVPListAdapter(Activity context,EventAttendanceProvider eventAttendanceProvider, HashMap<String, UserModel> usersMap) {
@@ -72,6 +77,7 @@ public class RSVPListAdapter extends ArrayAdapter {
             if (eventAttendanceProvider.getInvitees().keySet().contains(userId)) {
                 UserModel userModel = usersMap.get(userId);
                 names.add(userModel.getUserName());
+                userModels.add(userModel);
                 EventAttendanceProvider.RSVP rsvp = eventAttendanceProvider.getUserRSVP(userId);
                 switch (rsvp) {
                     case ATTENDING:
@@ -91,7 +97,7 @@ public class RSVPListAdapter extends ArrayAdapter {
         }
         String[] namesArray = (String[]) names.toArray(new String[0]);
         String[] RSVPsArray = (String[]) RSVPs.toArray(new String[0]);
-        UserModel[] userModelsArray = (UserModel[]) userModels.toArray(new UserModel[0]);
+        UserModel[] userModelsArray = (UserModel[]) userModels.toArray(new UserModel[userModels.size()]);
         return new RSVPListAdapter(context, namesArray,RSVPsArray,userModelsArray);
     }
 
@@ -108,7 +114,7 @@ public class RSVPListAdapter extends ArrayAdapter {
         //this code sets the values of the objects to values from the arrays
         nameTextField.setText(nameArray[position]);
         infoTextField.setText(RSVPArray[position]);
-        String imageURL = this.UserModels[position].getImageUrl();
+        String imageURL = UserModels[position].getImageUrl();
         GlideApp.with(getContext())
                 .load(Objects.requireNonNull(imageURL))
                 .override(200, 200)
@@ -118,5 +124,5 @@ public class RSVPListAdapter extends ArrayAdapter {
 
     }
 
-    ;
+
 }

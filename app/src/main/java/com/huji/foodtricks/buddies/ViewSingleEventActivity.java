@@ -61,16 +61,7 @@ public class ViewSingleEventActivity extends AppCompatActivity implements OnMapR
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(curr_event.getTitle());
         updateAllFields(curr_event);
-
-        String nameArray[] = {"Ido","Michael"};
-        String infoArray[] = {"SABABA","WHAT"};
-
-        Integer[] imageArray = {R.drawable.temp_droid, R.drawable.temp_droid};
-//        RSVPListAdapter rsvp = new RSVPListAdapter(this, nameArray, infoArray, imageArray);
-        RSVPListAdapter rsvp = RSVPListAdapter.setupUserList(this, curr_event.getAttendanceProvider());
-        ListView listView = findViewById(R.id.rsvp_listview);
-        if (rsvp != null)
-            listView.setAdapter(rsvp);
+        RSVPListAdapter.setupUserList(this, curr_event.getAttendanceProvider());
 
         // there is no error - it is a known issue.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.g_map);
@@ -85,9 +76,7 @@ public class ViewSingleEventActivity extends AppCompatActivity implements OnMapR
 
         TextView hour_tv = findViewById(R.id.hour_textView);
         modifyHourTextView(curr_event.getTime(), hour_tv);
-
-        TextView rsvpText = findViewById(R.id.RSVPText);
-        modifyAttendersTextView(curr_event.getAttendanceProvider(), rsvpText);
+        RSVPListAdapter.setupUserList(this, curr_event.getAttendanceProvider());
         modifyRSVPButtons();
     }
 
@@ -111,30 +100,7 @@ public class ViewSingleEventActivity extends AppCompatActivity implements OnMapR
     }
 
 
-    private void modifyAttendersTextView(EventAttendanceProvider eventAttendanceProvider, TextView tv) {
-        SpannableString attending = new SpannableString(
 
-                String.join("\n", curr_event.getAttendanceProvider().getAttending().values()));
-        SpannableString tentative = new SpannableString(
-                String.join("\n", curr_event.getAttendanceProvider().getTentatives().values()));
-        SpannableString not_attending = new SpannableString(
-                String.join("\n", curr_event.getAttendanceProvider().getNotAttending().values()));
-        SpannableString not_responsive = new SpannableString(
-                String.join("\n", curr_event.getAttendanceProvider().getNonResponsive().values()));
-
-        // setting the string's style:
-        int flag = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
-        attending.setSpan(new ForegroundColorSpan(Color.GREEN), 0, attending.length(), flag);
-        tentative.setSpan(new ForegroundColorSpan(Color.parseColor(getString(R.string.ORANGE))), 0, tentative.length(), flag);
-        not_attending.setSpan(new ForegroundColorSpan(Color.RED), 0, not_attending.length(), flag);
-        not_responsive.setSpan(new ForegroundColorSpan(Color.GRAY), 0, not_responsive.length(), flag);
-        SpannableStringBuilder builder = new SpannableStringBuilder(); // to concatenate string together
-        builder.append(attending);
-        builder.append(attending.toString().equals("") ? tentative : "\n" + tentative);
-        builder.append(tentative.toString().equals("") ? not_attending : "\n" + not_attending);
-        builder.append(not_attending.toString().equals("") ? not_responsive : "\n" + not_responsive);
-        tv.setText(builder);
-    }
 
     public void onRSVPChangeClick(View view) {
         EventAttendanceProvider attendanceProvider = curr_event.getAttendanceProvider();
@@ -150,10 +116,6 @@ public class ViewSingleEventActivity extends AppCompatActivity implements OnMapR
         }
         curr_event.setAttendanceProvider(attendanceProvider);
         dbs.modifyEvent(curr_event, curr_event_id, () -> {
-            Toast update_event_updated = Toast.makeText(getApplicationContext(),
-                    "Update completed", Toast.LENGTH_SHORT);
-            update_event_updated.show();
-            // we'd maybe want to notify all users that there's something new about this event.
         });
         modifyRSVPButtons();
     }
@@ -164,8 +126,7 @@ public class ViewSingleEventActivity extends AppCompatActivity implements OnMapR
             Button currButton = findViewById(buttonId);
             changeButtonToDisabled(currButton);
         }
-        TextView rsvp_tv = findViewById(R.id.RSVPText);
-        modifyAttendersTextView(curr_event.getAttendanceProvider(), rsvp_tv);
+        RSVPListAdapter.setupUserList(this, curr_event.getAttendanceProvider());
         EventAttendanceProvider attendanceProvider = curr_event.getAttendanceProvider();
         EventAttendanceProvider.RSVP status = attendanceProvider.getUserRSVP(currentUserID);
         if (status == EventAttendanceProvider.RSVP.ATTENDING) {
