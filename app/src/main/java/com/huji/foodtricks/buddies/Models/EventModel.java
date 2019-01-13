@@ -1,6 +1,5 @@
 package com.huji.foodtricks.buddies.Models;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.huji.foodtricks.buddies.EventAttendanceProvider;
 
 import java.io.Serializable;
@@ -21,7 +20,7 @@ public class EventModel implements Serializable {
     private Date time;
     private String organizerUID;
     private String imageUrl;
-    private LatLng place;
+    private PlaceModel place;
     private HashMap<String, String> invitees;
 
     private EventAttendanceProvider attendanceProvider;
@@ -38,15 +37,15 @@ public class EventModel implements Serializable {
         this.imageUrl = imageUrl;
     }
 
-    public LatLng getPlace() {
+    public PlaceModel getPlace() {
         return place;
     }
 
-    public void setPlace(LatLng place) {
+    public void setPlace(PlaceModel place) {
         this.place = place;
     }
 
-    public EventModel(String title, Date time, HashMap<String, String> invitees, String organizerUID, String imageUrl, LatLng place) {
+    public EventModel(String title, Date time, HashMap<String, String> invitees, String organizerUID, String imageUrl, PlaceModel place) {
         this.title = title;
         this.time = time;
         eventStatus = state.PENDING;

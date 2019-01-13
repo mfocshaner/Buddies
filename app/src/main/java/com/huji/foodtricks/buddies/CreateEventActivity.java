@@ -30,6 +30,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.huji.foodtricks.buddies.Models.EventModel;
 import com.huji.foodtricks.buddies.Models.GroupModel;
+import com.huji.foodtricks.buddies.Models.PlaceModel;
 import com.huji.foodtricks.buddies.Models.UserModel;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -115,7 +116,7 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private EventModel createEventFromChoices() {
-        return new EventModel(eventTitle, calendar.getTime(), invitees, currentUserID, currentUser.getImageUrl(),eventPlace.getLatLng());
+        return new EventModel(eventTitle, calendar.getTime(), invitees, currentUserID, currentUser.getImageUrl(),new PlaceModel(eventPlace.getLatLng()));
     }
 
 
