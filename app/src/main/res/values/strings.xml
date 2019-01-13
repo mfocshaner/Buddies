@@ -60,6 +60,7 @@
     <string name="create_group_text">CREATE GROUP</string>
     <string name="choose_group_text">Choose Group</string>
 
+
     <string-array name="date_spinner_options">
         <item>@string/today</item>
         <item>@string/tomorrow</item>

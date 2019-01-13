@@ -9,10 +9,17 @@ import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.huji.foodtricks.buddies.Models.EventModel;
 
@@ -30,15 +37,15 @@ import java.util.Set;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-public class ViewSingleEventActivity extends AppCompatActivity {
+public class ViewSingleEventActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+    private GoogleMap mMap;
     private static final HashSet<Integer> ALL_RSVP_BUTTONS =
             new HashSet<>(Arrays.asList(R.id.approve_btn, R.id.tentative_btn, R.id.decline_btn));
     private static EventModel curr_event;
     private String currentUserID;
     private final DatabaseStreamer dbs = new DatabaseStreamer();
     private String curr_event_id;
-
 
 
     @Override
@@ -54,34 +61,23 @@ public class ViewSingleEventActivity extends AppCompatActivity {
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(curr_event.getTitle());
         updateAllFields(curr_event);
+        RSVPListAdapter.setupUserList(this, curr_event.getAttendanceProvider());
 
+        // there is no error - it is a known issue : https://stackoverflow.com/questions/51179459/supportmapfragment-does-not-support-androidx-fragment
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.g_map);
+        mapFragment.getMapAsync(this);
 
     }
 
     private void updateAllFields(EventModel curr_event) {
-
-        TextView what_tv = findViewById(R.id.what_text);
-        what_tv.setText(curr_event.getTitle());
-
         TextView date_tv = findViewById(R.id.date_textView);
         date_tv.setText(curr_event.getTime().toString());
         modifyDateTextView(curr_event.getTime(), date_tv);
 
         TextView hour_tv = findViewById(R.id.hour_textView);
         modifyHourTextView(curr_event.getTime(), hour_tv);
-
-        TextView rsvpText = findViewById(R.id.RSVPText);
-        modifyAttendersTextView(curr_event.getAttendanceProvider(), rsvpText);
+        RSVPListAdapter.setupUserList(this, curr_event.getAttendanceProvider());
         modifyRSVPButtons();
-
-        if (!curr_event.isUserOrganizer(currentUserID) || curr_event.getEventStatus() != EventModel.state.PENDING)
-        {
-            FloatingActionButton discart_btn = findViewById(R.id.discard_event);
-            FloatingActionButton approve_btn= findViewById(R.id.approve_event);
-            discart_btn.setVisibility(View.GONE);
-            approve_btn.setVisibility(View.GONE);
-        }
-
     }
 
 
@@ -104,31 +100,6 @@ public class ViewSingleEventActivity extends AppCompatActivity {
     }
 
 
-    private void modifyAttendersTextView(EventAttendanceProvider eventAttendanceProvider, TextView tv) {
-        SpannableString attending = new SpannableString(
-
-                String.join("\n", curr_event.getAttendanceProvider().getAttending().values()) );
-        SpannableString tentative = new SpannableString(
-                String.join("\n", curr_event.getAttendanceProvider().getTentatives().values()));
-        SpannableString not_attending = new SpannableString(
-                String.join("\n", curr_event.getAttendanceProvider().getNotAttending().values()));
-        SpannableString not_responsive = new SpannableString(
-                String.join("\n", curr_event.getAttendanceProvider().getNonResponsive().values()));
-
-        // setting the string's style:
-        int flag = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
-        attending.setSpan(new ForegroundColorSpan(Color.GREEN), 0, attending.length(), flag);
-        tentative.setSpan(new ForegroundColorSpan(Color.parseColor(getString(R.string.ORANGE))), 0, tentative.length(), flag);
-        not_attending.setSpan(new ForegroundColorSpan(Color.RED), 0, not_attending.length(), flag);
-        not_responsive.setSpan(new ForegroundColorSpan(Color.GRAY), 0, not_responsive.length(), flag);
-        SpannableStringBuilder builder = new SpannableStringBuilder(); // to concatenate string together
-        builder.append(attending);
-        builder.append(attending.toString().equals("") ? tentative:"\n" + tentative);
-        builder.append(tentative.toString().equals("") ? not_attending:"\n" + not_attending);
-        builder.append(not_attending.toString().equals("") ? not_responsive: "\n" + not_responsive);
-        tv.setText(builder);
-    }
-
     public void onRSVPChangeClick(View view) {
         EventAttendanceProvider attendanceProvider = curr_event.getAttendanceProvider();
         if (currentUserID == null)
@@ -143,10 +114,6 @@ public class ViewSingleEventActivity extends AppCompatActivity {
         }
         curr_event.setAttendanceProvider(attendanceProvider);
         dbs.modifyEvent(curr_event, curr_event_id, () -> {
-            Toast update_event_updated = Toast.makeText(getApplicationContext(),
-                    "Update completed", Toast.LENGTH_SHORT);
-            update_event_updated.show();
-            // we'd maybe want to notify all users that there's something new about this event.
         });
         modifyRSVPButtons();
     }
@@ -157,14 +124,12 @@ public class ViewSingleEventActivity extends AppCompatActivity {
             Button currButton = findViewById(buttonId);
             changeButtonToDisabled(currButton);
         }
-        TextView rsvp_tv = findViewById(R.id.RSVPText);
-        modifyAttendersTextView(curr_event.getAttendanceProvider(), rsvp_tv);
+        RSVPListAdapter.setupUserList(this, curr_event.getAttendanceProvider());
         EventAttendanceProvider attendanceProvider = curr_event.getAttendanceProvider();
         EventAttendanceProvider.RSVP status = attendanceProvider.getUserRSVP(currentUserID);
         if (status == EventAttendanceProvider.RSVP.ATTENDING) {
             changeButtonToEnabled(findViewById(R.id.approve_btn));
-        }
-        else if (status == EventAttendanceProvider.RSVP.NOT_ATTENDING)
+        } else if (status == EventAttendanceProvider.RSVP.NOT_ATTENDING)
             changeButtonToEnabled(findViewById(R.id.decline_btn));
         else if (status == EventAttendanceProvider.RSVP.TENTATIVE)
             changeButtonToEnabled(findViewById(R.id.tentative_btn));
@@ -183,19 +148,19 @@ public class ViewSingleEventActivity extends AppCompatActivity {
 
     }
 
-    public void approve_event(View view) {
-        curr_event.setEventStatus(EventModel.state.UPCOMING);
-        dbs.modifyEvent(curr_event, curr_event_id, () -> {
 
-        });
-        updateAllFields(curr_event);
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        //seattle coordinates
+            LatLng seattle = new LatLng(47.6062095, -122.3320708);
+        mMap.addMarker(new MarkerOptions().position(seattle).title("Seattle"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(seattle));
+        mMap.animateCamera( CameraUpdateFactory.zoomTo( 17.0f ) );
     }
 
-    public void discard_event(View view) {
-        curr_event.setEventStatus(EventModel.state.DELETED);
-        dbs.modifyEvent(curr_event, curr_event_id, () -> {
 
-        });
-        updateAllFields(curr_event);
-    }
 }
+
+
