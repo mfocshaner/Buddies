@@ -64,6 +64,14 @@
         app:tint="@android:color/white"
         app:backgroundTint="@color/colorAccent" />
 
+    <ProgressBar
+        android:id="@+id/progressBar1"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:layout_centerHorizontal="true" />
+
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/mViewpager_ID"
         android:layout_width="match_parent"

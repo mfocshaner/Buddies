@@ -9,6 +9,9 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
@@ -39,6 +42,8 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     private String currentUserID;
     private NotificationBadge nBadge;
     private int count = 0;
+    private ProgressBar spinner;
+
 
 
     private enum action {ADD, REMOVE;}
@@ -49,16 +54,16 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     HashMap<String, EventModel> planingEvents = new HashMap<>();
     HashMap<String, EventModel> upcomingEvents = new HashMap<>();
 
-    private DatabaseReference DBref;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //this.spinner =  findViewById(R.id.progressBar1);
-        //this.spinner.setVisibility(View.GONE);
+
 
         getCurrentUser();
         setDbListener();
         setContentView(R.layout.fragment_events_tabs);
+        this.spinner =  findViewById(R.id.progressBar1);
+        this.spinner.setVisibility(View.GONE);
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
         this.nBadge = (NotificationBadge) findViewById(R.id.badge);
@@ -118,7 +123,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     }
 
     private void firstEntry() {
-
+        this.spinner.setVisibility(View.VISIBLE);
         this.streamer.fetchEventModelsMapForCurrentUser(new EventMapFetchingCompletion() {
             @Override
             public void onFetchSuccess(HashMap<String, EventModel> modelList) {
@@ -270,6 +275,8 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         pagerAdapter.getItem(2).setArguments(argsPast);
 
         vp.setAdapter(pagerAdapter);
+        this.spinner.setVisibility(View.GONE);
+
     }
 
     public void onTabSelected(TabLayout.Tab tab) {
@@ -319,6 +326,20 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+
+    public void deleteClicked(View view) {
+        ViewPagerAdapter adapter = (ViewPagerAdapter) vp.getAdapter();
+        if (adapter == null) {
+            return;
+        }
+        UpcomingEventsTabFragment future = (UpcomingEventsTabFragment) adapter.getItem(0);
+        future.updatePressed();
+        PlanningEventsTabFragment planning = (PlanningEventsTabFragment) adapter.getItem(1);
+        planning.updatePressed();
+        PastEventsTabFragment past = (PastEventsTabFragment) adapter.getItem(2);
+        past.updatePressed();
     }
 
 }

@@ -71,6 +71,13 @@ class UpcomingEventsTabFragment extends Fragment {
         this.events_to_delete.put(id, event);
     }
 
+    public void updatePressed(){
+        if (adapter==null){
+            return;
+        }
+        adapter.removePressedItem();
+    }
+
     @Override
     public String toString() {
         return "Upcoming";
