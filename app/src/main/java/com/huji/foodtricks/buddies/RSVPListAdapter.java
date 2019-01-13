@@ -90,7 +90,7 @@ public class RSVPListAdapter extends ArrayAdapter {
                         RSVPs.add("Maybe");
                         break;
                     case NON_RESPONSIVE:
-                        RSVPs.add("Didn't response");
+                        RSVPs.add("Didn't respond");
                         break;
                 }
             }
