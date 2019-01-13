@@ -116,6 +116,8 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private EventModel createEventFromChoices() {
+        double longitute = eventPlace.getLatLng().longitude;
+        double latitude = eventPlace.getLatLng().latitude;
         return new EventModel(eventTitle, calendar.getTime(), invitees, currentUserID, currentUser.getImageUrl(),new PlaceModel(eventPlace.getLatLng()));
     }
 
