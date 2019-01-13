@@ -2,15 +2,12 @@ package com.huji.foodtricks.buddies;
 
 import android.util.Log;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.huji.foodtricks.buddies.Models.EventModel;
-import com.huji.foodtricks.buddies.Models.GroupModel;
 import com.huji.foodtricks.buddies.Models.UserModel;
 
 import java.util.ArrayList;
@@ -40,6 +37,16 @@ interface UserFetchingCompletion {
  */
 interface UsersMapFetchingCompletion {
     void onFetchSuccess(HashMap<String, UserModel> usersMap);
+
+    void onNoUsersFound();
+}
+
+
+/**
+ * Interface for inflating RSVPListAdaptor.
+ */
+interface UsersRSVPListAdapterCompletion {
+    RSVPListAdapter onFetchSuccess(HashMap<String, UserModel> usersMap);
 
     void onNoUsersFound();
 }
@@ -347,5 +354,30 @@ class DatabaseStreamer {
             }
         });
 
+    }
+
+    public void fetchAllUsersInDBMap(UsersRSVPListAdapterCompletion completion) {
+        DatabaseReference ref = mDatabase.child("users");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> users = dataSnapshot.getChildren();
+                HashMap<String, UserModel> usersMap = new HashMap<>();
+                for (DataSnapshot user : users) {
+                    UserModel userModel = user.getValue(UserModel.class);
+                    usersMap.put(user.getKey(), userModel);
+                }
+                if (usersMap.size() == 0) {
+                    completion.onNoUsersFound();
+                    return;
+                }
+                completion.onFetchSuccess(usersMap);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                completion.onNoUsersFound();
+            }
+        });
     }
 }

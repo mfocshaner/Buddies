@@ -9,6 +9,7 @@ import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,10 +66,11 @@ public class ViewSingleEventActivity extends AppCompatActivity implements OnMapR
         String infoArray[] = {"SABABA","WHAT"};
 
         Integer[] imageArray = {R.drawable.temp_droid, R.drawable.temp_droid};
-        RSVPListAdapter rsvp = new RSVPListAdapter(this, nameArray, infoArray, imageArray);
-
+//        RSVPListAdapter rsvp = new RSVPListAdapter(this, nameArray, infoArray, imageArray);
+        RSVPListAdapter rsvp = RSVPListAdapter.setupUserList(this, curr_event.getAttendanceProvider());
         ListView listView = findViewById(R.id.rsvp_listview);
-        listView.setAdapter(rsvp);
+        if (rsvp != null)
+            listView.setAdapter(rsvp);
 
         // there is no error - it is a known issue.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.g_map);

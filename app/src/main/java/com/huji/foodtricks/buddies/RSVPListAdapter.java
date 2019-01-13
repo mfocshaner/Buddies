@@ -6,12 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.request.RequestOptions;
 import com.huji.foodtricks.buddies.Models.UserModel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class RSVPListAdapter extends ArrayAdapter {
 
@@ -20,55 +22,83 @@ public class RSVPListAdapter extends ArrayAdapter {
     private final Activity context;
 
     //to store the animal images
-    private final Integer[] imageIDarray;
+    private final UserModel[] UserModels;
 
     //to store the list of countries
     private final String[] nameArray;
 
     //to store the list of countries
-    private final String[] infoArray;
+    private final String[] RSVPArray;
 
-    public RSVPListAdapter(Activity context, String[] nameArrayParam, String[] infoArrayParam, Integer[] imageIDArrayParam){
+    public RSVPListAdapter(Activity context, String[] nameArrayParam, String[] RSVPArray, UserModel[] userModels) {
 
-        super(context,R.layout.layout , nameArrayParam);
+        super(context, R.layout.layout, nameArrayParam);
 
 
-        this.context=context;
-        this.imageIDarray = imageIDArrayParam;
+        this.context = context;
+        this.UserModels = userModels;
         this.nameArray = nameArrayParam;
-        this.infoArray = infoArrayParam;
+        this.RSVPArray = RSVPArray;
 
     }
 
-    private void getUsersFromDB(UsersMapFetchingCompletion completion) {
+
+    private static void getUsersFromDB(UsersRSVPListAdapterCompletion completion) {
         DatabaseStreamer dbs = new DatabaseStreamer();
         dbs.fetchAllUsersInDBMap(completion);
     }
 
-    private void setupUserList(EventAttendanceProvider eventAttendanceProvider) {
+    public static RSVPListAdapter setupUserList(Activity context,EventAttendanceProvider eventAttendanceProvider) {
 
-        getUsersFromDB(new UsersMapFetchingCompletion() {
+        getUsersFromDB(new UsersRSVPListAdapterCompletion() {
             @Override
-            public void onFetchSuccess(HashMap<String, UserModel> usersMap) {
-                buildRSVPListAdapter(eventAttendanceProvider, usersMap);
+            public RSVPListAdapter onFetchSuccess(HashMap<String, UserModel> usersMap) {
+                return buildRSVPListAdapter(context,eventAttendanceProvider, usersMap);
             }
 
             @Override
             public void onNoUsersFound() {
                 // TODO: show that there are no users?
+
             }
         });
     }
-    public RSVPListAdapter buildRSVPListAdapter(EventAttendanceProvider eventAttendanceProvider, HashMap<String, UserModel> usersMap)
-    {
-               on
+
+    public static RSVPListAdapter buildRSVPListAdapter(Activity context,EventAttendanceProvider eventAttendanceProvider, HashMap<String, UserModel> usersMap) {
+        ArrayList<String> names = new ArrayList<>();
+        ArrayList<String> RSVPs = new ArrayList<>();
+        ArrayList<UserModel> userModels = new ArrayList<>();
+        for (String userId : usersMap.keySet()) {
+            if (eventAttendanceProvider.getInvitees().keySet().contains(userId)) {
+                UserModel userModel = usersMap.get(userId);
+                names.add(userModel.getUserName());
+                EventAttendanceProvider.RSVP rsvp = eventAttendanceProvider.getUserRSVP(userId);
+                switch (rsvp) {
+                    case ATTENDING:
+                        RSVPs.add("Attending");
+                        break;
+                    case NOT_ATTENDING:
+                        RSVPs.add("Not attending");
+                        break;
+                    case TENTATIVE:
+                        RSVPs.add("Tentative");
+                        break;
+                    case NON_RESPONSIVE:
+                        RSVPs.add("Not responsive");
+                        break;
+                }
+            }
+        }
+        String[] namesArray = (String[]) names.toArray(new String[0]);
+        String[] RSVPsArray = (String[]) RSVPs.toArray(new String[0]);
+        UserModel[] userModelsArray = (UserModel[]) userModels.toArray(new UserModel[0]);
+        return new RSVPListAdapter(context, namesArray,RSVPsArray,userModelsArray);
     }
 
 
-
     public View getView(int position, View view, ViewGroup parent) {
-        LayoutInflater inflater=context.getLayoutInflater();
-        View rowView=inflater.inflate(R.layout.layout, null,true);
+        LayoutInflater inflater = context.getLayoutInflater();
+        View rowView = inflater.inflate(R.layout.layout, null, true);
 
         //this code gets references to objects in the listview_row.xml file
         TextView nameTextField = (TextView) rowView.findViewById(R.id.nameTextViewID);
@@ -77,10 +107,16 @@ public class RSVPListAdapter extends ArrayAdapter {
 
         //this code sets the values of the objects to values from the arrays
         nameTextField.setText(nameArray[position]);
-        infoTextField.setText(infoArray[position]);
-        imageView.setImageResource(imageIDarray[position]);
-
+        infoTextField.setText(RSVPArray[position]);
+        String imageURL = this.UserModels[position].getImageUrl();
+        GlideApp.with(getContext())
+                .load(Objects.requireNonNull(imageURL))
+                .override(200, 200)
+                .apply(RequestOptions.circleCropTransform())
+                .into(imageView);
         return rowView;
 
-    };
+    }
+
+    ;
 }
