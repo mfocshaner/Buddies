@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -22,6 +23,10 @@ import android.widget.Toast;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.huji.foodtricks.buddies.Models.EventModel;
@@ -56,6 +61,8 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private ArrayAdapterWithTitle dateAdapter;
     private ArrayAdapterWithTitle timeAdapter;
+    private ArrayAdapterWithTitle locationAdapter;
+    private static final int PLACE_PICKER_REQUEST = 2;
 
     private static final int CREATE_NEW_GROUP_REQUEST = 1;
 
@@ -74,6 +81,7 @@ public class CreateEventActivity extends AppCompatActivity {
         setupGroupSelection();
         setupWhatTextInput();
         setupDateAndTime();
+        setupLocation();
     }
 
     private void disableCreateEventButton(){
@@ -228,6 +236,14 @@ public class CreateEventActivity extends AppCompatActivity {
                 // create group for user in DB and on screen
                 this.invitees = newGroup.getUsers();
                 updateUserInDBWithNewGroup(newGroup);
+            }
+        }
+
+        if (requestCode == 0) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlacePicker.getPlace(resultIntent, this);
+                String toastMsg = String.format("Place: %s", place.getName());
+                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -412,6 +428,77 @@ public class CreateEventActivity extends AppCompatActivity {
         }
         setTimeSpinnerText();
     }
+
+
+    //////////////////
+    /// LOCATION /////
+    //////////////////
+
+    private void setupLocation() {
+        Spinner locationSpinner = findViewById(R.id.location_spinner);
+        ArrayAdapter locationAdapter = ArrayAdapterWithTitle.createFromResource(this, R.array.location_spinner_options, android.R.layout.simple_spinner_item);
+        locationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        locationSpinner.setAdapter(locationAdapter);
+        setLocationSpinnerText();
+        locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                onLocationSelected(parent, view, position, id);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+    }
+
+
+    private void showLocationPicker(){
+
+        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+        try {
+            startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
+        } catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+    private void onLocationSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        calendar.set(year, monthOfYear, dayOfMonth);
+        setDateSpinnerText();
+    }
+
+
+
+    private void setLocationSpinnerText() {
+        String dateText = MessageFormat.format("{0} {1} {2}",
+                calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()),
+                calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()),
+                calendar.get(Calendar.DATE));
+        dateAdapter.setCustomText(dateText);
+    }
+
+    public void onLocationSelected(AdapterView<?> parent, View view, int position, long id) {
+        String name = (String) parent.getItemAtPosition(position);
+        if (name.equals(getString(R.string.default_location))){
+            parent.setSelection(0);
+        }
+        else if (name.equals(getString(R.string.custom_location))){
+            parent.setSelection(1);
+            showLocationPicker();
+        }
+    }
+
+    //////////////////////////
+    /// END OF LOCATION /////
+    /////////////////////////
+
 
     //////////////////
     // CREATE EVENT //

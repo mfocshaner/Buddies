@@ -59,6 +59,8 @@
     <string name="pick_time">Pick a time…</string>
     <string name="create_group_text">CREATE GROUP</string>
     <string name="choose_group_text">Choose Group</string>
+    <string name="default_location">Default location</string>
+    <string name="custom_location">Custom location</string>
 
 
     <string-array name="date_spinner_options">
@@ -73,4 +75,9 @@
         <item>@string/night</item>
         <item>@string/pick_time</item>
     </string-array>
+    <string-array name="location_spinner_options">
+        <item>@string/default_location</item>
+        <item>@string/custom_location</item>
+    </string-array>
+
 </resources>
