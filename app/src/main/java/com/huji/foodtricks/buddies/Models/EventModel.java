@@ -1,5 +1,6 @@
 package com.huji.foodtricks.buddies.Models;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.huji.foodtricks.buddies.EventAttendanceProvider;
 
 import java.io.Serializable;
@@ -20,7 +21,7 @@ public class EventModel implements Serializable {
     private Date time;
     private String organizerUID;
     private String imageUrl;
-
+    private LatLng place;
     private HashMap<String, String> invitees;
 
     private EventAttendanceProvider attendanceProvider;
@@ -29,14 +30,30 @@ public class EventModel implements Serializable {
         attendanceProvider = new EventAttendanceProvider(new HashMap<>());
     }
 
-    public EventModel(String title, Date time, HashMap<String, String> invitees, String organizerUID, String imageUrl) {
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public LatLng getPlace() {
+        return place;
+    }
+
+    public void setPlace(LatLng place) {
+        this.place = place;
+    }
+
+    public EventModel(String title, Date time, HashMap<String, String> invitees, String organizerUID, String imageUrl, LatLng place) {
         this.title = title;
         this.time = time;
         eventStatus = state.PENDING;
         this.invitees = new HashMap<>(invitees);
         this.organizerUID = organizerUID;
         this.imageUrl = imageUrl;
-
+        this.place = place;
         attendanceProvider = new EventAttendanceProvider(invitees);
     }
 
@@ -70,14 +87,6 @@ public class EventModel implements Serializable {
 
     public void setOrganizerUID(String organizerUID) {
         this.organizerUID = organizerUID;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 
     public HashMap<String, String> getInvitees() {

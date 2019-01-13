@@ -58,9 +58,9 @@ class UpcomingEventsTabFragment extends Fragment {
 
     private HashMap<String, EventModel> getUpcomingEvents() {
 
-        EventModel event1 = new EventModel("brunch at Zunni's", new GregorianCalendar(2018, 11, 25, 10, 0).getTime(), new HashMap<>(), "Amit", "https://lh5.googleusercontent.com/-IL-Nkaz5E1s/AAAAAAAAAAI/AAAAAAAAABA/hQWtV0XNRrw/s96-c/photo.jpg");
-
-        this.future_events.put("dsfodsf34324", event1);
+//        EventModel event1 = new EventModel("brunch at Zunni's", new GregorianCalendar(2018, 11, 25, 10, 0).getTime(), new HashMap<>(), "Amit", "https://lh5.googleusercontent.com/-IL-Nkaz5E1s/AAAAAAAAAAI/AAAAAAAAABA/hQWtV0XNRrw/s96-c/photo.jpg");
+//
+//        this.future_events.put("dsfodsf34324", event1);
 
         return future_events;
     }

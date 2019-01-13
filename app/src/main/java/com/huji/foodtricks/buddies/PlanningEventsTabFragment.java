@@ -57,8 +57,8 @@ class PlanningEventsTabFragment extends Fragment {
 
     private HashMap<String, EventModel> getPendingEvents() {
 
-        EventModel event = new EventModel("planning", new GregorianCalendar(2018, 10, 12, 12, 30).getTime(), new HashMap<>(), "Amit", "https://lh5.googleusercontent.com/-IL-Nkaz5E1s/AAAAAAAAAAI/AAAAAAAAABA/hQWtV0XNRrw/s96-c/photo.jpg");
-        pending_events.put("afkaflkaflkma13", event);
+//        EventModel event = new EventModel("planning", new GregorianCalendar(2018, 10, 12, 12, 30).getTime(), new HashMap<>(), "Amit", "https://lh5.googleusercontent.com/-IL-Nkaz5E1s/AAAAAAAAAAI/AAAAAAAAABA/hQWtV0XNRrw/s96-c/photo.jpg");
+//        pending_events.put("afkaflkaflkma13", event);
         return pending_events;
     }
 

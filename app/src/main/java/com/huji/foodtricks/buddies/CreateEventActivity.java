@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -55,6 +54,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
     /// parameters to be passed to new event
     private GregorianCalendar calendar;
+    private Place eventPlace;
     private String eventTitle;
     private String chosenGroupName;
     private HashMap<String, String> invitees;
@@ -84,7 +84,7 @@ public class CreateEventActivity extends AppCompatActivity {
         setupLocation();
     }
 
-    private void disableCreateEventButton(){
+    private void disableCreateEventButton() {
         Button createEventButton = findViewById(R.id.createEventButton);
         createEventButton.setEnabled(false);
         createEventButton.setBackgroundColor(getColor(R.color.colorDisabledCreateNewEventButton));
@@ -93,7 +93,7 @@ public class CreateEventActivity extends AppCompatActivity {
         createEventButton.setAlpha(0.4f);
     }
 
-    private void enableCreateEventButton(){
+    private void enableCreateEventButton() {
         Button createEventButton = findViewById(R.id.createEventButton);
         createEventButton.setEnabled(true);
         createEventButton.setBackgroundColor(getColor(R.color.colorEnabledCreateNewEventButton));
@@ -103,7 +103,7 @@ public class CreateEventActivity extends AppCompatActivity {
         createEventButton.setTextColor(getColor(R.color.mdtp_white));
     }
 
-    private void shouldEnableCreateEventButton(){
+    private void shouldEnableCreateEventButton() {
         if ((eventTitle != null && !eventTitle.equals(""))
                 && invitees != null) {
             enableCreateEventButton();
@@ -115,7 +115,7 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private EventModel createEventFromChoices() {
-        return new EventModel(eventTitle, calendar.getTime(), invitees, currentUserID, currentUser.getImageUrl());
+        return new EventModel(eventTitle, calendar.getTime(), invitees, currentUserID, currentUser.getImageUrl(),eventPlace.getLatLng());
     }
 
 
@@ -152,10 +152,10 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
 
-    private void addGroupMembers(ChipGroup chipGroup, GroupModel groupModel, ViewGroup containingLayout){
+    private void addGroupMembers(ChipGroup chipGroup, GroupModel groupModel, ViewGroup containingLayout) {
         HashMap<String, String> usersMap = groupModel.getUsers();
         usersMap.remove(currentUserID);
-        for (String userId: usersMap.keySet()){
+        for (String userId : usersMap.keySet()) {
             dbs.fetchUserModelById(userId, new UserFetchingCompletion() {
                 @Override
                 public void onFetchSuccess(UserModel user) {
@@ -171,7 +171,7 @@ public class CreateEventActivity extends AppCompatActivity {
         addUserChip(currentUser, chipGroup, containingLayout);
     }
 
-    private void addUserChip(UserModel user, ChipGroup chipGroup, ViewGroup containingLayout){
+    private void addUserChip(UserModel user, ChipGroup chipGroup, ViewGroup containingLayout) {
         Chip chip = new Chip(containingLayout.getContext());
         chip.setText(user.getUserName().split(" ")[0]);
         GlideApp.with(getApplicationContext())
@@ -182,7 +182,8 @@ public class CreateEventActivity extends AppCompatActivity {
                     @Override
                     public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                         chip.setChipIcon(resource);
-                    }});
+                    }
+                });
         chip.setBackgroundColor(getColor(R.color.chipBackground));
         chipGroup.addView(chip, 0);
     }
@@ -196,7 +197,7 @@ public class CreateEventActivity extends AppCompatActivity {
         shouldEnableCreateEventButton();
     }
 
-    private void unchooseChosenGroupCard(ViewGroup cardsContainer){
+    private void unchooseChosenGroupCard(ViewGroup cardsContainer) {
         if (chosenGroupName != null) {
             View groupCardView = cardsContainer.findViewById(chosenGroupName.hashCode());
             groupCardView.findViewById(R.id.group_card_linear_layout)
@@ -231,18 +232,18 @@ public class CreateEventActivity extends AppCompatActivity {
         if (requestCode == CREATE_NEW_GROUP_REQUEST) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                GroupModel newGroup = (GroupModel)resultIntent.getSerializableExtra(
-                                getResources().getString(R.string.extra_custom_group));
+                GroupModel newGroup = (GroupModel) resultIntent.getSerializableExtra(
+                        getResources().getString(R.string.extra_custom_group));
                 // create group for user in DB and on screen
                 this.invitees = newGroup.getUsers();
                 updateUserInDBWithNewGroup(newGroup);
             }
         }
 
-        if (requestCode == 0) {
+        if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(resultIntent, this);
-                String toastMsg = String.format("Place: %s", place.getName());
+                eventPlace = PlacePicker.getPlace(resultIntent, this);
+                String toastMsg = String.format("Place: %s", eventPlace.getName());
                 Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
             }
         }
@@ -284,9 +285,9 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
 
-    private void tryToGetTitleFromInput(EditText editTextView){
+    private void tryToGetTitleFromInput(EditText editTextView) {
         String userText = editTextView.getText().toString();
-        if (userText.replace(" ", "").equals("")){
+        if (userText.replace(" ", "").equals("")) {
             eventTitle = "";
             editTextView.setText("");
             disableCreateEventButton();
@@ -402,14 +403,12 @@ public class CreateEventActivity extends AppCompatActivity {
 
     public void onDateSelected(AdapterView<?> parent, View view, int position, long id) {
         String name = (String) parent.getItemAtPosition(position);
-        if (name.equals(getString(R.string.pick_date))){
+        if (name.equals(getString(R.string.pick_date))) {
             showDatePicker();
             parent.setSelection(dateAdapter.getPlaceHolderPostion());
-        }
-        else if (name.equals(getString(R.string.today))){
+        } else if (name.equals(getString(R.string.today))) {
             calendar.set(Calendar.DATE, Calendar.getInstance().get(Calendar.DATE));
-        }
-        else {
+        } else {
             calendar.set(Calendar.DATE, Calendar.getInstance().get(Calendar.DATE) + 1);
         }
         setDateSpinnerText();
@@ -418,12 +417,11 @@ public class CreateEventActivity extends AppCompatActivity {
     public void onTimeSelected(AdapterView<?> parent, View view, int position, long id) {
         String name = (String) parent.getItemAtPosition(position);
         int[] spinnerValues = getResources().getIntArray(R.array.time_spinner_values);
-        if (name.equals(getString(R.string.pick_time))){
+        if (name.equals(getString(R.string.pick_time))) {
             showTimePicker();
             parent.setSelection(dateAdapter.getPlaceHolderPostion());
-        }
-        else {
-            calendar.set(Calendar.HOUR_OF_DAY,spinnerValues[position]);
+        } else {
+            calendar.set(Calendar.HOUR_OF_DAY, spinnerValues[position]);
             calendar.set(Calendar.MINUTE, 0);
         }
         setTimeSpinnerText();
@@ -436,7 +434,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private void setupLocation() {
         Spinner locationSpinner = findViewById(R.id.location_spinner);
-        ArrayAdapter locationAdapter = ArrayAdapterWithTitle.createFromResource(this, R.array.location_spinner_options, android.R.layout.simple_spinner_item);
+        locationAdapter = ArrayAdapterWithTitle.createFromResource(this, R.array.location_spinner_options, android.R.layout.simple_spinner_item);
         locationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         locationSpinner.setAdapter(locationAdapter);
         setLocationSpinnerText();
@@ -453,7 +451,7 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
 
-    private void showLocationPicker(){
+    private void showLocationPicker() {
 
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
@@ -466,30 +464,18 @@ public class CreateEventActivity extends AppCompatActivity {
         }
     }
 
-
-
-
-    private void onLocationSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-        calendar.set(year, monthOfYear, dayOfMonth);
-        setDateSpinnerText();
-    }
-
-
-
     private void setLocationSpinnerText() {
-        String dateText = MessageFormat.format("{0} {1} {2}",
-                calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()),
-                calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()),
-                calendar.get(Calendar.DATE));
-        dateAdapter.setCustomText(dateText);
+        String locationText = MessageFormat.format("{0} \n\r {1}",
+                "Default location",
+                "Custom location");
+        locationAdapter.setCustomText(locationText);
     }
 
     public void onLocationSelected(AdapterView<?> parent, View view, int position, long id) {
         String name = (String) parent.getItemAtPosition(position);
-        if (name.equals(getString(R.string.default_location))){
+        if (name.equals(getString(R.string.default_location))) {
             parent.setSelection(0);
-        }
-        else if (name.equals(getString(R.string.custom_location))){
+        } else if (name.equals(getString(R.string.custom_location))) {
             parent.setSelection(1);
             showLocationPicker();
         }

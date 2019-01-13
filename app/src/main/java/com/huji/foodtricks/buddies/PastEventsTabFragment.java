@@ -55,10 +55,10 @@ class PastEventsTabFragment extends Fragment {
 
     private HashMap<String, EventModel> getPastEvents() {
 
-        EventModel event = new EventModel("past", new GregorianCalendar(2018, 0, 10, 13, 0).getTime(), new HashMap<>(), "Amit", "https://lh5.googleusercontent.com/-IL-Nkaz5E1s/AAAAAAAAAAI/AAAAAAAAABA/hQWtV0XNRrw/s96-c/photo.jpg");
-
-
-        past_events.put("kfafsamd214u13", event);
+//        EventModel event = new EventModel("past", new GregorianCalendar(2018, 0, 10, 13, 0).getTime(), new HashMap<>(), "Amit", "https://lh5.googleusercontent.com/-IL-Nkaz5E1s/AAAAAAAAAAI/AAAAAAAAABA/hQWtV0XNRrw/s96-c/photo.jpg");
+//
+//
+//        past_events.put("kfafsamd214u13", event);
         return past_events;
     }
 
