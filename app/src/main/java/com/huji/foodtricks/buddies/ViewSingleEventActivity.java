@@ -22,6 +22,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.huji.foodtricks.buddies.Models.EventModel;
+import com.huji.foodtricks.buddies.Models.PlaceModel;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -149,18 +150,21 @@ public class ViewSingleEventActivity extends AppCompatActivity implements OnMapR
     }
 
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        //seattle coordinates
-            LatLng seattle = new LatLng(47.6062095, -122.3320708);
-        mMap.addMarker(new MarkerOptions().position(seattle).title("Seattle"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(seattle));
-        mMap.animateCamera( CameraUpdateFactory.zoomTo( 17.0f ) );
+        LatLng coordinates;
+        if (curr_event.getPlace() == null) {
+            coordinates = new LatLng(47.6062095, -122.3320708);
+            mMap.addMarker(new MarkerOptions().position(coordinates).title("Seattle"));
+        } else {
+            PlaceModel placeModel = curr_event.getPlace();
+            coordinates = new LatLng(placeModel.getLatitude(), placeModel.getLongitude());
+        }
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(coordinates));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(17.0f));
+
     }
-
-
 
 
     public void viewCommentsClicked(View view) {
