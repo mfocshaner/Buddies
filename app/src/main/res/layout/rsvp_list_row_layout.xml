@@ -7,14 +7,13 @@
 
     <ImageView
         android:id="@+id/imageView1ID"
+        android:contentDescription="@string/user_image"
         android:layout_width="100dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:paddingStart="3dp"
-        android:paddingLeft="3dp"
         android:paddingTop="0dp"
-        android:paddingEnd="3dp"
-        android:paddingRight="3dp"
+        android:paddingEnd="10dp"
         android:paddingBottom="0dp"
         app:srcCompat="@drawable/ic_add_black_48dp_02" />
 
@@ -30,7 +29,6 @@
             android:id="@+id/nameTextViewID"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -38,7 +36,6 @@
             android:id="@+id/infoTextViewID"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView"
             android:textSize="16sp" />
     </LinearLayout>
 </LinearLayout>

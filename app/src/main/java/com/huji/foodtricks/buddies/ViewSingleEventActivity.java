@@ -3,16 +3,9 @@ package com.huji.foodtricks.buddies;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,13 +22,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Formatter;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 
@@ -79,7 +70,7 @@ public class ViewSingleEventActivity extends AppCompatActivity implements OnMapR
         modifyDateTextView(curr_event.getTime(), date_tv);
 
         TextView hour_tv = findViewById(R.id.hour_textView);
-        modifyHourTextView(curr_event.getTime(), hour_tv);
+        modifyHourTextView(hour_tv);
         RSVPListAdapter.setupUserList(this, curr_event.getAttendanceProvider());
         modifyRSVPButtons();
     }
@@ -96,10 +87,9 @@ public class ViewSingleEventActivity extends AppCompatActivity implements OnMapR
 
     }
 
-    private void modifyHourTextView(Date time, TextView hour_tv) {
-        Formatter fmt = new Formatter();
-        fmt.format("%tl:%tM", time, time);
-        hour_tv.setText(fmt.toString());
+    private void modifyHourTextView(TextView hour_tv) {
+        String time = new SimpleDateFormat("HH:mm").format(curr_event.getTime());
+        hour_tv.setText(time);
     }
 
 
@@ -162,7 +152,7 @@ public class ViewSingleEventActivity extends AppCompatActivity implements OnMapR
             PlaceModel placeModel = curr_event.getPlace();
             coordinates = new LatLng(placeModel.getLatitude(), placeModel.getLongitude());
         }
-        mMap.addMarker(new MarkerOptions().position(coordinates).title("Event Location"));
+        mMap.addMarker(new MarkerOptions().position(coordinates).title(curr_event.getTitle()));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(coordinates));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(17.0f));
 

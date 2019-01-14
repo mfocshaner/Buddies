@@ -116,9 +116,24 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private EventModel createEventFromChoices() {
-        double longitute = eventPlace.getLatLng().longitude;
-        double latitude = eventPlace.getLatLng().latitude;
-        return new EventModel(eventTitle, calendar.getTime(), invitees, currentUserID, currentUser.getImageUrl(),new PlaceModel(longitute,latitude));
+        PlaceModel placeModel = buildPlaceModel();
+        return new EventModel(eventTitle, calendar.getTime(), invitees, currentUserID, currentUser.getImageUrl(), placeModel);
+    }
+
+    private PlaceModel buildPlaceModel() {
+        double longitude;
+        double latitude;
+        if (eventPlace != null)  // if no location was selected - use default location
+        {
+            latitude = eventPlace.getLatLng().latitude;
+            longitude = eventPlace.getLatLng().longitude;
+        }
+        else
+        {
+            latitude = 47.6062095;
+            longitude = -122.3320708;
+        }
+        return new PlaceModel(longitude, latitude);
     }
 
 
@@ -440,7 +455,7 @@ public class CreateEventActivity extends AppCompatActivity {
         locationAdapter = ArrayAdapterWithTitle.createFromResource(this, R.array.location_spinner_options, android.R.layout.simple_spinner_item);
         locationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         locationSpinner.setAdapter(locationAdapter);
-        setLocationSpinnerText();
+        setLocationSpinnerText(getString(R.string.select_location_spinner_text));
         locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -467,11 +482,8 @@ public class CreateEventActivity extends AppCompatActivity {
         }
     }
 
-    private void setLocationSpinnerText() {
-        String locationText = MessageFormat.format("{0} \n\r {1}",
-                "Default location",
-                "Custom location");
-        locationAdapter.setCustomText(locationText);
+    private void setLocationSpinnerText(String locationSpinnerText) {
+        locationAdapter.setCustomText(locationSpinnerText);
     }
 
     public void onLocationSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -479,9 +491,12 @@ public class CreateEventActivity extends AppCompatActivity {
         if (name.equals(getString(R.string.default_location))) {
             parent.setSelection(0);
         } else if (name.equals(getString(R.string.custom_location))) {
-            parent.setSelection(1);
             showLocationPicker();
+            parent.setSelection(1);
         }
+        setLocationSpinnerText(name);
+
+
     }
 
     //////////////////////////
