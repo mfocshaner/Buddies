@@ -106,7 +106,7 @@ public class RSVPListAdapter extends ArrayAdapter {
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.rsvp_list_row_layout, null, true);
 
-        //this code gets references to objects in the listview_row.xml file
+        //this code gets references to objects in the list_view_row.xml file
         TextView nameTextField = (TextView) rowView.findViewById(R.id.nameTextViewID);
         TextView infoTextField = (TextView) rowView.findViewById(R.id.infoTextViewID);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.imageView1ID);

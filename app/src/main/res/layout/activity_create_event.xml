@@ -131,7 +131,7 @@
         android:clickable="true"
         android:onClick="createNewEventButtonClicked"
         android:text="@string/create_new_event_disabled"
-        android:textSize="18dp"
+        android:textSize="18sp"
         android:textColor="@android:color/black"
         android:background="@color/colorDisabledCreateNewEventButton"
         app:cornerRadius="10dp"

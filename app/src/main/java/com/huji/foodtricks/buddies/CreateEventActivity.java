@@ -423,7 +423,7 @@ public class CreateEventActivity extends AppCompatActivity {
         String name = (String) parent.getItemAtPosition(position);
         if (name.equals(getString(R.string.pick_date))) {
             showDatePicker();
-            parent.setSelection(dateAdapter.getPlaceHolderPostion());
+            parent.setSelection(dateAdapter.getPlaceHolderPosition());
         } else if (name.equals(getString(R.string.today))) {
             calendar.set(Calendar.DATE, Calendar.getInstance().get(Calendar.DATE));
         } else {
@@ -437,7 +437,7 @@ public class CreateEventActivity extends AppCompatActivity {
         int[] spinnerValues = getResources().getIntArray(R.array.time_spinner_values);
         if (name.equals(getString(R.string.pick_time))) {
             showTimePicker();
-            parent.setSelection(dateAdapter.getPlaceHolderPostion());
+            parent.setSelection(dateAdapter.getPlaceHolderPosition());
         } else {
             calendar.set(Calendar.HOUR_OF_DAY, spinnerValues[position]);
             calendar.set(Calendar.MINUTE, 0);

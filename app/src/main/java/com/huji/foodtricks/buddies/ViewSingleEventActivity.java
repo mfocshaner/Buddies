@@ -88,7 +88,7 @@ public class ViewSingleEventActivity extends AppCompatActivity implements OnMapR
     }
 
     private void modifyHourTextView(TextView hour_tv) {
-        String time = new SimpleDateFormat("HH:mm").format(curr_event.getTime());
+        String time = new SimpleDateFormat("HH:mm",Locale.getDefault()).format(curr_event.getTime());
         hour_tv.setText(time);
     }
 
