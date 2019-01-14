@@ -51,7 +51,8 @@
             android:theme="@style/ExplodingOnTransition" />
         <activity android:name=".CreateEventActivity" />
         <activity android:name=".CreateGroupActivity" />
-        <activity android:name=".ViewCommentsActivity"></activity>
+
+
     </application>
 
 
