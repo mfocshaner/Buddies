@@ -7,7 +7,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.huji.foodtricks.buddies.Models.CommentModel;
 import com.huji.foodtricks.buddies.Models.EventModel;
 import com.huji.foodtricks.buddies.Models.UserModel;
 
@@ -98,7 +97,7 @@ interface AddEventToUsersCompletion {
 /**
  * Object used to read/write event and user objects from Firebase.
  */
-public class DatabaseStreamer {
+class DatabaseStreamer {
 
     private final DatabaseReference mDatabase;
 
@@ -128,9 +127,7 @@ public class DatabaseStreamer {
                             eventModelId, () -> {
                                 // nothing
                             });
-                    if (completion != null) {
-                        completion.onUpdateSuccess();
-                    }
+                    completion.onUpdateSuccess();
                 });
     }
 
@@ -383,46 +380,6 @@ public class DatabaseStreamer {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 completion.onNoUsersFound();
-            }
-        });
-    }
-
-    ///////////////////////
-    // COMMENTS HANDLING //
-    ///////////////////////
-
-
-    public void addCommentToEvent(String eventID, CommentModel commentModel) {
-        fetchEventModelById(eventID, new EventFetchingCompletion() {
-            @Override
-            public void onFetchSuccess(EventModel model) {
-                model.addComment(commentModel);
-                modifyEvent(model, eventID, null);
-            }
-
-            @Override
-            public void onNoEventFound() {
-                return;
-            }
-        });
-    }
-
-    public void updateCommentWithVote(String eventID, String userId,
-                                      boolean upvote, int index) {
-        fetchEventModelById(eventID, new EventFetchingCompletion() {
-            @Override
-            public void onFetchSuccess(EventModel model) {
-                if (upvote) {
-                    model.getComments().get(index).voteUp(userId);
-                } else {
-                    model.getComments().get(index).voteDown(userId);
-                }
-                modifyEvent(model, eventID, null);
-            }
-
-            @Override
-            public void onNoEventFound() {
-                return;
             }
         });
     }
