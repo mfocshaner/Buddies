@@ -15,4 +15,6 @@
     <color name="cardStroke">#a9bcb7</color>
     <color name="card">#d0e0fd</color>
     <color name="chipBackground">#eaeaea</color>
+    <color name="commentLightBackground">#adbeb9</color>
+    <color name="commentDarkBackground">#819690</color>
 </resources>

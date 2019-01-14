@@ -4,6 +4,8 @@
     <integer name="afternoon">13</integer>
     <integer name="evening">18</integer>
     <integer name="night">21</integer>
+    <integer name="default_location">0</integer>
+    <integer name="place_picker">1</integer>
 
     <integer-array name="time_spinner_values">
         <item>@integer/morning</item>
@@ -11,4 +13,11 @@
         <item>@integer/evening</item>
         <item>@integer/night</item>
     </integer-array>
+
+    <integer-array name="location_spinner_values">
+        <item>@integer/default_location</item>
+        <item>@integer/place_picker</item>
+    </integer-array>
+
+
 </resources>

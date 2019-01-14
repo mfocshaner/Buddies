@@ -3,16 +3,9 @@ package com.huji.foodtricks.buddies;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,13 +15,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.huji.foodtricks.buddies.Models.EventModel;
+import com.huji.foodtricks.buddies.Models.PlaceModel;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Formatter;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Objects;
@@ -59,13 +52,15 @@ public class ViewSingleEventActivity extends AppCompatActivity implements OnMapR
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_single_event);
 
-        Objects.requireNonNull(getSupportActionBar()).setTitle(curr_event.getTitle());
+        TextView actionBar = (TextView)findViewById(R.id.toolbar_text_view);
+        actionBar.setText(curr_event.getTitle());
+
         updateAllFields(curr_event);
         RSVPListAdapter.setupUserList(this, curr_event.getAttendanceProvider());
 
         // there is no error - it is a known issue : https://stackoverflow.com/questions/51179459/supportmapfragment-does-not-support-androidx-fragment
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.g_map);
-        mapFragment.getMapAsync(this);
+        Objects.requireNonNull(mapFragment).getMapAsync(this);
 
     }
 
@@ -75,14 +70,13 @@ public class ViewSingleEventActivity extends AppCompatActivity implements OnMapR
         modifyDateTextView(curr_event.getTime(), date_tv);
 
         TextView hour_tv = findViewById(R.id.hour_textView);
-        modifyHourTextView(curr_event.getTime(), hour_tv);
+        modifyHourTextView(hour_tv);
         RSVPListAdapter.setupUserList(this, curr_event.getAttendanceProvider());
         modifyRSVPButtons();
     }
 
 
     private void modifyDateTextView(Date time, TextView date_tv) {
-        // TODO: use a Calendar to parse date and hour elements instead, and then catching will be unneeded
         DateFormat formatter = new SimpleDateFormat("dd/MM", Locale.getDefault());
         try {
             time = formatter.parse(formatter.format(time));
@@ -93,10 +87,9 @@ public class ViewSingleEventActivity extends AppCompatActivity implements OnMapR
 
     }
 
-    private void modifyHourTextView(Date time, TextView hour_tv) {
-        Formatter fmt = new Formatter();
-        fmt.format("%tl:%tM", time, time);
-        hour_tv.setText(fmt.toString());
+    private void modifyHourTextView(TextView hour_tv) {
+        String time = new SimpleDateFormat("HH:mm").format(curr_event.getTime());
+        hour_tv.setText(time);
     }
 
 
@@ -149,18 +142,30 @@ public class ViewSingleEventActivity extends AppCompatActivity implements OnMapR
     }
 
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        //seattle coordinates
-            LatLng seattle = new LatLng(47.6062095, -122.3320708);
-        mMap.addMarker(new MarkerOptions().position(seattle).title("Seattle"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(seattle));
-        mMap.animateCamera( CameraUpdateFactory.zoomTo( 17.0f ) );
+        LatLng coordinates;
+        if (curr_event.getPlace() == null) {
+            coordinates = new LatLng(47.6062095, -122.3320708);
+        } else {
+            PlaceModel placeModel = curr_event.getPlace();
+            coordinates = new LatLng(placeModel.getLatitude(), placeModel.getLongitude());
+        }
+        mMap.addMarker(new MarkerOptions().position(coordinates).title(curr_event.getTitle()));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(coordinates));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(17.0f));
+
     }
 
 
+    public void viewCommentsClicked(View view) {
+        Intent viewCommentsIntent = new Intent(this, ViewCommentsActivity.class);
+        viewCommentsIntent.putExtra(getString(R.string.extra_current_event_model), curr_event);
+        viewCommentsIntent.putExtra(getString(R.string.extra_current_event_id), curr_event_id);
+        viewCommentsIntent.putExtra(getString(R.string.extra_current_user_id), currentUserID);
+        startActivity(viewCommentsIntent);
+    }
 }
 
 

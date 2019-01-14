@@ -65,6 +65,18 @@
     <!-- = WHERE = -->
     <!-- ======== -->
 
+    <Spinner
+        android:id="@+id/location_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/spinner_background"
+        android:dropDownWidth="wrap_content"
+        android:entries="@array/location_spinner_values"
+        android:paddingVertical="5dp"
+        android:spinnerMode="dropdown"
+        app:layout_constraintTop_toBottomOf="@id/time_spinner"/>
+
+
 
     <!-- ======== -->
     <!-- =  WHO = -->
@@ -79,7 +91,7 @@
         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
         android:textColor="@color/mdtp_light_gray"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/time_spinner" />
+        app:layout_constraintTop_toBottomOf="@+id/location_spinner" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -108,7 +120,7 @@
         android:textAppearance="@style/Base.TextAppearance.MaterialComponents.Subtitle2"
         android:textColor="@color/mdtp_accent_color_dark"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/time_spinner" />
+        app:layout_constraintTop_toBottomOf="@+id/location_spinner" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/createEventButton"

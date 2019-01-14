@@ -21,6 +21,9 @@
     <string name="when_tonight_button">Tonight</string>
     <string name="when_tomorrow_button">Tomorrow</string>
     <string name="when_custom_button">⏰</string>
+    <string name="add_comment_dialog">Enter new comment</string>
+    <string name="vote_comment_dialog">Vote for comment</string>
+    <string name="votes_text_formatted">👍 %d | 👎 %d</string>
 
     <!-- Keys to Extras -->
     <string name="extra_current_user_model">Current User Model Extra</string>
@@ -59,6 +62,12 @@
     <string name="pick_time">Pick a time…</string>
     <string name="create_group_text">CREATE GROUP</string>
     <string name="choose_group_text">Choose Group</string>
+    <string name="default_location">Default location</string>
+    <string name="custom_location">Custom location</string>
+    <string name="view_comments">View Comments</string>
+    <string name="select_location_spinner_text">Select location</string>
+    <string name="user_image">User image</string>
+    <string name="show_comments_description">show comments</string>
 
 
     <string-array name="date_spinner_options">
@@ -73,4 +82,9 @@
         <item>@string/night</item>
         <item>@string/pick_time</item>
     </string-array>
+    <string-array name="location_spinner_options">
+        <item>@string/default_location</item>
+        <item>@string/custom_location</item>
+    </string-array>
+
 </resources>
