@@ -64,6 +64,7 @@
     <string name="choose_group_text">Choose Group</string>
     <string name="default_location">Default location</string>
     <string name="custom_location">Custom location</string>
+    <string name="view_comments">View Comments</string>
 
 
     <string-array name="date_spinner_options">

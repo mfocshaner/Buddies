@@ -35,6 +35,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 
@@ -60,7 +61,9 @@ public class ViewSingleEventActivity extends AppCompatActivity implements OnMapR
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_single_event);
 
-        Objects.requireNonNull(getSupportActionBar()).setTitle(curr_event.getTitle());
+        TextView actionBar = (TextView)findViewById(R.id.toolbar_text_view);
+        actionBar.setText(curr_event.getTitle());
+
         updateAllFields(curr_event);
         RSVPListAdapter.setupUserList(this, curr_event.getAttendanceProvider());
 

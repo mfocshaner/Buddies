@@ -16,7 +16,7 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="ExplodingOnTransition" parent="AppTheme">
+    <style name="ExplodingOnTransition" parent="ThemeOverlay.MyNoTitleActivity">
         <!-- enable window content transitions -->
         <item name="android:windowActivityTransitions">true</item>
 
