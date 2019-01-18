@@ -29,7 +29,7 @@ public class EventModel implements Serializable {
     private ArrayList<CommentModel> comments;
 
     public EventModel() {
-        attendanceProvider = new EventAttendanceProvider(new HashMap<>());
+        attendanceProvider = new EventAttendanceProvider(new HashMap<>(), new String());
     }
 
     public String getImageUrl() {
@@ -56,7 +56,7 @@ public class EventModel implements Serializable {
         this.organizerUID = organizerUID;
         this.imageUrl = imageUrl;
         this.place = place;
-        attendanceProvider = new EventAttendanceProvider(invitees);
+        attendanceProvider = new EventAttendanceProvider(invitees,organizerUID);
     }
 
     public state getEventStatus() {

@@ -25,8 +25,8 @@ import com.nex3z.notificationbadge.NotificationBadge;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
@@ -46,7 +46,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
 
 
 
-    private enum action {ADD, REMOVE;}
+    private enum action {ADD, REMOVE}
 
     private final DatabaseStreamer streamer = new DatabaseStreamer();
     private DatabaseReference DBref;
