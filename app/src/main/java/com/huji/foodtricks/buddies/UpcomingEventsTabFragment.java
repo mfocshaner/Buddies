@@ -18,7 +18,7 @@ import com.huji.foodtricks.buddies.Models.EventModel;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-class UpcomingEventsTabFragment extends Fragment {
+public class UpcomingEventsTabFragment extends Fragment {
 
     ListView view;
     private EventListAdaptor adapter;

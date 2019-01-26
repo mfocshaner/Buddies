@@ -15,11 +15,11 @@ import androidx.annotation.NonNull;
 
 public class ArrayAdapterWithTitle extends ArrayAdapter<CharSequence> {
     private String mSpinnerText = "";
-    private int placeHolderPostion;
+    private int placeHolderPosition;
 
     public ArrayAdapterWithTitle(@NonNull Context context, int resource, int textViewResourceId, @NonNull List<CharSequence> objects) {
         super(context, resource, textViewResourceId, addPlaceholderToOptions(objects));
-        placeHolderPostion = objects.size();
+        placeHolderPosition = objects.size();
     }
 
     public static @NonNull ArrayAdapterWithTitle createFromResource
@@ -39,7 +39,7 @@ public class ArrayAdapterWithTitle extends ArrayAdapter<CharSequence> {
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
         View v = null;
-        if (position == placeHolderPostion) {
+        if (position == placeHolderPosition) {
             TextView tv = new TextView(getContext());
             tv.setVisibility(View.GONE);
             tv.setHeight(0);
@@ -51,8 +51,8 @@ public class ArrayAdapterWithTitle extends ArrayAdapter<CharSequence> {
         return v;
     }
 
-    public int getPlaceHolderPostion() {
-        return placeHolderPostion;
+    public int getPlaceHolderPosition() {
+        return placeHolderPosition;
     }
 
     public void setCustomText(String spinnerText) {

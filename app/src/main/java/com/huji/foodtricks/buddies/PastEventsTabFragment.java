@@ -1,13 +1,6 @@
 package com.huji.foodtricks.buddies;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +8,14 @@ import android.widget.ListView;
 
 import com.huji.foodtricks.buddies.Models.EventModel;
 
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-class PastEventsTabFragment extends Fragment {
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+public class PastEventsTabFragment extends Fragment {
 
     ListView view;
     private EventListAdaptor adapter;
@@ -56,7 +53,7 @@ class PastEventsTabFragment extends Fragment {
     }
 
 
-    public void addEvents(String id, EventModel event) {
+    void addEvents(String id, EventModel event) {
         this.new_events.put(id, event);
     }
 
@@ -64,11 +61,11 @@ class PastEventsTabFragment extends Fragment {
         this.past_events.remove(id);
     }
 
-    public void deleteEvent(String id, EventModel event) {
+    void deleteEvent(String id, EventModel event) {
         this.events_to_delete.put(id, event);
     }
 
-    public void updatePressed(){
+    void updatePressed(){
         if (adapter==null){
             return;
         }
