@@ -36,7 +36,7 @@ public class UpcomingEventsTabFragment extends Fragment {
 
         future_events.putAll((HashMap<String, EventModel>) getArguments().getSerializable("events"));
         ListView lv = rootView.findViewById(R.id.list_view_upcoming);
-        this.adapter = new EventListAdaptor(this.getActivity(), future_events);
+        this.adapter = new EventListAdaptor(this.getActivity(), future_events, false);
         lv.setAdapter(adapter);
         final SwipeRefreshLayout pullToRefresh = rootView.findViewById(R.id.swipe_refresh_future);
         pullToRefresh.setOnRefreshListener(() -> {

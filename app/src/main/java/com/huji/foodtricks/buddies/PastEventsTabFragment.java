@@ -30,7 +30,7 @@ public class PastEventsTabFragment extends Fragment {
 
         past_events.putAll((HashMap<String, EventModel>) getArguments().getSerializable("events"));
         this.view = (ListView) rootView.findViewById(R.id.list_view_past);
-        this.adapter = new EventListAdaptor(this.getActivity(), past_events);
+        this.adapter = new EventListAdaptor(this.getActivity(), past_events, true);
         this.view.setAdapter(adapter);
         final SwipeRefreshLayout pullToRefresh = rootView.findViewById(R.id.swipe_refresh_past);
         pullToRefresh.setOnRefreshListener(() -> {

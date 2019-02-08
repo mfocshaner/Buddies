@@ -31,7 +31,7 @@ public class PlanningEventsTabFragment extends Fragment {
 
         pending_events.putAll((HashMap<String, EventModel>) getArguments().getSerializable("events"));
         this.view = rootView.findViewById(R.id.list_view_planning);
-        this.adapter = new EventListAdaptor(this.getActivity(), pending_events);
+        this.adapter = new EventListAdaptor(this.getActivity(), pending_events, false);
         this.view.setAdapter(adapter);
         final SwipeRefreshLayout pullToRefresh = rootView.findViewById(R.id.swipe_refresh_planning);
         pullToRefresh.setOnRefreshListener(() -> {

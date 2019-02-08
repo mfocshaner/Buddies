@@ -15,40 +15,78 @@ import com.bumptech.glide.request.RequestOptions;
 import com.huji.foodtricks.buddies.Models.EventModel;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Locale;
+import java.util.Map;
 
 class EventListAdaptor extends BaseAdapter {
     private final Context context;
     private final HashMap<String, EventModel> eventModels;
-    private final ArrayList<String> keys;
     private final HashMap<String, EventModel> pressedToDelete = new HashMap<>();
+    private final LinkedList<Map.Entry<String, Date>> keysByDate;
 
-    public EventListAdaptor(Context context, HashMap<String, EventModel> eventModels) {
+    public EventListAdaptor(Context context, HashMap<String, EventModel> eventModels,
+                            boolean isPast) {
         this.context = context;
         this.eventModels = eventModels;
-        this.keys = new ArrayList<>(eventModels.keySet());
+        this.keysByDate = getKeysSortedByEventDates(eventModels, isPast);
+    }
+
+    public LinkedList<Map.Entry<String, Date>> getKeysSortedByEventDates(HashMap<String,
+            EventModel> eventModels, boolean reverseOrder) {
+        HashMap<String, Date> eventsDates = new HashMap<>();
+        for (String eventKey : eventModels.keySet()) {
+            eventsDates.put(eventKey, eventModels.get(eventKey).getTime());
+        }
+
+        LinkedList<Map.Entry<String, Date>> eventsDatesList = new LinkedList<>(eventsDates.entrySet());
+
+        eventsDatesList.sort(new Comparator<Map.Entry<String, Date>>() {
+            public int compare(Map.Entry<String, Date> o1, Map.Entry<String, Date> o2) {
+                if (reverseOrder) {
+                    return o2.getValue().compareTo(o1.getValue());
+                }
+                return (o1.getValue()).compareTo(o2.getValue());
+            }
+        });
+
+        return eventsDatesList;
     }
 
     public void addItems(HashMap<String, EventModel> events) {
         eventModels.putAll(events);
-        this.keys.addAll(events.keySet());
+        HashMap<String, Date> eventsDates = new HashMap<>();
+        for (String eventKey : events.keySet()) {
+            eventsDates.put(eventKey, events.get(eventKey).getTime());
+        }
+        // add new events in the start of the list because I assume the user would like to see them
+        // at the top.
+        this.keysByDate.removeAll(eventsDates.entrySet());
+        this.keysByDate.addAll(0, new LinkedList<>(eventsDates.entrySet()));
     }
 
     public void removeItems(HashMap<String, EventModel> events) {
         eventModels.keySet().removeAll(events.keySet());
-        this.keys.removeAll(events.keySet());
+        for (String eventKey : events.keySet()) {
+            for (Map.Entry<String, Date> entry: this.keysByDate){
+                if (entry.getKey().equals(eventKey)) {
+                    this.keysByDate.remove(entry);
+                    break;
+                }
+            }
+        }
     }
 
     public void removePressedItem() {
         if (pressedToDelete.isEmpty()) {
             return;
         }
-        this.eventModels.keySet().removeAll(pressedToDelete.keySet());
-        this.keys.removeAll(pressedToDelete.keySet());
+        removeItems(this.pressedToDelete);
         this.pressedToDelete.clear();
         this.notifyDataSetChanged();
     }
@@ -60,7 +98,8 @@ class EventListAdaptor extends BaseAdapter {
 
     @Override
     public Object getItem(int i) {
-        return eventModels.get(this.keys.get(i));
+        String eventKey = this.keysByDate.get(i).getKey();
+        return eventModels.get(eventKey);
     }
 
     @Override
@@ -75,7 +114,7 @@ class EventListAdaptor extends BaseAdapter {
         }
 
         final EventModel event = (EventModel) this.getItem(i);
-        final String key = this.keys.get(i);
+        final String key = this.keysByDate.get(i).getKey();;
 
 
         TextView eventName = view.findViewById(R.id.eventCardName);
