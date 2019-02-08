@@ -24,6 +24,7 @@ import com.huji.foodtricks.buddies.Models.UserModel;
 import com.nex3z.notificationbadge.NotificationBadge;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,7 +51,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
 
     private final DatabaseStreamer streamer = new DatabaseStreamer();
     private DatabaseReference DBref;
-    private HashMap<String, EventModel> pastEvent = new HashMap<>();
+    private HashMap<String, EventModel> pastEvents = new HashMap<>();
     HashMap<String, EventModel> planingEvents = new HashMap<>();
     HashMap<String, EventModel> upcomingEvents = new HashMap<>();
 
@@ -142,12 +143,14 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         for (Map.Entry<String, EventModel> entry : fetchedEvents.entrySet()) {
             String id = entry.getKey();
             EventModel event = entry.getValue();
+            boolean isEventInPast = event.getTime().before(new Date());
+            if (isEventInPast) {
+                this.pastEvents.put(id, event);
+                continue;
+            }
             switch (event.getEventStatus()) {
                 case UPCOMING:
                     this.upcomingEvents.put(id, event);
-                    break;
-                case PAST:
-                    this.pastEvent.put(id, event);
                     break;
                 case PENDING:
                     this.planingEvents.put(id, event);
@@ -219,7 +222,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
 
     }
 
-    private void sendEventSwitch(String id, EventModel model, action flag) {
+    private void sendEventSwitch(String id, EventModel event, action flag) {
         ViewPagerAdapter adapter = (ViewPagerAdapter) vp.getAdapter();
         if (adapter == null) {
             return;
@@ -228,30 +231,34 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         PlanningEventsTabFragment planning = (PlanningEventsTabFragment) adapter.getItem(1);
         PastEventsTabFragment past = (PastEventsTabFragment) adapter.getItem(2);
 
-        switch (model.getEventStatus()) {
+        boolean isEventInPast = event.getTime().before(new Date());
+        if (isEventInPast) {
+            if (flag == action.ADD) {
+                past.addEvents(id, event);
+                future.removeEvent(id);
+                planning.removeEvent(id);
+                return;
+            }
+            past.deleteEvent(id, event);
+            return;
+        }
+
+        switch (event.getEventStatus()) {
             case UPCOMING:
                 if (flag == action.ADD) {
-                    future.addEvents(id, model);
+                    future.addEvents(id, event);
                     planning.removeEvent(id);
                     return;
                 }
-                future.deleteEvent(id, model);
+                future.deleteEvent(id, event);
                 break;
             case PENDING:
                 if (flag == action.ADD) {
-                    planning.addEvents(id, model);
+                    planning.addEvents(id, event);
                     future.removeEvent(id);
                     return;
                 }
-                planning.deleteEvent(id, model);
-                break;
-            case PAST:
-                if (flag == action.ADD) {
-                    past.addEvents(id, model);
-                    future.removeEvent(id);
-                    return;
-                }
-                past.deleteEvent(id, model);
+                planning.deleteEvent(id, event);
                 break;
         }
     }
@@ -271,7 +278,7 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
         pagerAdapter.getItem(1).setArguments(argsPlaning);
 
         Bundle argsPast = new Bundle();
-        argsPast.putSerializable("events", this.pastEvent);
+        argsPast.putSerializable("events", this.pastEvents);
         pagerAdapter.getItem(2).setArguments(argsPast);
 
         vp.setAdapter(pagerAdapter);
