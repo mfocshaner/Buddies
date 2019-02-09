@@ -44,7 +44,7 @@ public class PastEventsTabFragment extends Fragment {
 
     private void updateEvents() {
         EventsTabsActivity currentActivity = (EventsTabsActivity) getActivity();
-        currentActivity.reduceCount(this.new_events.size() + this.events_to_delete.size());
+        currentActivity.resetCount();
         this.adapter.addItems(this.new_events);
         this.past_events.putAll(new_events);
         this.new_events.clear();
@@ -56,6 +56,13 @@ public class PastEventsTabFragment extends Fragment {
 
     void addEvents(String id, EventModel event) {
         this.new_events.put(id, event);
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        updateEvents();
     }
 
     public void removeEvent(String id) {

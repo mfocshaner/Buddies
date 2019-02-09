@@ -45,7 +45,7 @@ public class PlanningEventsTabFragment extends Fragment {
 
     private void updateEvents() {
         EventsTabsActivity currentActivity = (EventsTabsActivity) getActivity();
-        currentActivity.reduceCount(this.new_events.size() + this.events_to_delete.size());
+        currentActivity.resetCount();
         this.adapter.addItems(this.new_events);
         this.pending_events.putAll(new_events);
         this.new_events.clear();
@@ -54,6 +54,12 @@ public class PlanningEventsTabFragment extends Fragment {
         this.adapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        updateEvents();
+    }
 
     void addEvents(String id, EventModel event) {
         this.new_events.put(id, event);
