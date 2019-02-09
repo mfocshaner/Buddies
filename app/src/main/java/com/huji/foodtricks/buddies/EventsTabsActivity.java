@@ -91,8 +91,8 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
                         currentUser.getChangedEvents().size() == 0) {
                     return;
                 }
-                ArrayList<String> newEvents = currentUser.getChangedEvents();
-                for (final String eventId : newEvents) {
+                ArrayList<String> updatedEvents = currentUser.getChangedEvents();
+                for (final String eventId : updatedEvents) {
                     streamer.fetchEventModelById(eventId, new EventFetchingCompletion() {
                         @Override
                         public void onFetchSuccess(EventModel model) {
@@ -197,7 +197,11 @@ public class EventsTabsActivity extends AppCompatActivity implements TabLayout.O
     public void reduceCount(int amount) {
         this.count -= amount;
         this.nBadge.setNumber(this.count);
+    }
 
+    public void resetCount() {
+        this.count = 0;
+        this.nBadge.setNumber(this.count);
     }
 
 
