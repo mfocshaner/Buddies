@@ -36,7 +36,7 @@ public class UpcomingEventsTabFragment extends Fragment {
 
         future_events.putAll((HashMap<String, EventModel>) getArguments().getSerializable("events"));
         ListView lv = rootView.findViewById(R.id.list_view_upcoming);
-        this.adapter = new EventListAdaptor(this.getActivity(), future_events);
+        this.adapter = new EventListAdaptor(this.getActivity(), future_events, false);
         lv.setAdapter(adapter);
         final SwipeRefreshLayout pullToRefresh = rootView.findViewById(R.id.swipe_refresh_future);
         pullToRefresh.setOnRefreshListener(() -> {
@@ -50,13 +50,20 @@ public class UpcomingEventsTabFragment extends Fragment {
 
     private void updateEvents() {
         EventsTabsActivity currentActivity = (EventsTabsActivity) getActivity();
-        currentActivity.reduceCount(this.new_events.size() + this.events_to_delete.size());
+        currentActivity.resetCount();
         this.adapter.addItems(this.new_events);
         this.future_events.putAll(new_events);
         this.new_events.clear();
         this.adapter.removeItems(this.events_to_delete);
         this.events_to_delete.clear();
         this.adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        updateEvents();
     }
 
     public void addEvents(String id, EventModel event) {

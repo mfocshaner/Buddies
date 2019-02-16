@@ -38,7 +38,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:16.0.5'
 
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.google.android.gms:play-services-maps:16.0.0'
+    implementation 'com.google.android.gms:play-services-maps:16.1.0'
 
     implementation 'com.google.android.material:material:1.1.0-alpha02'
     implementation 'io.github.yavski:fab-speed-dial:1.0.6'
@@ -54,7 +54,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     annotationProcessor 'androidx.annotation:annotation:1.0.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
-    implementation 'com.google.android.gms:play-services-maps:16.0.0'
+    implementation 'com.google.android.gms:play-services-maps:16.1.0'
     implementation 'com.google.android.gms:play-services-places:16.0.0'
     implementation 'com.nex3z:notification-badge:0.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'

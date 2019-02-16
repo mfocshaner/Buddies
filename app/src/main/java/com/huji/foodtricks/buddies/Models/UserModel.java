@@ -121,6 +121,9 @@ public class UserModel implements Serializable {
         if (this.changedEvents == null) {
             this.changedEvents = new ArrayList<>();
         }
+        if (this.changedEvents.contains(changes)) {
+            return;
+        }
         this.changedEvents.add(changes);
     }
 
